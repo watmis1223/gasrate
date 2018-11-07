@@ -78,6 +78,14 @@ namespace CalculationOilPrice.Library.Entity.Setting.PriceCalculation.Models
         public List<CalculationItemModel> CalculationItems { get; set; }
         public GeneralSettingModel GeneralSetting { get; set; }
         public PriceSetting PriceSetting { get; set; }
+
+        //if scale more than 1
+        public List<CalculationScaleModel> CalculationScales { get; set; }
+    }
+    public class CalculationScaleModel
+    {
+        public decimal Scale { get; set; }
+        public List<CalculationItemModel> CalculationItems { get; set; }
     }
 
     #endregion

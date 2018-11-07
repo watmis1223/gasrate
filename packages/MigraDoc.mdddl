@@ -1,0 +1,1068 @@
+\document
+[
+  UseCmykColor = true
+]
+{
+  \styles
+  {
+    Heading1
+    {
+      ParagraphFormat
+      {
+        OutlineLevel = Level1
+      }
+    }
+
+    Heading2
+    {
+      ParagraphFormat
+      {
+        OutlineLevel = Level2
+      }
+    }
+
+    Heading3
+    {
+      ParagraphFormat
+      {
+        OutlineLevel = Level3
+      }
+    }
+
+    Heading4
+    {
+      ParagraphFormat
+      {
+        OutlineLevel = Level4
+      }
+    }
+
+    Heading5
+    {
+      ParagraphFormat
+      {
+        OutlineLevel = Level5
+      }
+    }
+
+    Heading6
+    {
+      ParagraphFormat
+      {
+        OutlineLevel = Level6
+      }
+    }
+
+    Heading7
+    {
+      ParagraphFormat
+      {
+        OutlineLevel = Level7
+      }
+    }
+
+    Heading8
+    {
+      ParagraphFormat
+      {
+        OutlineLevel = Level8
+      }
+    }
+
+    Heading9
+    {
+      ParagraphFormat
+      {
+        OutlineLevel = Level9
+      }
+    }
+
+    Header
+    {
+      ParagraphFormat
+      {
+        TabStops +=
+        {
+          Position = "16cm"
+          Alignment = Right
+        }
+      }
+    }
+
+    Footer
+    {
+      ParagraphFormat
+      {
+        TabStops +=
+        {
+          Position = "8cm"
+          Alignment = Center
+        }
+      }
+    }
+
+    InvalidStyleName
+    {
+      Font
+      {
+        Bold = true
+        Underline = Dash
+        Color = Lime
+      }
+    }
+
+    Table : Normal
+    {
+      Font
+      {
+        Size = 7
+      }
+    }
+
+    Reference : Normal
+    {
+      ParagraphFormat
+      {
+        SpaceBefore = "5mm"
+        SpaceAfter = "5mm"
+        TabStops +=
+        {
+          Position = "16cm"
+          Alignment = Right
+        }
+      }
+    }
+  }
+  \section
+  {
+    \primaryheader
+    {
+      \paragraph
+      [
+        Format
+        {
+          Font
+          {
+            Size = 15
+          }
+          Alignment = Center
+        }
+      ]
+      {
+        Kalkulation 22
+      }
+    }
+    \paragraph
+    [
+      Format
+      {
+        Font
+        {
+          Size = 9
+        }
+        Alignment = Left
+      }
+    ]
+    {
+      20/10/2018\linebreak
+      test \linebreak
+      \linebreak
+       
+    }
+    \paragraph
+    [
+      Format
+      {
+        Font
+        {
+          Size = 8
+        }
+        Alignment = Left
+        SpaceBefore = "1cm"
+      }
+    ]
+    {
+      Heizoel Extra Leicht   0 Kg / 0 L\linebreak
+      Einkaufspreis   114.00 CHF\linebreak
+      Preis per 100 Kg (114.00 x 0.00)   0.00 CHF
+    }
+    \paragraph
+    [
+      Style = "Reference"
+      Format
+      {
+        SpaceBefore = "0.5cm"
+      }
+    ]
+    {
+      \bold{Kalkulation}
+    }
+    \table
+    [
+      Style = "Table"
+      Borders
+      {
+        Width = 0.25
+        Color = RGB(81,125,192)
+        Left
+        {
+          Width = 0.5
+        }
+        Right
+        {
+          Width = 0.5
+        }
+      }
+    ]
+    {
+      \columns
+      {
+        \column
+        [
+          Format
+          {
+            Alignment = Center
+          }
+          Width = "1cm"
+        ]
+        \column
+        [
+          Format
+          {
+            Alignment = Left
+          }
+          Width = "10cm"
+        ]
+        \column
+        [
+          Format
+          {
+            Alignment = Right
+          }
+          Width = "2.5cm"
+        ]
+        \column
+        [
+          Format
+          {
+            Alignment = Right
+          }
+          Width = "2.5cm"
+        ]
+      }
+      \rows
+      [
+        LeftIndent = 0
+      ]
+      {
+        \row
+        [
+          Format
+          {
+            Font
+            {
+              Bold = true
+            }
+            Alignment = Center
+          }
+          HeadingFormat = true
+          Shading
+          {
+            Color = RGB(235,240,249)
+          }
+        ]
+        {
+          \cell
+          [
+            Format
+            {
+              Font
+              {
+                Bold = true
+              }
+              Alignment = Left
+            }
+            VerticalAlignment = Bottom
+            Borders
+            {
+              Top
+              {
+                Style = Single
+                Width = 0.75
+              }
+              Left
+              {
+                Style = Single
+                Width = 0.75
+              }
+              Bottom
+              {
+                Style = Single
+                Width = 0.75
+              }
+            }
+          ]
+          {
+            Pos.
+          }
+          \cell
+          [
+            Format
+            {
+              Alignment = Left
+            }
+            Borders
+            {
+              Top
+              {
+                Style = Single
+                Width = 0.75
+              }
+              Bottom
+              {
+                Style = Single
+                Width = 0.75
+              }
+            }
+          ]
+          {
+            Zuschlag
+          }
+          \cell
+          [
+            Format
+            {
+              Alignment = Right
+            }
+            Borders
+            {
+              Top
+              {
+                Style = Single
+                Width = 0.75
+              }
+              Bottom
+              {
+                Style = Single
+                Width = 0.75
+              }
+            }
+          ]
+          \cell
+          [
+            Format
+            {
+              Alignment = Center
+            }
+            Borders
+            {
+              Top
+              {
+                Style = Single
+                Width = 0.75
+              }
+              Bottom
+              {
+                Style = Single
+                Width = 0.75
+              }
+              Right
+              {
+                Style = Single
+                Width = 0.75
+              }
+            }
+          ]
+          {
+            Betrag
+          }
+        }
+        \row
+        {
+          \cell
+          [
+            Format
+            {
+              Alignment = Center
+            }
+            MergeRight = 3
+          ]
+          {
+            No items
+          }
+          \cell
+          \cell
+          \cell
+          [
+            Borders
+            {
+              Bottom
+              {
+                Style = Single
+                Width = 1
+              }
+            }
+          ]
+        }
+        \row
+        {
+          \cell
+          [
+            Shading
+            {
+              Color = RGB(242,242,242)
+            }
+          ]
+          \cell
+          [
+            Format
+            {
+              Font
+              {
+                Bold = true
+              }
+              Alignment = Right
+            }
+            MergeRight = 1
+          ]
+          {
+            Total
+          }
+          \cell
+          \cell
+          [
+            Format
+            {
+              Font
+              {
+                Bold = true
+              }
+            }
+            Borders
+            {
+              Bottom
+              {
+                Style = Single
+                Width = 1
+              }
+            }
+          ]
+          {
+            0.00
+          }
+        }
+        \row
+        [
+          Borders
+          {
+            Visible = false
+          }
+        ]
+        {
+        }
+        \row
+        {
+          \cell
+          [
+            Format
+            {
+              Font
+              {
+                Bold = true
+              }
+              Alignment = Right
+            }
+            MergeRight = 2
+            Borders
+            {
+              Visible = false
+            }
+          ]
+          {
+            Total Zuschläge
+          }
+          \cell
+          \cell
+          \cell
+          [
+            Format
+            {
+              Font
+              {
+                Bold = true
+              }
+            }
+          ]
+          {
+            0.00
+          }
+        }
+        \row
+        {
+          \cell
+          [
+            Format
+            {
+              Font
+              {
+                Bold = true
+              }
+              Alignment = Right
+            }
+            MergeRight = 2
+            Borders
+            {
+              Visible = false
+            }
+          ]
+          {
+            Abladestellen (25.00 x 1)
+          }
+          \cell
+          \cell
+          \cell
+          [
+            Format
+            {
+              Font
+              {
+                Bold = true
+              }
+            }
+          ]
+          {
+            25.00
+          }
+        }
+        \row
+        {
+          \cell
+          [
+            Format
+            {
+              Font
+              {
+                Bold = true
+              }
+              Alignment = Right
+            }
+            MergeRight = 2
+            Borders
+            {
+              Visible = false
+            }
+          ]
+          {
+            VP für 100 kg in WIR
+          }
+          \cell
+          \cell
+          \cell
+          [
+            Format
+            {
+              Font
+              {
+                Bold = true
+              }
+            }
+          ]
+          {
+            0.00
+          }
+        }
+        \row
+        {
+          \cell
+          [
+            Format
+            {
+              Font
+              {
+                Bold = true
+              }
+              Alignment = Right
+            }
+            MergeRight = 2
+            Borders
+            {
+              Visible = false
+            }
+          ]
+          {
+            VP für 100 kg in CHF
+          }
+          \cell
+          \cell
+          \cell
+          [
+            Format
+            {
+              Font
+              {
+                Bold = true
+              }
+            }
+          ]
+          {
+            114.00
+          }
+        }
+        \row
+        {
+          \cell
+          [
+            Format
+            {
+              Font
+              {
+                Bold = true
+              }
+              Alignment = Right
+            }
+            MergeRight = 2
+            Borders
+            {
+              Visible = false
+            }
+          ]
+          {
+            Subtotal WIR (0.00 x 0)
+          }
+          \cell
+          \cell
+          \cell
+          [
+            Format
+            {
+              Font
+              {
+                Bold = true
+              }
+            }
+          ]
+          {
+            0.00
+          }
+        }
+        \row
+        {
+          \cell
+          [
+            Format
+            {
+              Font
+              {
+                Bold = true
+              }
+              Alignment = Right
+            }
+            MergeRight = 2
+            Borders
+            {
+              Visible = false
+            }
+          ]
+          {
+            Subtotal CHF ((114.00 x 0) + 25.00 + 0.00)
+          }
+          \cell
+          \cell
+          \cell
+          [
+            Format
+            {
+              Font
+              {
+                Bold = true
+              }
+            }
+          ]
+          {
+            25.00
+          }
+        }
+        \row
+        {
+          \cell
+          [
+            Format
+            {
+              Font
+              {
+                Bold = true
+              }
+              Alignment = Right
+            }
+            MergeRight = 2
+            Borders
+            {
+              Visible = false
+            }
+          ]
+          {
+            Average (Subtotal WIR and Subtotal CHF)
+          }
+          \cell
+          \cell
+          \cell
+          [
+            Format
+            {
+              Font
+              {
+                Bold = true
+              }
+            }
+          ]
+          {
+            12.50
+          }
+        }
+        \row
+        {
+          \cell
+          [
+            Format
+            {
+              Font
+              {
+                Bold = true
+              }
+              Alignment = Right
+            }
+            MergeRight = 2
+            Borders
+            {
+              Visible = false
+            }
+          ]
+          {
+            Total (Subtotal WIR + Subtotal CHF)
+          }
+          \cell
+          \cell
+          \cell
+          [
+            Format
+            {
+              Font
+              {
+                Bold = true
+              }
+            }
+          ]
+          {
+            25.00
+          }
+        }
+      }
+    }
+    \paragraph
+    [
+      Style = "Reference"
+      Format
+      {
+        SpaceBefore = "0.5cm"
+      }
+    ]
+    {
+      \bold{Provision}
+    }
+    \table
+    [
+      Style = "Table"
+      Borders
+      {
+        Width = 0.25
+        Color = RGB(81,125,192)
+        Left
+        {
+          Width = 0.5
+        }
+        Right
+        {
+          Width = 0.5
+        }
+      }
+    ]
+    {
+      \columns
+      {
+        \column
+        [
+          Format
+          {
+            Alignment = Left
+          }
+          Width = "10cm"
+        ]
+        \column
+        [
+          Format
+          {
+            Alignment = Right
+          }
+          Width = "3cm"
+        ]
+        \column
+        [
+          Format
+          {
+            Alignment = Right
+          }
+          Width = "3cm"
+        ]
+      }
+      \rows
+      [
+        LeftIndent = 0
+      ]
+      {
+        \row
+        [
+          Format
+          {
+            Font
+            {
+              Bold = true
+            }
+            Alignment = Center
+          }
+          HeadingFormat = true
+          Shading
+          {
+            Color = RGB(235,240,249)
+          }
+        ]
+        {
+          \cell
+          [
+            Format
+            {
+              Alignment = Left
+            }
+            Borders
+            {
+              Top
+              {
+                Style = Single
+                Width = 0.75
+              }
+              Left
+              {
+                Style = Single
+                Width = 0.75
+              }
+              Bottom
+              {
+                Style = Single
+                Width = 0.75
+              }
+            }
+          ]
+          \cell
+          [
+            Format
+            {
+              Alignment = Center
+            }
+            Borders
+            {
+              Top
+              {
+                Style = Single
+                Width = 0.75
+              }
+              Bottom
+              {
+                Style = Single
+                Width = 0.75
+              }
+            }
+          ]
+          {
+            Marge als Betrag
+          }
+          \cell
+          [
+            Format
+            {
+              Alignment = Center
+            }
+            Borders
+            {
+              Top
+              {
+                Style = Single
+                Width = 0.75
+              }
+              Bottom
+              {
+                Style = Single
+                Width = 0.75
+              }
+              Right
+              {
+                Style = Single
+                Width = 0.75
+              }
+            }
+          ]
+          {
+            Marge in Prozent 
+          }
+        }
+        \row
+        {
+          \cell
+          {
+            Kalk. Verkaufspreis (0.00 - 114.00 x 0)
+          }
+          \cell
+          {
+            0.00
+          }
+          \cell
+          {
+            NaN%
+          }
+        }
+        \row
+        {
+          \cell
+          [
+            MergeRight = 1
+          ]
+          {
+            WIR Anteil %
+          }
+          \cell
+          \cell
+          {
+            10%
+          }
+        }
+        \row
+        {
+          \cell
+          {
+            WIR Korrektur (0.00 x 0.60)
+          }
+          \cell
+          {
+            0.00
+          }
+          \cell
+          [
+            Borders
+            {
+              Right
+              {
+                Visible = false
+              }
+            }
+          ]
+        }
+        \row
+        {
+          \cell
+          {
+            Provisionsberechtigte Marge (0.00 - 0.00)
+          }
+          \cell
+          {
+            0.00
+          }
+          \cell
+          {
+            NaN%
+          }
+        }
+        \row
+        [
+          Borders
+          {
+            Visible = false
+          }
+        ]
+        {
+        }
+        \row
+        {
+          \cell
+          [
+            MergeRight = 1
+          ]
+          {
+            Provision gemäss Matrix in Prozent
+          }
+          \cell
+          \cell
+          [
+            Format
+            {
+              Font
+              {
+                Bold = true
+              }
+            }
+            Borders
+            {
+              Bottom
+              {
+                Style = Single
+                Width = 1
+              }
+            }
+          ]
+          {
+            0%
+          }
+        }
+        \row
+        {
+          \cell
+          {
+            zu zahlende Provision
+          }
+          \cell
+          [
+            Format
+            {
+              Font
+              {
+                Bold = true
+              }
+            }
+            Borders
+            {
+              Bottom
+              {
+                Style = Single
+                Width = 1
+              }
+            }
+          ]
+          {
+            0.00
+          }
+          \cell
+          [
+            Borders
+            {
+              Bottom
+              {
+                Visible = false
+              }
+              Right
+              {
+                Visible = false
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}

@@ -111,23 +111,23 @@
     <Reference Include="DevExpress.XtraRichEdit.v18.1, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="MigraDoc.DocumentObjectModel, Version=1.31.3066.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\DLL\PDFSharp-MigraDocFoundation-1_31\GDI+\MigraDoc.DocumentObjectModel.dll</HintPath>
+      <HintPath>packages\MigraDoc.DocumentObjectModel.dll</HintPath>
     </Reference>
     <Reference Include="MigraDoc.Rendering, Version=1.31.3066.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\DLL\PDFSharp-MigraDocFoundation-1_31\GDI+\MigraDoc.Rendering.dll</HintPath>
+      <HintPath>packages\MigraDoc.Rendering.dll</HintPath>
     </Reference>
     <Reference Include="MigraDoc.RtfRendering, Version=1.31.3066.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\DLL\PDFSharp-MigraDocFoundation-1_31\GDI+\MigraDoc.RtfRendering.dll</HintPath>
+      <HintPath>packages\MigraDoc.RtfRendering.dll</HintPath>
     </Reference>
     <Reference Include="PdfSharp, Version=1.31.1789.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\DLL\PDFSharp-MigraDocFoundation-1_31\GDI+\PdfSharp.dll</HintPath>
+      <HintPath>packages\PdfSharp.dll</HintPath>
     </Reference>
     <Reference Include="PdfSharp.Charting, Version=1.31.1789.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\DLL\PDFSharp-MigraDocFoundation-1_31\GDI+\PdfSharp.Charting.dll</HintPath>
+      <HintPath>packages\PdfSharp.Charting.dll</HintPath>
     </Reference>
     <Reference Include="System">
       <Private>True</Private>
