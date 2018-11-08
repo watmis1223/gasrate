@@ -85,7 +85,7 @@ namespace CalculationOilPrice.Library.Entity.Setting.PriceCalculation.Models
         public long ID { get; set; }
 
         //from calculation basic one
-        public decimal MasterAmount { get; set; }        
+        public decimal MasterAmount { get; set; }
 
         //from general's settings
         public GeneralSettingModel GeneralSetting { get; set; }
@@ -102,6 +102,7 @@ namespace CalculationOilPrice.Library.Entity.Setting.PriceCalculation.Models
     }
     public class CalculationScaleModel
     {
+        public long ID { get; set; }
         public decimal Scale { get; set; }
         public List<CalculationItemModel> CalculationItems { get; set; }
     }

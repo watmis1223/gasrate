@@ -127,7 +127,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1268, 978);
+            this.ClientSize = new System.Drawing.Size(1770, 1214);
             this.Controls.Add(this.gridControl1);
             this.Controls.Add(this.spinEdit1);
             this.Controls.Add(this.textEdit1);

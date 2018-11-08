@@ -102,8 +102,12 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             {
                 GeneralSetting = generalSettingModel,
                 PriceSetting = priceSetting,
-                BasicCalculationItems = new List<CalculationItemModel>()
+                BasicCalculationItems = new List<CalculationItemModel>(),
+                ScaleCalculationItems = new List<CalculationScaleModel>()
             };
+
+            //setup data
+            InitData();
 
             //setup price scales combobox
             //if price scale more than 1
@@ -129,7 +133,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                 this.layoutControlItem2.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.OnlyInRuntime;
             }
 
-            InitData();
+            //refresh gridview
             RefreshGrid();
         }
 
@@ -137,16 +141,31 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
         {
             //set filter
             gridView1.ActiveFilter.Clear();
-            if (_Model.GeneralSetting.PriceScale.Scale > 1)
+            _Model.BasicCalculationItems.RemoveAll(item => item.Group > 3);
+
+            //append first scale calculation items to basic calculation on init
+            if (_Model.GeneralSetting.PriceScale.Scale == 1)
             {
-                if (cboPriceScales.ItemIndex == 0)
+                _Model.BasicCalculationItems.AddRange(_Model.ScaleCalculationItems[0].CalculationItems);
+            }
+            else
+            {
+                if (cboPriceScales.ItemIndex > 0)
                 {
-                    gridView1.ActiveFilter.NonColumnFilter = "[Group] < 4";
-                }
-                else
-                {
+                    _Model.BasicCalculationItems.AddRange(_Model.ScaleCalculationItems[cboPriceScales.ItemIndex - 1].CalculationItems);
+                    UpdateGroupAmountAll(false);
+
                     gridView1.ActiveFilter.NonColumnFilter = "[Group] > 3";
-                }
+
+                    //if (cboPriceScales.ItemIndex == 0)
+                    //{
+                    //    gridView1.ActiveFilter.NonColumnFilter = "[Group] < 4";
+                    //}
+                    //else
+                    //{
+                    //    gridView1.ActiveFilter.NonColumnFilter = "[Group] > 3";
+                    //}
+                }                
             }
 
             gridView1.RefreshData();
@@ -156,10 +175,10 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
         {
             int itemOrder = 0;
             SetBasicCalculationData(_Model.GeneralSetting, _Model.PriceSetting, ref itemOrder);
-            SetPriceScaleCalculationData(_Model.GeneralSetting, _Model.PriceSetting, ref itemOrder);
+            SetPriceScaleCalculationData(_Model.GeneralSetting, _Model.PriceSetting, itemOrder);
 
             //bind data
-            gridControl1.DataSource = _Model.BasicCalculationItems;           
+            gridControl1.DataSource = _Model.BasicCalculationItems;
 
             //Setup columns
             gridView1.RowSeparatorHeight = 2;
@@ -205,160 +224,10 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             gridView1.Columns[TempColumnNames.IsSummary.ToString()].Visible = false;
         }
 
-        void SetPriceScaleCalculationData(GeneralSettingModel generalSettingModel, PriceSetting priceSetting, ref int order)
-        {
-            //group4
-            order += 1;
-            _Model.BasicCalculationItems.Add(new CalculationItemModel()
-            {
-                Sign = "+",
-                Description = "Gewinnaufschlag",
-                AmountPercent = 0,
-                AmountFix = 0,
-                Total = 0,
-                Tag = "GA",
-                Currency = generalSettingModel.Currency.Currency,
-                CalculationBaseGroupRows = new List<int>() { 0, 1, 2, 3 },
-                Group = 4,
-                Order = order
-            });
-
-            order += 1;
-            _Model.BasicCalculationItems.Add(new CalculationItemModel()
-            {
-                Sign = "=",
-                Description = "Barverkaufspreis",
-                AmountPercent = 0,
-                AmountFix = 0,
-                Total = 0,
-                Tag = "VK(bar)",
-                Currency = generalSettingModel.Currency.Currency,
-                Group = 4,
-                IsSummary = true,
-                SummaryGroups = new List<int>() { 0, 1, 2, 3, 4 },
-                Order = order
-            });
-
-
-            //group5
-            order += 1;
-            _Model.BasicCalculationItems.Add(new CalculationItemModel()
-            {
-                Sign = "+",
-                Description = "Kundenskonto",
-                AmountPercent = priceSetting.CashDiscount,
-                AmountFix = 0,
-                Total = 0,
-                Tag = "SKT",
-                Currency = generalSettingModel.Currency.Currency,
-                CalculationBaseGroupRows = new List<int>() { 0, 1, 2, 3, 4 },
-                Group = 5,
-                Order = order
-            });
-
-            order += 1;
-            _Model.BasicCalculationItems.Add(new CalculationItemModel()
-            {
-                Sign = "+",
-                Description = "Verhandlungsspielraum",
-                AmountPercent = priceSetting.SalesBonus,
-                AmountFix = 0,
-                Total = 0,
-                Tag = "PV",
-                Currency = generalSettingModel.Currency.Currency,
-                CalculationBaseGroupRows = new List<int>() { 0, 1, 2, 3, 4 },
-                Group = 5,
-                Order = order
-            });
-
-            order += 1;
-            _Model.BasicCalculationItems.Add(new CalculationItemModel()
-            {
-                Sign = "=",
-                Description = "Zielverkaufspreis",
-                AmountPercent = 0,
-                AmountFix = 0,
-                Total = 0,
-                Tag = "VK(ziel)",
-                Currency = generalSettingModel.Currency.Currency,
-                Group = 5,
-                IsSummary = true,
-                SummaryGroups = new List<int>() { 0, 1, 2, 3, 4, 5 },
-                Order = order
-            });
-
-
-            //group6
-            order += 1;
-            _Model.BasicCalculationItems.Add(new CalculationItemModel()
-            {
-                Sign = "+",
-                Description = "Kundenrabatt",
-                AmountPercent = priceSetting.CustomerDiscount,
-                AmountFix = 0,
-                Total = 0,
-                Tag = "RBT",
-                Currency = generalSettingModel.Currency.Currency,
-                CalculationBaseGroupRows = new List<int>() { 0, 1, 2, 3, 4, 5 },
-                Group = 6,
-                Order = order
-            });
-
-            order += 1;
-            _Model.BasicCalculationItems.Add(new CalculationItemModel()
-            {
-                Sign = "=",
-                Description = "Nettoverkaufspreis",
-                AmountPercent = 0,
-                AmountFix = 0,
-                Total = 0,
-                Tag = "VK(liste)",
-                Currency = generalSettingModel.Currency.Currency,
-                Group = 6,
-                IsSummary = true,
-                SummaryGroups = new List<int>() { 0, 1, 2, 3, 4, 5, 6 },
-                Order = order
-            });
-
-
-            //group7
-            order += 1;
-            _Model.BasicCalculationItems.Add(new CalculationItemModel()
-            {
-                Sign = "+",
-                Description = "Mehrwertsteuer",
-                AmountPercent = priceSetting.VatTaxes,
-                AmountFix = 0,
-                Total = 0,
-                Tag = "MWST",
-                Currency = generalSettingModel.Currency.Currency,
-                CalculationBaseGroupRows = new List<int>() { 0, 1, 2, 3, 4, 5, 6 },
-                Group = 7,
-                Order = order
-            });
-
-            order += 1;
-            _Model.BasicCalculationItems.Add(new CalculationItemModel()
-            {
-                Sign = "=",
-                Description = "Bruttoverkaufspreis",
-                AmountPercent = 0,
-                AmountFix = 0,
-                Total = 0,
-                Tag = "VK(brutto)",
-                Currency = generalSettingModel.Currency.Currency,
-                Group = 7,
-                IsSummary = true,
-                SummaryGroups = new List<int>() { 0, 1, 2, 3, 4, 5, 6, 7 },
-                Order = order
-            });
-        }
-
         void SetBasicCalculationData(GeneralSettingModel generalSettingModel, PriceSetting priceSetting, ref int order)
         {
             //group1
             //int order = 0;
-
             _Model.BasicCalculationItems.Add(new CalculationItemModel()
             {
                 Sign = "",
@@ -582,6 +451,179 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                 Order = order
             });
         }
+
+        void SetPriceScaleCalculationData(GeneralSettingModel generalSettingModel, PriceSetting priceSetting, int order)
+        {
+            for (int i = 0; i < generalSettingModel.PriceScale.Scale; i++)
+            {
+                int iOrder = order;
+
+                CalculationScaleModel oScale = new CalculationScaleModel()
+                {
+                    ID = i,
+                    Scale = 0,
+                    CalculationItems = new List<CalculationItemModel>()
+                };
+
+                //group4   
+                iOrder += 1;
+                oScale.CalculationItems.Add(new CalculationItemModel()
+                {
+                    Sign = "+",
+                    Description = "Gewinnaufschlag",
+                    AmountPercent = 0,
+                    AmountFix = 0,
+                    Total = 0,
+                    Tag = "GA",
+                    Currency = generalSettingModel.Currency.Currency,
+                    CalculationBaseGroupRows = new List<int>() { 0, 1, 2, 3 },
+                    Group = 4,
+                    //Group = 0,
+                    Order = iOrder
+                });
+
+                iOrder += 1;
+                oScale.CalculationItems.Add(new CalculationItemModel()
+                {
+                    Sign = "=",
+                    Description = "Barverkaufspreis",
+                    AmountPercent = 0,
+                    AmountFix = 0,
+                    Total = 0,
+                    Tag = "VK(bar)",
+                    Currency = generalSettingModel.Currency.Currency,
+                    Group = 4,
+                    //Group = 0,
+                    IsSummary = true,
+                    SummaryGroups = new List<int>() { 0, 1, 2, 3, 4 },
+                    Order = iOrder
+                });
+
+
+                //group5
+                iOrder += 1;
+                oScale.CalculationItems.Add(new CalculationItemModel()
+                {
+                    Sign = "+",
+                    Description = "Kundenskonto",
+                    AmountPercent = priceSetting.CashDiscount,
+                    AmountFix = 0,
+                    Total = 0,
+                    Tag = "SKT",
+                    Currency = generalSettingModel.Currency.Currency,
+                    CalculationBaseGroupRows = new List<int>() { 0, 1, 2, 3, 4 },
+                    Group = 5,
+                    //Group = 1,
+                    Order = iOrder
+                });
+
+                iOrder += 1;
+                oScale.CalculationItems.Add(new CalculationItemModel()
+                {
+                    Sign = "+",
+                    Description = "Verhandlungsspielraum",
+                    AmountPercent = priceSetting.SalesBonus,
+                    AmountFix = 0,
+                    Total = 0,
+                    Tag = "PV",
+                    Currency = generalSettingModel.Currency.Currency,
+                    CalculationBaseGroupRows = new List<int>() { 0, 1, 2, 3, 4 },
+                    Group = 5,
+                    //Group = 1,
+                    Order = iOrder
+                });
+
+                iOrder += 1;
+                oScale.CalculationItems.Add(new CalculationItemModel()
+                {
+                    Sign = "=",
+                    Description = "Zielverkaufspreis",
+                    AmountPercent = 0,
+                    AmountFix = 0,
+                    Total = 0,
+                    Tag = "VK(ziel)",
+                    Currency = generalSettingModel.Currency.Currency,
+                    Group = 5,
+                    //Group = 1,
+                    IsSummary = true,
+                    SummaryGroups = new List<int>() { 0, 1, 2, 3, 4, 5 },
+                    Order = iOrder
+                });
+
+
+                //group6
+                iOrder += 1;
+                oScale.CalculationItems.Add(new CalculationItemModel()
+                {
+                    Sign = "+",
+                    Description = "Kundenrabatt",
+                    AmountPercent = priceSetting.CustomerDiscount,
+                    AmountFix = 0,
+                    Total = 0,
+                    Tag = "RBT",
+                    Currency = generalSettingModel.Currency.Currency,
+                    CalculationBaseGroupRows = new List<int>() { 0, 1, 2, 3, 4, 5 },
+                    Group = 6,
+                    //Group = 2,
+                    Order = iOrder
+                });
+
+                iOrder += 1;
+                oScale.CalculationItems.Add(new CalculationItemModel()
+                {
+                    Sign = "=",
+                    Description = "Nettoverkaufspreis",
+                    AmountPercent = 0,
+                    AmountFix = 0,
+                    Total = 0,
+                    Tag = "VK(liste)",
+                    Currency = generalSettingModel.Currency.Currency,
+                    Group = 6,
+                    //Group = 2,
+                    IsSummary = true,
+                    SummaryGroups = new List<int>() { 0, 1, 2, 3, 4, 5, 6 },
+                    Order = iOrder
+                });
+
+
+                //group7
+                iOrder += 1;
+                oScale.CalculationItems.Add(new CalculationItemModel()
+                {
+                    Sign = "+",
+                    Description = "Mehrwertsteuer",
+                    AmountPercent = priceSetting.VatTaxes,
+                    AmountFix = 0,
+                    Total = 0,
+                    Tag = "MWST",
+                    Currency = generalSettingModel.Currency.Currency,
+                    CalculationBaseGroupRows = new List<int>() { 0, 1, 2, 3, 4, 5, 6 },
+                    Group = 7,
+                    //Group = 3,
+                    Order = iOrder
+                });
+
+                iOrder += 1;
+                oScale.CalculationItems.Add(new CalculationItemModel()
+                {
+                    Sign = "=",
+                    Description = "Bruttoverkaufspreis",
+                    AmountPercent = 0,
+                    AmountFix = 0,
+                    Total = 0,
+                    Tag = "VK(brutto)",
+                    Currency = generalSettingModel.Currency.Currency,
+                    Group = 7,
+                    //Group = 3,
+                    IsSummary = true,
+                    SummaryGroups = new List<int>() { 0, 1, 2, 3, 4, 5, 6, 7 },
+                    Order = iOrder
+                });
+
+                _Model.ScaleCalculationItems.Add(oScale);
+            }
+        }
+
 
         void UpdateCalculationRowAmount(int rowID, decimal value, bool isPercent, bool specialCalculation)
         {
