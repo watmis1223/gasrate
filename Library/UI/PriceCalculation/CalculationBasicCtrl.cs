@@ -27,10 +27,10 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
         public delegate void SaveChangedCallback();
         public event SaveChangedCallback SaveChanged;
 
-        DataTable _Dt;
+        //DataTable _Dt;
         CalculationModel _Model;
-        string _NumFormat = "{0:n4}";
-        string _NumFormatColumn = "n4";
+        //string _NumFormat = "{0:n4}";
+        //string _NumFormatColumn = "n4";
 
         //DevExpress.XtraEditors.Repository.RepositoryItemTextEdit repositoryItemTextEdit;
 
@@ -62,7 +62,11 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
         }
         private void SettingCtrl_Load(object sender, EventArgs e)
         {
+            //text edit for non editable cell
             this.repositoryItemButtonEdit1.Buttons.Clear();
+
+            //hide dropdown
+            this.layoutControlItem2.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Never;
         }
 
         void GridControl_Paint(object sender, PaintEventArgs e)
@@ -92,11 +96,70 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             newCol.OptionsColumn.AllowSize = false;
         }
 
-        internal void Reload(GeneralSettingModel generalSettingModel, PriceSetting priceSetting)
+        public void Init(GeneralSettingModel generalSettingModel, PriceSetting priceSetting)
         {
-            InitModel(generalSettingModel, priceSetting);
+            _Model = new CalculationModel()
+            {
+                GeneralSetting = generalSettingModel,
+                PriceSetting = priceSetting,
+                BasicCalculationItems = new List<CalculationItemModel>()
+            };
 
-            //InitDataSource(generalSettingModel.TextLines, priceSetting);
+            //setup price scales combobox
+            //if price scale more than 1
+            if (generalSettingModel.PriceScale.Scale > 1)
+            {
+                //_Model.CalculationScaleItems = new List<CalculationScaleModel>();
+
+                List<PriceScaleComboboxItem> oItems = new List<PriceScaleComboboxItem>();
+
+                //add basic calculation first
+                oItems.Add(new PriceScaleComboboxItem() { Value = 0, Caption = "Grundberechnung" });
+
+                //setup price scale dropdown items
+                for (int i = 1; i <= generalSettingModel.PriceScale.Scale; i++)
+                {
+                    oItems.Add(new PriceScaleComboboxItem() { Value = i, Caption = String.Format("Staffel {0}", i) });
+                }
+
+                cboPriceScales.Properties.DataSource = oItems;
+                cboPriceScales.Properties.ValueMember = "Value";
+                cboPriceScales.Properties.DisplayMember = "Caption";
+                cboPriceScales.ItemIndex = 0;
+                this.layoutControlItem2.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.OnlyInRuntime;
+            }
+
+            InitData();
+            RefreshGrid();
+        }
+
+        private void RefreshGrid()
+        {
+            //set filter
+            gridView1.ActiveFilter.Clear();
+            if (_Model.GeneralSetting.PriceScale.Scale > 1)
+            {
+                if (cboPriceScales.ItemIndex == 0)
+                {
+                    gridView1.ActiveFilter.NonColumnFilter = "[Group] < 4";
+                }
+                else
+                {
+                    gridView1.ActiveFilter.NonColumnFilter = "[Group] > 3";
+                }
+            }
+
+            gridView1.RefreshData();
+        }
+
+        private void InitData()
+        {
+            int itemOrder = 0;
+            SetBasicCalculationData(_Model.GeneralSetting, _Model.PriceSetting, ref itemOrder);
+            SetPriceScaleCalculationData(_Model.GeneralSetting, _Model.PriceSetting, ref itemOrder);
+
+            //bind data
+            gridControl1.DataSource = _Model.BasicCalculationItems;           
 
             //Setup columns
             gridView1.RowSeparatorHeight = 2;
@@ -142,18 +205,161 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             gridView1.Columns[TempColumnNames.IsSummary.ToString()].Visible = false;
         }
 
-        void InitModel(GeneralSettingModel generalSettingModel, PriceSetting priceSetting)
+        void SetPriceScaleCalculationData(GeneralSettingModel generalSettingModel, PriceSetting priceSetting, ref int order)
         {
-            _Model = new CalculationModel()
+            //group4
+            order += 1;
+            _Model.BasicCalculationItems.Add(new CalculationItemModel()
             {
-                GeneralSetting = generalSettingModel,        
-                PriceSetting = priceSetting,
-                CalculationItems = new List<CalculationItemModel>()
-            };
+                Sign = "+",
+                Description = "Gewinnaufschlag",
+                AmountPercent = 0,
+                AmountFix = 0,
+                Total = 0,
+                Tag = "GA",
+                Currency = generalSettingModel.Currency.Currency,
+                CalculationBaseGroupRows = new List<int>() { 0, 1, 2, 3 },
+                Group = 4,
+                Order = order
+            });
 
+            order += 1;
+            _Model.BasicCalculationItems.Add(new CalculationItemModel()
+            {
+                Sign = "=",
+                Description = "Barverkaufspreis",
+                AmountPercent = 0,
+                AmountFix = 0,
+                Total = 0,
+                Tag = "VK(bar)",
+                Currency = generalSettingModel.Currency.Currency,
+                Group = 4,
+                IsSummary = true,
+                SummaryGroups = new List<int>() { 0, 1, 2, 3, 4 },
+                Order = order
+            });
+
+
+            //group5
+            order += 1;
+            _Model.BasicCalculationItems.Add(new CalculationItemModel()
+            {
+                Sign = "+",
+                Description = "Kundenskonto",
+                AmountPercent = priceSetting.CashDiscount,
+                AmountFix = 0,
+                Total = 0,
+                Tag = "SKT",
+                Currency = generalSettingModel.Currency.Currency,
+                CalculationBaseGroupRows = new List<int>() { 0, 1, 2, 3, 4 },
+                Group = 5,
+                Order = order
+            });
+
+            order += 1;
+            _Model.BasicCalculationItems.Add(new CalculationItemModel()
+            {
+                Sign = "+",
+                Description = "Verhandlungsspielraum",
+                AmountPercent = priceSetting.SalesBonus,
+                AmountFix = 0,
+                Total = 0,
+                Tag = "PV",
+                Currency = generalSettingModel.Currency.Currency,
+                CalculationBaseGroupRows = new List<int>() { 0, 1, 2, 3, 4 },
+                Group = 5,
+                Order = order
+            });
+
+            order += 1;
+            _Model.BasicCalculationItems.Add(new CalculationItemModel()
+            {
+                Sign = "=",
+                Description = "Zielverkaufspreis",
+                AmountPercent = 0,
+                AmountFix = 0,
+                Total = 0,
+                Tag = "VK(ziel)",
+                Currency = generalSettingModel.Currency.Currency,
+                Group = 5,
+                IsSummary = true,
+                SummaryGroups = new List<int>() { 0, 1, 2, 3, 4, 5 },
+                Order = order
+            });
+
+
+            //group6
+            order += 1;
+            _Model.BasicCalculationItems.Add(new CalculationItemModel()
+            {
+                Sign = "+",
+                Description = "Kundenrabatt",
+                AmountPercent = priceSetting.CustomerDiscount,
+                AmountFix = 0,
+                Total = 0,
+                Tag = "RBT",
+                Currency = generalSettingModel.Currency.Currency,
+                CalculationBaseGroupRows = new List<int>() { 0, 1, 2, 3, 4, 5 },
+                Group = 6,
+                Order = order
+            });
+
+            order += 1;
+            _Model.BasicCalculationItems.Add(new CalculationItemModel()
+            {
+                Sign = "=",
+                Description = "Nettoverkaufspreis",
+                AmountPercent = 0,
+                AmountFix = 0,
+                Total = 0,
+                Tag = "VK(liste)",
+                Currency = generalSettingModel.Currency.Currency,
+                Group = 6,
+                IsSummary = true,
+                SummaryGroups = new List<int>() { 0, 1, 2, 3, 4, 5, 6 },
+                Order = order
+            });
+
+
+            //group7
+            order += 1;
+            _Model.BasicCalculationItems.Add(new CalculationItemModel()
+            {
+                Sign = "+",
+                Description = "Mehrwertsteuer",
+                AmountPercent = priceSetting.VatTaxes,
+                AmountFix = 0,
+                Total = 0,
+                Tag = "MWST",
+                Currency = generalSettingModel.Currency.Currency,
+                CalculationBaseGroupRows = new List<int>() { 0, 1, 2, 3, 4, 5, 6 },
+                Group = 7,
+                Order = order
+            });
+
+            order += 1;
+            _Model.BasicCalculationItems.Add(new CalculationItemModel()
+            {
+                Sign = "=",
+                Description = "Bruttoverkaufspreis",
+                AmountPercent = 0,
+                AmountFix = 0,
+                Total = 0,
+                Tag = "VK(brutto)",
+                Currency = generalSettingModel.Currency.Currency,
+                Group = 7,
+                IsSummary = true,
+                SummaryGroups = new List<int>() { 0, 1, 2, 3, 4, 5, 6, 7 },
+                Order = order
+            });
+        }
+
+        void SetBasicCalculationData(GeneralSettingModel generalSettingModel, PriceSetting priceSetting, ref int order)
+        {
             //group1
-            int order = 0;
-            _Model.CalculationItems.Add(new CalculationItemModel()
+            //int order = 0;
+
+            _Model.BasicCalculationItems.Add(new CalculationItemModel()
             {
                 Sign = "",
                 Description = "Bareinkaufspreis",
@@ -167,7 +373,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             });
 
             order += 1;
-            _Model.CalculationItems.Add(new CalculationItemModel()
+            _Model.BasicCalculationItems.Add(new CalculationItemModel()
             {
                 Sign = "+",
                 Description = "Bezugskosten",
@@ -187,7 +393,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                 {
                     count += 1;
                     order += 1;
-                    _Model.CalculationItems.Add(new CalculationItemModel()
+                    _Model.BasicCalculationItems.Add(new CalculationItemModel()
                     {
                         Sign = "+",
                         Description = item,
@@ -203,7 +409,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             }
 
             order += 1;
-            _Model.CalculationItems.Add(new CalculationItemModel()
+            _Model.BasicCalculationItems.Add(new CalculationItemModel()
             {
                 Sign = "=",
                 Description = "Einstandspreis",
@@ -221,7 +427,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
 
             //group2
             order += 1;
-            _Model.CalculationItems.Add(new CalculationItemModel()
+            _Model.BasicCalculationItems.Add(new CalculationItemModel()
             {
                 Sign = "+",
                 Description = "Verwaltungsgemeinkosten",
@@ -236,7 +442,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             });
 
             order += 1;
-            _Model.CalculationItems.Add(new CalculationItemModel()
+            _Model.BasicCalculationItems.Add(new CalculationItemModel()
             {
                 Sign = "+",
                 Description = "Vertriebsgemeinkosten",
@@ -251,7 +457,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             });
 
             order += 1;
-            _Model.CalculationItems.Add(new CalculationItemModel()
+            _Model.BasicCalculationItems.Add(new CalculationItemModel()
             {
                 Sign = "=",
                 Description = "Sondereinzelkosten des Vertriebs",
@@ -266,7 +472,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             });
 
             order += 1;
-            _Model.CalculationItems.Add(new CalculationItemModel()
+            _Model.BasicCalculationItems.Add(new CalculationItemModel()
             {
                 Sign = "=",
                 Description = "Verwaltungs- und Vertriebskosten",
@@ -282,7 +488,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             });
 
             order += 1;
-            _Model.CalculationItems.Add(new CalculationItemModel()
+            _Model.BasicCalculationItems.Add(new CalculationItemModel()
             {
                 Sign = "=",
                 Description = "Einstandspreis",
@@ -298,7 +504,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             });
 
             order += 1;
-            _Model.CalculationItems.Add(new CalculationItemModel()
+            _Model.BasicCalculationItems.Add(new CalculationItemModel()
             {
                 Sign = "=",
                 Description = "Selbstkosten 1",
@@ -316,7 +522,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
 
             //group3
             order += 1;
-            _Model.CalculationItems.Add(new CalculationItemModel()
+            _Model.BasicCalculationItems.Add(new CalculationItemModel()
             {
                 Sign = "+",
                 Description = "Lagerhaltungskosten",
@@ -331,7 +537,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             });
 
             order += 1;
-            _Model.CalculationItems.Add(new CalculationItemModel()
+            _Model.BasicCalculationItems.Add(new CalculationItemModel()
             {
                 Sign = "+",
                 Description = "Verpackungsanteil",
@@ -346,7 +552,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             });
 
             order += 1;
-            _Model.CalculationItems.Add(new CalculationItemModel()
+            _Model.BasicCalculationItems.Add(new CalculationItemModel()
             {
                 Sign = "+",
                 Description = "Transportanteil",
@@ -361,7 +567,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             });
 
             order += 1;
-            _Model.CalculationItems.Add(new CalculationItemModel()
+            _Model.BasicCalculationItems.Add(new CalculationItemModel()
             {
                 Sign = "=",
                 Description = "Selbstkosten 2",
@@ -375,490 +581,11 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                 SummaryGroups = new List<int>() { 0, 1, 2, 3 },
                 Order = order
             });
-
-
-            //group4
-            order += 1;
-            _Model.CalculationItems.Add(new CalculationItemModel()
-            {
-                Sign = "+",
-                Description = "Gewinnaufschlag",
-                AmountPercent = 0,
-                AmountFix = 0,
-                Total = 0,
-                Tag = "GA",
-                Currency = generalSettingModel.Currency.Currency,
-                CalculationBaseGroupRows = new List<int>() { 0, 1, 2, 3 },
-                Group = 4,
-                Order = order
-            });
-
-            order += 1;
-            _Model.CalculationItems.Add(new CalculationItemModel()
-            {
-                Sign = "=",
-                Description = "Barverkaufspreis",
-                AmountPercent = 0,
-                AmountFix = 0,
-                Total = 0,
-                Tag = "VK(bar)",
-                Currency = generalSettingModel.Currency.Currency,
-                Group = 4,
-                IsSummary = true,
-                SummaryGroups = new List<int>() { 0, 1, 2, 3, 4 },
-                Order = order
-            });
-
-
-            //group5
-            order += 1;
-            _Model.CalculationItems.Add(new CalculationItemModel()
-            {
-                Sign = "+",
-                Description = "Kundenskonto",
-                AmountPercent = priceSetting.CashDiscount,
-                AmountFix = 0,
-                Total = 0,
-                Tag = "SKT",
-                Currency = generalSettingModel.Currency.Currency,
-                CalculationBaseGroupRows = new List<int>() { 0, 1, 2, 3, 4 },
-                Group = 5,
-                Order = order
-            });
-
-            order += 1;
-            _Model.CalculationItems.Add(new CalculationItemModel()
-            {
-                Sign = "+",
-                Description = "Verhandlungsspielraum",
-                AmountPercent = priceSetting.SalesBonus,
-                AmountFix = 0,
-                Total = 0,
-                Tag = "PV",
-                Currency = generalSettingModel.Currency.Currency,
-                CalculationBaseGroupRows = new List<int>() { 0, 1, 2, 3, 4 },
-                Group = 5,
-                Order = order
-            });
-
-            order += 1;
-            _Model.CalculationItems.Add(new CalculationItemModel()
-            {
-                Sign = "=",
-                Description = "Zielverkaufspreis",
-                AmountPercent = 0,
-                AmountFix = 0,
-                Total = 0,
-                Tag = "VK(ziel)",
-                Currency = generalSettingModel.Currency.Currency,
-                Group = 5,
-                IsSummary = true,
-                SummaryGroups = new List<int>() { 0, 1, 2, 3, 4, 5 },
-                Order = order
-            });
-
-
-            //group6
-            order += 1;
-            _Model.CalculationItems.Add(new CalculationItemModel()
-            {
-                Sign = "+",
-                Description = "Kundenrabatt",
-                AmountPercent = priceSetting.CustomerDiscount,
-                AmountFix = 0,
-                Total = 0,
-                Tag = "RBT",
-                Currency = generalSettingModel.Currency.Currency,
-                CalculationBaseGroupRows = new List<int>() { 0, 1, 2, 3, 4, 5 },
-                Group = 6,
-                Order = order
-            });
-
-            order += 1;
-            _Model.CalculationItems.Add(new CalculationItemModel()
-            {
-                Sign = "=",
-                Description = "Nettoverkaufspreis",
-                AmountPercent = 0,
-                AmountFix = 0,
-                Total = 0,
-                Tag = "VK(liste)",
-                Currency = generalSettingModel.Currency.Currency,
-                Group = 6,
-                IsSummary = true,
-                SummaryGroups = new List<int>() { 0, 1, 2, 3, 4, 5, 6 },
-                Order = order
-            });
-
-
-            //group7
-            order += 1;
-            _Model.CalculationItems.Add(new CalculationItemModel()
-            {
-                Sign = "+",
-                Description = "Mehrwertsteuer",
-                AmountPercent = priceSetting.VatTaxes,
-                AmountFix = 0,
-                Total = 0,
-                Tag = "MWST",
-                Currency = generalSettingModel.Currency.Currency,
-                CalculationBaseGroupRows = new List<int>() { 0, 1, 2, 3, 4, 5, 6 },
-                Group = 7,
-                Order = order
-            });
-
-            order += 1;
-            _Model.CalculationItems.Add(new CalculationItemModel()
-            {
-                Sign = "=",
-                Description = "Bruttoverkaufspreis",
-                AmountPercent = 0,
-                AmountFix = 0,
-                Total = 0,
-                Tag = "VK(brutto)",
-                Currency = generalSettingModel.Currency.Currency,
-                Group = 7,
-                IsSummary = true,
-                SummaryGroups = new List<int>() { 0, 1, 2, 3, 4, 5, 6, 7 },
-                Order = order
-            });
-
-
-            gridControl1.DataSource = _Model.CalculationItems;
-            gridView1.RefreshData();
-        }
-
-        void InitDataSource(List<string> textLine, PriceSetting priceSetting)
-        {
-            _Dt = new DataTable("Calculation");
-            DataColumn dc = null;
-
-            dc = new DataColumn(TempColumnNames.Sign.ToString());
-            dc.DataType = typeof(string);
-            dc.Caption = "";
-            _Dt.Columns.Add(dc);
-
-            dc = new DataColumn(TempColumnNames.Description.ToString());
-            dc.DataType = typeof(string);
-            dc.Caption = "Kostenanteil";
-            _Dt.Columns.Add(dc);
-
-            dc = new DataColumn(TempColumnNames.AmountPercent.ToString());
-            dc.DataType = typeof(decimal);
-            dc.Caption = "%";
-            _Dt.Columns.Add(dc);
-
-            dc = new DataColumn(TempColumnNames.AmountFix.ToString());
-            dc.DataType = typeof(decimal);
-            dc.Caption = "Fix";
-            _Dt.Columns.Add(dc);
-
-            //dc = new DataColumn(TempColumnNames.Amount.ToString());
-            //dc.DataType = typeof(decimal);
-            //dc.Caption = "SFr";
-            //_Dt.Columns.Add(dc);
-
-            dc = new DataColumn(TempColumnNames.Total.ToString());
-            dc.DataType = typeof(decimal);
-            dc.Caption = "SFr";
-            _Dt.Columns.Add(dc);
-
-            dc = new DataColumn(TempColumnNames.Tag.ToString());
-            dc.DataType = typeof(string);
-            dc.Caption = "Kürzel";
-            _Dt.Columns.Add(dc);
-
-            //dc = new DataColumn(TempColumnNames.Group.ToString());
-            //dc.DataType = typeof(string);            
-            //_Dt.Columns.Add(dc);
-
-
-            //set lines
-            DataRow dr = null;
-
-            //group1
-            //set price
-            dr = _Dt.NewRow();
-            dr[TempColumnNames.Sign.ToString()] = "";
-            dr[TempColumnNames.Description.ToString()] = "Bareinkaufspreis";
-            dr[TempColumnNames.AmountPercent.ToString()] = String.Format(_NumFormat, 0.00);
-            dr[TempColumnNames.AmountFix.ToString()] = String.Format(_NumFormat, 0.00);
-            dr[TempColumnNames.Total.ToString()] = String.Format(_NumFormat, 0.00);
-            dr[TempColumnNames.Tag.ToString()] = "BEK";
-            //dr[TempColumnNames.Group.ToString()] = "GRP1";
-            _Dt.Rows.Add(dr);
-
-            dr = _Dt.NewRow();
-            dr[TempColumnNames.Sign.ToString()] = "+";
-            dr[TempColumnNames.Description.ToString()] = "Bezugskosten";
-            dr[TempColumnNames.AmountPercent.ToString()] = String.Format(_NumFormat, 0.00);
-            dr[TempColumnNames.AmountFix.ToString()] = String.Format(_NumFormat, 0.00);
-            dr[TempColumnNames.Total.ToString()] = String.Format(_NumFormat, 0.00);
-            dr[TempColumnNames.Tag.ToString()] = "BZK";
-            //dr[TempColumnNames.Group.ToString()] = "GRP1";
-            _Dt.Rows.Add(dr);
-
-            //set text line
-            if (textLine != null)
-            {
-                int count = 0;
-                foreach (string item in textLine)
-                {
-                    count += 1;
-                    dr = _Dt.NewRow();
-                    dr[TempColumnNames.Sign.ToString()] = "+";
-                    dr[TempColumnNames.Description.ToString()] = item;
-                    dr[TempColumnNames.AmountPercent.ToString()] = String.Format(_NumFormat, 0.00);
-                    dr[TempColumnNames.AmountFix.ToString()] = String.Format(_NumFormat, 0.00);
-                    dr[TempColumnNames.Total.ToString()] = String.Format(_NumFormat, 0.00);
-                    dr[TempColumnNames.Tag.ToString()] = String.Format("BEN {0}", count);
-                    //dr[TempColumnNames.Group.ToString()] = "GRP1";
-                    _Dt.Rows.Add(dr);
-                }
-            }
-
-
-
-            //subtotal group1
-            //Einstandspreis
-            dr = _Dt.NewRow();
-            dr[TempColumnNames.Sign.ToString()] = "=";
-            dr[TempColumnNames.Description.ToString()] = "Einstandspreis";
-            dr[TempColumnNames.AmountPercent.ToString()] = String.Format(_NumFormat, 0.00);
-            dr[TempColumnNames.AmountFix.ToString()] = String.Format(_NumFormat, 0.00);
-            dr[TempColumnNames.Total.ToString()] = String.Format(_NumFormat, 0.00);
-            dr[TempColumnNames.Tag.ToString()] = "ESTP";
-            _Dt.Rows.Add(dr);
-
-
-
-            //group2
-            dr = _Dt.NewRow();
-            dr[TempColumnNames.Sign.ToString()] = "+";
-            dr[TempColumnNames.Description.ToString()] = "Verwaltungsgemeinkosten";
-            dr[TempColumnNames.AmountPercent.ToString()] = String.Format(_NumFormat, 0.00);
-            dr[TempColumnNames.AmountFix.ToString()] = String.Format(_NumFormat, 0.00);
-            dr[TempColumnNames.Total.ToString()] = String.Format(_NumFormat, 0.00);
-            dr[TempColumnNames.Tag.ToString()] = "OGK";
-            //dr[TempColumnNames.Group.ToString()] = "GRP2";
-            _Dt.Rows.Add(dr);
-
-            dr = _Dt.NewRow();
-            dr[TempColumnNames.Sign.ToString()] = "+";
-            dr[TempColumnNames.Description.ToString()] = "Vertriebsgemeinkosten";
-            dr[TempColumnNames.AmountPercent.ToString()] = String.Format(_NumFormat, 0.00);
-            dr[TempColumnNames.AmountFix.ToString()] = String.Format(_NumFormat, 0.00);
-            dr[TempColumnNames.Total.ToString()] = String.Format(_NumFormat, 0.00);
-            dr[TempColumnNames.Tag.ToString()] = "VGK";
-            //dr[TempColumnNames.Group.ToString()] = "GRP2";
-            _Dt.Rows.Add(dr);
-
-            dr = _Dt.NewRow();
-            dr[TempColumnNames.Sign.ToString()] = "+";
-            dr[TempColumnNames.Description.ToString()] = "Sondereinzelkosten des Vertriebs";
-            dr[TempColumnNames.AmountPercent.ToString()] = String.Format(_NumFormat, 0.00);
-            dr[TempColumnNames.AmountFix.ToString()] = String.Format(_NumFormat, 0.00);
-            dr[TempColumnNames.Total.ToString()] = String.Format(_NumFormat, 0.00);
-            dr[TempColumnNames.Tag.ToString()] = "VSK";
-            //dr[TempColumnNames.Group.ToString()] = "GRP2";
-            _Dt.Rows.Add(dr);
-
-
-
-            //subtotal group2
-            //Verwaltungs- und Vertriebskosten
-            //Einstandspreis
-            //Selbstkosten 1
-            dr = _Dt.NewRow();
-            dr[TempColumnNames.Sign.ToString()] = "=";
-            dr[TempColumnNames.Description.ToString()] = "Verwaltungs- und Vertriebskosten";
-            dr[TempColumnNames.AmountPercent.ToString()] = String.Format(_NumFormat, 0.00);
-            dr[TempColumnNames.AmountFix.ToString()] = String.Format(_NumFormat, 0.00);
-            dr[TempColumnNames.Total.ToString()] = String.Format(_NumFormat, 0.00);
-            dr[TempColumnNames.Tag.ToString()] = "VVK";
-            _Dt.Rows.Add(dr);
-
-            dr = _Dt.NewRow();
-            dr[TempColumnNames.Sign.ToString()] = "=";
-            dr[TempColumnNames.Description.ToString()] = "Einstandspreis";
-            dr[TempColumnNames.AmountPercent.ToString()] = String.Format(_NumFormat, 0.00);
-            dr[TempColumnNames.AmountFix.ToString()] = String.Format(_NumFormat, 0.00);
-            dr[TempColumnNames.Total.ToString()] = String.Format(_NumFormat, 0.00);
-            dr[TempColumnNames.Tag.ToString()] = "ESTP";
-            _Dt.Rows.Add(dr);
-
-            dr = _Dt.NewRow();
-            dr[TempColumnNames.Sign.ToString()] = "=";
-            dr[TempColumnNames.Description.ToString()] = "Selbstkosten 1";
-            dr[TempColumnNames.AmountPercent.ToString()] = String.Format(_NumFormat, 0.00);
-            dr[TempColumnNames.AmountFix.ToString()] = String.Format(_NumFormat, 0.00);
-            dr[TempColumnNames.Total.ToString()] = String.Format(_NumFormat, 0.00);
-            dr[TempColumnNames.Tag.ToString()] = "SK 1";
-            _Dt.Rows.Add(dr);
-
-
-
-            //group3
-            dr = _Dt.NewRow();
-            dr[TempColumnNames.Sign.ToString()] = "+";
-            dr[TempColumnNames.Description.ToString()] = "Lagerhaltungskosten";
-            dr[TempColumnNames.AmountPercent.ToString()] = String.Format(_NumFormat, 0.00);
-            dr[TempColumnNames.AmountFix.ToString()] = String.Format(_NumFormat, 0.00);
-            dr[TempColumnNames.Total.ToString()] = String.Format(_NumFormat, 0.00);
-            dr[TempColumnNames.Tag.ToString()] = "LHK";
-            //dr[TempColumnNames.Group.ToString()] = "GRP3";
-            _Dt.Rows.Add(dr);
-
-            dr = _Dt.NewRow();
-            dr[TempColumnNames.Sign.ToString()] = "+";
-            dr[TempColumnNames.Description.ToString()] = "Verpackungsanteil";
-            dr[TempColumnNames.AmountPercent.ToString()] = String.Format(_NumFormat, 0.00);
-            dr[TempColumnNames.AmountFix.ToString()] = String.Format(_NumFormat, 0.00);
-            dr[TempColumnNames.Total.ToString()] = String.Format(_NumFormat, 0.00);
-            dr[TempColumnNames.Tag.ToString()] = "VPA";
-            //dr[TempColumnNames.Group.ToString()] = "GRP3";
-            _Dt.Rows.Add(dr);
-
-            dr = _Dt.NewRow();
-            dr[TempColumnNames.Sign.ToString()] = "+";
-            dr[TempColumnNames.Description.ToString()] = "Transportanteil";
-            dr[TempColumnNames.AmountPercent.ToString()] = String.Format(_NumFormat, 0.00);
-            dr[TempColumnNames.AmountFix.ToString()] = String.Format(_NumFormat, 0.00);
-            dr[TempColumnNames.Total.ToString()] = String.Format(_NumFormat, 0.00);
-            dr[TempColumnNames.Tag.ToString()] = "TRA";
-            //dr[TempColumnNames.Group.ToString()] = "GRP3";
-            _Dt.Rows.Add(dr);
-
-
-            //subtotal group3
-            //Selbstkosten 2
-            dr = _Dt.NewRow();
-            dr[TempColumnNames.Sign.ToString()] = "=";
-            dr[TempColumnNames.Description.ToString()] = "Selbstkosten 2";
-            dr[TempColumnNames.AmountPercent.ToString()] = String.Format(_NumFormat, 0.00);
-            dr[TempColumnNames.AmountFix.ToString()] = String.Format(_NumFormat, 0.00);
-            dr[TempColumnNames.Total.ToString()] = String.Format(_NumFormat, 0.00);
-            dr[TempColumnNames.Tag.ToString()] = "SK 2";
-            _Dt.Rows.Add(dr);
-
-
-
-            //group4
-            dr = _Dt.NewRow();
-            dr[TempColumnNames.Sign.ToString()] = "+";
-            dr[TempColumnNames.Description.ToString()] = "Gewinnaufschlag";
-            dr[TempColumnNames.AmountPercent.ToString()] = String.Format(_NumFormat, 0.00);
-            dr[TempColumnNames.AmountFix.ToString()] = String.Format(_NumFormat, 0.00);
-            dr[TempColumnNames.Total.ToString()] = String.Format(_NumFormat, 0.00);
-            dr[TempColumnNames.Tag.ToString()] = "GA";
-            //dr[TempColumnNames.Group.ToString()] = "GRP4";            
-            _Dt.Rows.Add(dr);
-
-
-            //subtotal group4
-            //Barverkaufspreis
-            dr = _Dt.NewRow();
-            dr[TempColumnNames.Sign.ToString()] = "=";
-            dr[TempColumnNames.Description.ToString()] = "Barverkaufspreis";
-            dr[TempColumnNames.AmountPercent.ToString()] = String.Format(_NumFormat, 0.00);
-            dr[TempColumnNames.AmountFix.ToString()] = String.Format(_NumFormat, 0.00);
-            dr[TempColumnNames.Total.ToString()] = String.Format(_NumFormat, 0.00);
-            dr[TempColumnNames.Tag.ToString()] = "VK(bar)";
-            _Dt.Rows.Add(dr);
-
-
-
-            //group5
-            dr = _Dt.NewRow();
-            dr[TempColumnNames.Sign.ToString()] = "+";
-            dr[TempColumnNames.Description.ToString()] = "Kundenskonto";
-            dr[TempColumnNames.AmountPercent.ToString()] = String.Format(_NumFormat, (priceSetting != null ? priceSetting.CashDiscount : 0));
-            dr[TempColumnNames.AmountFix.ToString()] = String.Format(_NumFormat, 0.00);
-            dr[TempColumnNames.Total.ToString()] = String.Format(_NumFormat, 0.00);
-            dr[TempColumnNames.Tag.ToString()] = "SKT";
-            //dr[TempColumnNames.Group.ToString()] = "GRP5";
-            _Dt.Rows.Add(dr);
-
-            dr = _Dt.NewRow();
-            dr[TempColumnNames.Sign.ToString()] = "+";
-            dr[TempColumnNames.Description.ToString()] = "Verhandlungsspielraum";
-            dr[TempColumnNames.AmountPercent.ToString()] = String.Format(_NumFormat, (priceSetting != null ? priceSetting.SalesBonus : 0));
-            dr[TempColumnNames.AmountFix.ToString()] = String.Format(_NumFormat, 0.00);
-            dr[TempColumnNames.Total.ToString()] = String.Format(_NumFormat, 0.00);
-            dr[TempColumnNames.Tag.ToString()] = "PV";
-            //dr[TempColumnNames.Group.ToString()] = "GRP5";
-            _Dt.Rows.Add(dr);
-
-
-            //subtotal group5
-            //Zielverkaufspreis
-            dr = _Dt.NewRow();
-            dr[TempColumnNames.Sign.ToString()] = "=";
-            dr[TempColumnNames.Description.ToString()] = "Zielverkaufspreis";
-            dr[TempColumnNames.AmountPercent.ToString()] = String.Format(_NumFormat, 0.00);
-            dr[TempColumnNames.AmountFix.ToString()] = String.Format(_NumFormat, 0.00);
-            dr[TempColumnNames.Total.ToString()] = String.Format(_NumFormat, 0.00);
-            dr[TempColumnNames.Tag.ToString()] = "VK(ziel)";
-            _Dt.Rows.Add(dr);
-
-
-
-            //group6
-            dr = _Dt.NewRow();
-            dr[TempColumnNames.Sign.ToString()] = "+";
-            dr[TempColumnNames.Description.ToString()] = "Kundenrabatt";
-            dr[TempColumnNames.AmountPercent.ToString()] = String.Format(_NumFormat, (priceSetting != null ? priceSetting.CustomerDiscount : 0));
-            dr[TempColumnNames.AmountFix.ToString()] = String.Format(_NumFormat, 0.00);
-            dr[TempColumnNames.Total.ToString()] = String.Format(_NumFormat, 0.00);
-            dr[TempColumnNames.Tag.ToString()] = "RBT";
-            //dr[TempColumnNames.Group.ToString()] = "GRP6";
-            _Dt.Rows.Add(dr);
-
-
-            //subtotal group6
-            //Nettoverkaufspreis
-            dr = _Dt.NewRow();
-            dr[TempColumnNames.Sign.ToString()] = "=";
-            dr[TempColumnNames.Description.ToString()] = "Nettoverkaufspreis";
-            dr[TempColumnNames.AmountPercent.ToString()] = String.Format(_NumFormat, 0.00);
-            dr[TempColumnNames.AmountFix.ToString()] = String.Format(_NumFormat, 0.00);
-            dr[TempColumnNames.Total.ToString()] = String.Format(_NumFormat, 0.00);
-            dr[TempColumnNames.Tag.ToString()] = "VK(liste)";
-            _Dt.Rows.Add(dr);
-
-
-
-            //group7
-            dr = _Dt.NewRow();
-            dr[TempColumnNames.Sign.ToString()] = "+";
-            dr[TempColumnNames.Description.ToString()] = "Mehrwertsteuer";
-            dr[TempColumnNames.AmountPercent.ToString()] = String.Format(_NumFormat, (priceSetting != null ? priceSetting.VatTaxes : 0));
-            dr[TempColumnNames.AmountFix.ToString()] = String.Format(_NumFormat, 0.00);
-            dr[TempColumnNames.Total.ToString()] = String.Format(_NumFormat, 0.00);
-            dr[TempColumnNames.Tag.ToString()] = "MWST";
-            //dr[TempColumnNames.Group.ToString()] = "GRP7";
-            _Dt.Rows.Add(dr);
-
-
-            //subtotal group7
-            //Bruttoverkaufspreis
-            dr = _Dt.NewRow();
-            dr[TempColumnNames.Sign.ToString()] = "=";
-            dr[TempColumnNames.Description.ToString()] = "Bruttoverkaufspreis";
-            dr[TempColumnNames.AmountPercent.ToString()] = String.Format(_NumFormat, 0.00);
-            dr[TempColumnNames.AmountFix.ToString()] = String.Format(_NumFormat, 0.00);
-            dr[TempColumnNames.Total.ToString()] = String.Format(_NumFormat, 0.00);
-            dr[TempColumnNames.Tag.ToString()] = "VK(brutto)";
-            _Dt.Rows.Add(dr);
-
-
-            gridControl1.DataSource = _Dt;
-            gridView1.RefreshData();
         }
 
         void UpdateCalculationRowAmount(int rowID, decimal value, bool isPercent, bool specialCalculation)
         {
-            CalculationItemModel oCalRow = _Model.CalculationItems[rowID];
+            CalculationItemModel oCalRow = _Model.BasicCalculationItems[rowID];
 
             if (oCalRow != null)
             {
@@ -920,7 +647,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             if (calRow.Tag == "SKT" || calRow.Tag == "PV")
             {
                 decimal iSummaryPercent = value;
-                var oCalculationRows = _Model.CalculationItems.FindAll(item => !item.IsSummary && item.Group == calRow.Group);
+                var oCalculationRows = _Model.BasicCalculationItems.FindAll(item => !item.IsSummary && item.Group == calRow.Group);
                 iSummaryPercent = oCalculationRows.Sum(item => item.AmountPercent);
 
                 if (iSummaryPercent > 0 && iSummaryPercent < 100)
@@ -963,7 +690,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
 
             foreach (int i in calculationGroups)
             {
-                var oCalculationRows = _Model.CalculationItems.FindAll(item => !item.IsSummary && calculationGroups.Contains(item.Group));
+                var oCalculationRows = _Model.BasicCalculationItems.FindAll(item => !item.IsSummary && calculationGroups.Contains(item.Group));
 
                 if (oCalculationRows != null)
                 {
@@ -976,7 +703,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
 
         void UpdateGroupAmountAll(bool updateGroupOnly)
         {
-            var oModels = _Model.CalculationItems.FindAll(item => item.IsSummary);
+            var oModels = _Model.BasicCalculationItems.FindAll(item => item.IsSummary);
 
             foreach (CalculationItemModel model in oModels)
             {
@@ -986,7 +713,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
 
         void UpdateGroupAmount(int group, int groupID, bool updateGroupOnly)
         {
-            CalculationItemModel oGroup = _Model.CalculationItems.Find(item => item.Group == group && item.Order == groupID && item.IsSummary);
+            CalculationItemModel oGroup = _Model.BasicCalculationItems.Find(item => item.Group == group && item.Order == groupID && item.IsSummary);
 
             if (oGroup != null)
             {
@@ -996,7 +723,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                 foreach (int i in oGroup.SummaryGroups)
                 {
                     //get items per group
-                    var oModels = _Model.CalculationItems.FindAll(item => item.Group == i && !item.IsSummary);
+                    var oModels = _Model.BasicCalculationItems.FindAll(item => item.Group == i && !item.IsSummary);
 
                     if (!updateGroupOnly)
                     {
@@ -1190,6 +917,27 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                     e.Cancel = true;
                 }
             }
+        }
+
+        private void gridView1_CustomRowFilter(object sender, DevExpress.XtraGrid.Views.Base.RowFilterEventArgs e)
+        {
+            //if (cboPriceScales.ItemIndex > 1)
+            //{
+            //    //to hide basic calulation row
+            //    if (e.ListSourceRow > -1)
+            //    {
+            //        if ((int)gridView1.GetRowCellValue(e.ListSourceRow, TempColumnNames.Group.ToString()) < 4)
+            //        {
+            //            e.Visible = false;
+            //        }
+
+            //    }
+            //}
+        }
+
+        private void cboPriceScales_EditValueChanged(object sender, EventArgs e)
+        {
+            RefreshGrid();
         }
     }
 }

@@ -50,7 +50,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             mainTabControl.SelectedTabPage = calculationTabPage;
 
             //reload calculation control
-            calculationBasicCtrl1.Reload(generalCtrl1.GetModel(), _PriceCalculationSetting.PriceSetting);
+            calculationBasicCtrl1.Init(generalCtrl1.GetModel(), _PriceCalculationSetting.PriceSetting);
         }      
     }
 }

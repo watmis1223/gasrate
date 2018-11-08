@@ -1,0 +1,17 @@
+<GeneralSetting xmlns="http://schemas.datacontract.org/2004/07/CalculationOilPrice.Library.Entity.Setting" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
+  <CalculationCounter>22</CalculationCounter>
+  <OilPriceSetting>
+    <CommissionFactor>0.6</CommissionFactor>
+    <CurrentCurrencyRate>0.9481</CurrentCurrencyRate>
+    <DensityOfHeatOil>0.85</DensityOfHeatOil>
+    <EcoOilUSPrice>89</EcoOilUSPrice>
+    <ExtraLightOilUSPrice>85</ExtraLightOilUSPrice>
+    <FixCostForUnloadPlace>25</FixCostForUnloadPlace>
+    <FixEcoOilCHFPrice>91</FixEcoOilCHFPrice>
+    <FixExtraLightOilCHFPrice>114</FixExtraLightOilCHFPrice>
+    <IsFixCHFPrices>true</IsFixCHFPrices>
+  </OilPriceSetting>
+  <ReportPathSetting>
+    <ReportPath>D:\Work\MyWork\Doc</ReportPath>
+  </ReportPathSetting>
+</GeneralSetting>

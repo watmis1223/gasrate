@@ -419,8 +419,12 @@ namespace CalculationOilPrice.Library.UI
             {
                 quantityKG = Convert.ToDecimal(((ComboBoxEdit)sender).EditValue);
             }
-                       
-            orderQuantityLTextEdit.Text = Math.Round((quantityKG / generalSetting.OilPriceSetting.DensityOfHeatOil)).ToString("n2");
+
+            try
+            {
+                orderQuantityLTextEdit.Text = Math.Round((quantityKG / generalSetting.OilPriceSetting.DensityOfHeatOil)).ToString("n2");
+            }
+            catch { }            
 
             //wirMatrixGridComponent.Filter(quantityKG);
             wirMatrixGridComponent.FilterInRange(quantityKG);

@@ -1,0 +1,25 @@
+<PriceCalculationSetting xmlns="http://schemas.datacontract.org/2004/07/CalculationOilPrice.Library.Entity.Setting.PriceCalculation" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
+  <CalculationCounter>0</CalculationCounter>
+  <PriceSetting>
+    <CashDiscount>5.0000</CashDiscount>
+    <CustomerDiscount>3.0000</CustomerDiscount>
+    <SalesBonus>4.0000</SalesBonus>
+    <VatTaxes>7.0000</VatTaxes>
+  </PriceSetting>
+  <ReportPathSetting>
+    <PrintPreview>false</PrintPreview>
+    <ReportPath i:nil="true" />
+  </ReportPathSetting>
+  <TextSetting>
+    <Text1>Verzollung</Text1>
+    <Text10>test10</Text10>
+    <Text2>Speditionskosten</Text2>
+    <Text3>LSVA /MAUT</Text3>
+    <Text4>Formen / Werkzeuganteil</Text4>
+    <Text5>Cliches</Text5>
+    <Text6>Diverses</Text6>
+    <Text7>test7</Text7>
+    <Text8>test8</Text8>
+    <Text9>test9</Text9>
+  </TextSetting>
+</PriceCalculationSetting>

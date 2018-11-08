@@ -5,6 +5,14 @@ using System.Text;
 
 namespace CalculationOilPrice.Library.Entity.Setting.PriceCalculation.Models
 {
+
+    public class PriceScaleComboboxItem
+    {
+        public int Value { get; set; }
+        public string Caption { get; set; }
+    }
+
+
     #region GeneralSetting Model
     public class GeneralProductDesc
     {
@@ -73,14 +81,24 @@ namespace CalculationOilPrice.Library.Entity.Setting.PriceCalculation.Models
     }
     public class CalculationModel
     {
+        //database ros id
         public long ID { get; set; }
-        public decimal MasterAmount { get; set; }
-        public List<CalculationItemModel> CalculationItems { get; set; }
+
+        //from calculation basic one
+        public decimal MasterAmount { get; set; }        
+
+        //from general's settings
         public GeneralSettingModel GeneralSetting { get; set; }
+
+        //from module's settings
         public PriceSetting PriceSetting { get; set; }
 
+
+        //basic calculation
+        public List<CalculationItemModel> BasicCalculationItems { get; set; }
+
         //if scale more than 1
-        public List<CalculationScaleModel> CalculationScales { get; set; }
+        public List<CalculationScaleModel> ScaleCalculationItems { get; set; }
     }
     public class CalculationScaleModel
     {
