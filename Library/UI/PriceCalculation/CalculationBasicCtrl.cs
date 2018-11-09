@@ -19,6 +19,7 @@ using DevExpress.XtraGrid.Drawing;
 using DevExpress.XtraEditors.Repository;
 using CalculationOilPrice.Library.Entity.Setting.PriceCalculation.Models;
 using System.Linq;
+using System.Collections;
 
 namespace CalculationOilPrice.Library.UI.PriceCalculation
 {
@@ -165,7 +166,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                     //{
                     //    gridView1.ActiveFilter.NonColumnFilter = "[Group] > 3";
                     //}
-                }                
+                }
             }
 
             gridView1.RefreshData();
@@ -176,6 +177,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             int itemOrder = 0;
             SetBasicCalculationData(_Model.GeneralSetting, _Model.PriceSetting, ref itemOrder);
             SetPriceScaleCalculationData(_Model.GeneralSetting, _Model.PriceSetting, itemOrder);
+            SetPredefineProfitAmount();
 
             //bind data
             gridControl1.DataSource = _Model.BasicCalculationItems;
@@ -625,39 +627,89 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
         }
 
 
-        void UpdateCalculationRowAmount(int rowID, decimal value, bool isPercent, bool specialCalculation)
+        void SetPredefineProfitAmount()
         {
-            CalculationItemModel oCalRow = _Model.BasicCalculationItems[rowID];
+            //set predefined profit amount            
+            if (_Model.ScaleCalculationItems.Count > 1)
+            {
+                if (_Model.GeneralSetting.PriceScale.MinProfit > 0 && _Model.GeneralSetting.PriceScale.MaxProfit > 0)
+                {
+                    //everage amount excluded first item
+                    decimal iEverageAmount = (_Model.GeneralSetting.PriceScale.MaxProfit -
+                        _Model.GeneralSetting.PriceScale.MinProfit) / (_Model.ScaleCalculationItems.Count - 1);
 
-            if (oCalRow != null)
+                    for (int i = 0; i < _Model.ScaleCalculationItems.Count; i++)
+                    {
+                        decimal iProfitAmount = 0;
+                        if (i == 0)
+                        {
+                            // set first predefined
+                            iProfitAmount = _Model.GeneralSetting.PriceScale.MaxProfit;
+                        }
+                        else if (i == _Model.ScaleCalculationItems.Count - 1)
+                        {
+                            // set last predefined
+                            iProfitAmount = _Model.GeneralSetting.PriceScale.MinProfit;
+                        }
+                        else
+                        {
+                            // set rest predefined
+                            iProfitAmount = iEverageAmount * ((_Model.ScaleCalculationItems.Count - 1) - i);
+                        }
+
+                        //update amount to calculation model
+                        //if percent or fix predefined
+                        if (_Model.GeneralSetting.PriceScale.MarkUp == "P")
+                        {
+                            UpdateRowAmountPercent(_Model.ScaleCalculationItems[i].CalculationItems[0], iProfitAmount, true);
+                        }
+                        else
+                        {
+                            UpdateRowAmountFix(_Model.ScaleCalculationItems[i].CalculationItems[0], iProfitAmount, true);
+                        }
+                    }
+                }
+            }
+        }
+
+        void UpdateCalulationRowAmount(CalculationItemModel calRow, decimal value, bool isPercent, bool specialCalculation)
+        {
+            if (calRow != null)
             {
                 //if not master amount row
                 //master row's group is 0
-                if (oCalRow.Group != 0)
+                if (calRow.Group != 0)
                 {
                     if (isPercent)
                     {
                         if (specialCalculation)
                         {
-                            UpdateRowAmountPercentSpecial(oCalRow, value);
+                            UpdateRowAmountPercentSpecial(calRow, value);
                         }
                         else
                         {
-                            UpdateRowAmountPercent(oCalRow, value);
+                            UpdateRowAmountPercent(calRow, value);
                         }
                     }
                     else
                     {
-                        UpdateRowAmountFix(oCalRow, value);
+                        UpdateRowAmountFix(calRow, value);
                     }
                 }
                 else
                 {
                     //set row's total amount
                     //master row
-                    oCalRow.Total = value;
+                    calRow.Total = value;
                 }
             }
+        }
+
+        void UpdateCalculationRowAmount(int rowID, decimal value, bool isPercent, bool specialCalculation)
+        {
+            CalculationItemModel oCalRow = _Model.BasicCalculationItems[rowID];
+
+            UpdateCalulationRowAmount(oCalRow, value, isPercent, specialCalculation);
         }
 
         void UpdateRowAmountPercentSpecial(CalculationItemModel calRow, decimal value)
@@ -702,26 +754,35 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             calRow.Total = calRow.AmountFix;
         }
 
-        void UpdateRowAmountPercent(CalculationItemModel calRow, decimal value)
+        void UpdateRowAmountPercent(CalculationItemModel calRow, decimal value, bool skipBaseGroupRows = false)
         {
             decimal iBaseAmount = _Model.MasterAmount;
-            if (calRow.CalculationBaseGroupRows != null)
+            if (skipBaseGroupRows)
             {
-                iBaseAmount = GetCalculationBaseSummaryGroups(calRow.CalculationBaseGroupRows);
+                if (calRow.CalculationBaseGroupRows != null)
+                {
+                    iBaseAmount = GetCalculationBaseSummaryGroups(calRow.CalculationBaseGroupRows);
+                }
             }
             calRow.AmountPercent = value;
             calRow.AmountFix = iBaseAmount * (calRow.AmountPercent / 100);
             calRow.Total = calRow.AmountFix;
         }
 
-        void UpdateRowAmountFix(CalculationItemModel calRow, decimal value)
+        void UpdateRowAmountFix(CalculationItemModel calRow, decimal value, bool skipBaseGroupRows = false)
         {
             decimal iBaseAmount = _Model.MasterAmount;
-            if (calRow.CalculationBaseGroupRows != null)
+            if (skipBaseGroupRows)
             {
-                iBaseAmount = GetCalculationBaseSummaryGroups(calRow.CalculationBaseGroupRows);
+                if (calRow.CalculationBaseGroupRows != null)
+                {
+                    iBaseAmount = GetCalculationBaseSummaryGroups(calRow.CalculationBaseGroupRows);
+                }
             }
-            calRow.AmountPercent = (value / iBaseAmount) * 100;
+            if (iBaseAmount > 0)
+            {
+                calRow.AmountPercent = (value / iBaseAmount) * 100;
+            }
             calRow.AmountFix = value;
             calRow.Total = calRow.AmountFix;
         }
@@ -782,7 +843,22 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                                 {
                                     isSpecial = true;
                                 }
-                                UpdateCalculationRowAmount(model.Order, model.AmountPercent, true, isSpecial);
+
+                                if (_Model.ScaleCalculationItems.Count > 1 && model.Tag == "GA")
+                                {
+                                    if (_Model.GeneralSetting.PriceScale.MarkUp == "F")
+                                    {
+                                        UpdateCalculationRowAmount(model.Order, model.AmountFix, false, isSpecial);
+                                    }
+                                    else
+                                    {
+                                        UpdateCalculationRowAmount(model.Order, model.AmountPercent, true, isSpecial);
+                                    }
+                                }
+                                else
+                                {
+                                    UpdateCalculationRowAmount(model.Order, model.AmountPercent, true, isSpecial);
+                                }
                             }
                         }
                     }
