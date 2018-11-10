@@ -13,6 +13,7 @@ using CalculationOilPrice.Library.Entity.Setting;
 using System.Globalization;
 using CalculationOilPrice.Library.Entity.Setting.PriceCalculation;
 using CalculationOilPrice.Library.Entity.Setting.PriceCalculation.Models;
+using System.Linq;
 
 namespace CalculationOilPrice.Library.UI.PriceCalculation
 {
@@ -83,12 +84,12 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                     MinProfit = Convert.ToDecimal(txtMinProfit.Text),
                     MaxProfit = Convert.ToDecimal(txtMaxProfit.Text)
                 },
-                Unit = new GeneralUnit()
+                Convert = new GeneralConvert()
                 {
                     Mode = rdoUnitList.EditValue.ToString(),
                     SaleUnit = txtSaleUnit.Text,
                     ShopUnit = txtShopUnit.Text,
-                    UnitNumber = (int)Convert.ToDecimal(txtUnitNumber.Text)
+                    UnitNumber = Convert.ToDecimal(txtUnitNumber.Text)
                 },
                 Currency = new GeneralCurrency()
                 {
@@ -99,6 +100,24 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                 Options = getSelectedOption(),
                 TextLines = getSelectedTextLine()
             };
+
+            try
+            {
+                _Model.Convert.EEUnitNumber = Convert.ToDecimal(new string(_Model.Convert.ShopUnit.Where(item => Char.IsDigit(item)).ToArray()));
+            }
+            catch
+            {
+                _Model.Convert.EEUnitNumber = 1;
+            }
+
+            try
+            {
+                _Model.Convert.VEUnitNumber = Convert.ToDecimal(new string(_Model.Convert.SaleUnit.Where(item => Char.IsDigit(item)).ToArray()));
+            }
+            catch
+            {
+                _Model.Convert.EEUnitNumber = 1;
+            }
         }
 
         private List<string> getSelectedOption()

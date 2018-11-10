@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 
@@ -30,12 +31,23 @@ namespace CalculationOilPrice.Library.Entity.Setting.PriceCalculation.Models
         public decimal MinProfit { get; set; }
         public decimal MaxProfit { get; set; }
     }
-    public class GeneralUnit
+    public class GeneralConvert
     {
         public string Mode { get; set; }
+
+        //ShopUnit
         public string ShopUnit { get; set; }
+
+        //SaleUnit
         public string SaleUnit { get; set; }
-        public int UnitNumber { get; set; }
+
+        //ShopUnit
+        public decimal EEUnitNumber { get; set; }
+
+        //SaleUnit
+        public decimal VEUnitNumber { get; set; }
+
+        public decimal UnitNumber { get; set; }
     }
     public class GeneralCurrency
     {
@@ -55,7 +67,7 @@ namespace CalculationOilPrice.Library.Entity.Setting.PriceCalculation.Models
         public string CreateDate { get; set; }
         public GeneralProductDesc ProductDesc { get; set; }
         public GeneralPriceScale PriceScale { get; set; }
-        public GeneralUnit Unit { get; set; }
+        public GeneralConvert Convert { get; set; }
         public GeneralCurrency Currency { get; set; }
         public List<string> TextLines { get; set; }
     }
@@ -73,7 +85,7 @@ namespace CalculationOilPrice.Library.Entity.Setting.PriceCalculation.Models
         //keep scale unit
         //EE = original, VE = convert
         //get convert number from GeneralUnit model
-        public string Unit { get; set; }
+        public ConvertModel Convert { get; set; }
 
         public decimal Total { get; set; }
         public string Tag { get; set; }
@@ -85,6 +97,22 @@ namespace CalculationOilPrice.Library.Entity.Setting.PriceCalculation.Models
         public List<int> SummaryGroups { get; set; }
         public List<int> CalculationBaseGroupRows { get; set; }        
     }
+
+    public class ConvertModel
+    {
+        public string Unit { get; set; }
+        public decimal OriginalAmount { get; set; }
+        public decimal ConvertAmount { get; set; }
+
+        [Description("P=Percent, F=Fix, T=Total, S=Special")]
+        public String ConvertAmountField { get; set; }
+
+        public override string ToString()
+        {
+            return Unit;
+        }
+    }
+
     public class CalculationModel
     {
         //database ros id
