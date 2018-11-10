@@ -228,6 +228,9 @@
     <Compile Include="Library\UI\CommissionMatrixComponent.Designer.cs">
       <DependentUpon>CommissionMatrixComponent.cs</DependentUpon>
     </Compile>
+    <Compile Include="Library\UI\Component\MyRepositoryItemButtonEdit.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Library\UI\OilCtrlMain.cs">
       <SubType>UserControl</SubType>
     </Compile>

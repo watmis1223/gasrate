@@ -69,6 +69,12 @@ namespace CalculationOilPrice.Library.Entity.Setting.PriceCalculation.Models
         public decimal AmountPercent { get; set; }
         public decimal AmountFix { get; set; }
         public string Currency { get; set; }
+
+        //keep scale unit
+        //EE = original, VE = convert
+        //get convert number from GeneralUnit model
+        public string Unit { get; set; }
+
         public decimal Total { get; set; }
         public string Tag { get; set; }
         public int Group { get; set; }
@@ -77,7 +83,7 @@ namespace CalculationOilPrice.Library.Entity.Setting.PriceCalculation.Models
         public int Order { get; set; }
         public bool IsSummary { get; set; }
         public List<int> SummaryGroups { get; set; }
-        public List<int> CalculationBaseGroupRows { get; set; }
+        public List<int> CalculationBaseGroupRows { get; set; }        
     }
     public class CalculationModel
     {
