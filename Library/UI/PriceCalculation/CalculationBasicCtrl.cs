@@ -929,7 +929,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                         calRow.AmountPercent = calRow.AmountPercent / _Model.GeneralSetting.Convert.UnitNumber;
                         calRow.Total = (iBaseAmount * (calRow.AmountPercent / 100));
                     }
-                }                
+                }
             }
         }
 
@@ -1294,12 +1294,12 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                 if (sUnit == "EE")
                 {
                     ed.Properties.Buttons[0].Caption = "VE";
-                    UpdateCalculationRowUnit(gridView1.FocusedRowHandle, "VE");
+                    UpdateCalculationRowUnit(gridView1.GetDataSourceRowIndex(gridView1.FocusedRowHandle), "VE");
                 }
                 else
                 {
                     ed.Properties.Buttons[0].Caption = "EE";
-                    UpdateCalculationRowUnit(gridView1.FocusedRowHandle, "EE");
+                    UpdateCalculationRowUnit(gridView1.GetDataSourceRowIndex(gridView1.FocusedRowHandle), "EE");
                 }
 
                 //ConvertCalculationRowAmount(gridView1.FocusedRowHandle);
@@ -1318,7 +1318,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                     ButtonEditViewInfo editInfo = (ButtonEditViewInfo)((DevExpress.XtraGrid.Views.Grid.ViewInfo.GridCellInfo)e.Cell).ViewInfo;
                     if (editInfo.RightButtons.Count > 0)
                     {
-                        editInfo.RightButtons[0].Button.Caption = GetCalculationRowUnitValue(e.RowHandle);
+                        editInfo.RightButtons[0].Button.Caption = GetCalculationRowUnitValue(gridView1.GetDataSourceRowIndex(e.RowHandle));
                     }
                 }
             }
