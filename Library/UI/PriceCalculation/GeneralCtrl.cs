@@ -29,6 +29,36 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             return _Model;
         }
 
+        public void UINewCalculationMode()
+        {
+            if (rdoCostTypeList.SelectedIndex == 0)
+            {
+                UINewBasicCalculationMode();
+            }
+            else
+            {
+                UINewPurchaseCalculationMode();
+            }
+        }
+
+        private void UINewBasicCalculationMode()
+        {
+            rdoCostTypeList.Enabled = false;
+            chkOptionList.Items[0].Enabled = false;
+
+            //text line group
+            layoutControlGroup3.Enabled = false;
+
+            //price scale group
+            layoutControlGroup5.Enabled = false;
+        }
+
+        private void UINewPurchaseCalculationMode()
+        {
+            rdoCostTypeList.Enabled = false;
+            chkOptionList.Items[0].Enabled = false;
+        }
+
         public GeneralCtrl()
         {
             InitializeComponent();
@@ -94,7 +124,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                 Currency = new GeneralCurrency()
                 {
                     Mode = rdoCurrencyList.EditValue.ToString(),
-                    Currency = txtConvertCurrency.Text,
+                    Currency = rdoCurrencyList.EditValue.ToString() == "A" ? "CHF" : txtConvertCurrency.Text,
                     Rate = Convert.ToDecimal(txtExchangeRate.Text)
                 },
                 Options = getSelectedOption(),
@@ -157,6 +187,8 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
         {
             if (NewButtonClick != null)
             {
+                UINewCalculationMode();
+
                 //set model
                 SetSettingModel();
 

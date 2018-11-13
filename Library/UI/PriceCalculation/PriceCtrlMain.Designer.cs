@@ -54,9 +54,10 @@
             this.mainTabControl.Size = new System.Drawing.Size(1532, 1142);
             this.mainTabControl.TabIndex = 0;
             this.mainTabControl.TabPages.AddRange(new DevExpress.XtraTab.XtraTabPage[] {
-            this.generalTabPage,
             this.settingTabPage,
-            this.calculationTabPage});
+            this.generalTabPage,
+            this.calculationTabPage
+            });
             // 
             // generalTabPage
             // 

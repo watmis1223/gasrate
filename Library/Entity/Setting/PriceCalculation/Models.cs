@@ -80,7 +80,7 @@ namespace CalculationOilPrice.Library.Entity.Setting.PriceCalculation.Models
         public string Description { get; set; }
         public decimal AmountPercent { get; set; }
         public decimal AmountFix { get; set; }
-        public string Currency { get; set; }
+        public CurrencyModel Currency { get; set; }
 
         //keep scale unit
         //EE = original, VE = convert
@@ -113,13 +113,23 @@ namespace CalculationOilPrice.Library.Entity.Setting.PriceCalculation.Models
         }
     }
 
+    public class CurrencyModel
+    {
+        public string Currency { get; set; }
+        public decimal OriginalAmount { get; set; }
+        public override string ToString()
+        {
+            return Currency;
+        }
+    }
+
     public class CalculationModel
     {
         //database ros id
         public long ID { get; set; }
 
-        //from calculation basic one
-        public decimal MasterAmount { get; set; }
+        ////from calculation basic one
+        //public decimal MasterAmount { get; set; }
 
         //from general's settings
         public GeneralSettingModel GeneralSetting { get; set; }
