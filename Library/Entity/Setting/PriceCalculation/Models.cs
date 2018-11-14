@@ -101,8 +101,7 @@ namespace CalculationOilPrice.Library.Entity.Setting.PriceCalculation.Models
     public class ConvertModel
     {
         public string Unit { get; set; }
-        public decimal OriginalAmount { get; set; }
-        public decimal ConvertAmount { get; set; }
+        public decimal OriginalAmount { get; set; }        
 
         [Description("P=Percent, F=Fix, T=Total, S=Special")]
         public String ConvertAmountField { get; set; }
@@ -117,6 +116,9 @@ namespace CalculationOilPrice.Library.Entity.Setting.PriceCalculation.Models
     {
         public string Currency { get; set; }
         public decimal OriginalAmount { get; set; }
+
+        [Description("P=Percent, F=Fix, T=Total, S=Special")]
+        public String CurrencyBaseAmountField { get; set; }
         public override string ToString()
         {
             return Currency;

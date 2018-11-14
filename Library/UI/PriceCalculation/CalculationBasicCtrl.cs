@@ -773,6 +773,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                 {
                     //_Model.MasterAmount = Convert.ToDecimal(e.Value);
                     _BasicCalculation.UpdateCalculationRowAmount(_Model, e.RowHandle, Convert.ToDecimal(e.Value), false, isSpecial, true);
+                    _BasicCalculation.UpdateCalculationRowCurrencyField(_Model, e.RowHandle, "F");
                 }
                 else
                 {
@@ -785,10 +786,12 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                     if (e.Column.FieldName == TempColumnNames.AmountPercent.ToString())
                     {
                         _BasicCalculation.UpdateCalculationRowAmount(_Model, e.RowHandle, Convert.ToDecimal(e.Value), true, isSpecial, true);
+                        _BasicCalculation.UpdateCalculationRowCurrencyField(_Model, e.RowHandle, "");
                     }
                     else if (e.Column.FieldName == TempColumnNames.AmountFix.ToString())
                     {
                         _BasicCalculation.UpdateCalculationRowAmount(_Model, e.RowHandle, Convert.ToDecimal(e.Value), false, isSpecial, true);
+                        _BasicCalculation.UpdateCalculationRowCurrencyField(_Model, e.RowHandle, "F");
                     }
                 }
 
@@ -913,25 +916,25 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                         }
                         break;
                     default:
-                        if (e.Column.FieldName == TempColumnNames.Currency.ToString())
-                        {
-                            //null editor item
-                            if (_Model.GeneralSetting.Currency.Mode == "E")
-                            {
-                                //allow currency button if use both custom currency and convertion for GA
-                                if (_Model.GeneralSetting.Convert.Mode == "E")
-                                {
-                                    if (sTag != "GA")
-                                    {
-                                        e.RepositoryItem = this.repositoryItemButtonEdit1;
-                                    }
-                                }
-                                else
-                                {
-                                    e.RepositoryItem = this.repositoryItemButtonEdit1;
-                                }
-                            }
-                        }
+                        //if (e.Column.FieldName == TempColumnNames.Currency.ToString())
+                        //{
+                        //    //null editor item
+                        //    if (_Model.GeneralSetting.Currency.Mode == "E")
+                        //    {
+                        //        //allow currency button if use both custom currency and convertion for GA
+                        //        if (_Model.GeneralSetting.Convert.Mode == "E")
+                        //        {
+                        //            if (sTag != "GA")
+                        //            {
+                        //                e.RepositoryItem = this.repositoryItemButtonEdit1;
+                        //            }
+                        //        }
+                        //        else
+                        //        {
+                        //            e.RepositoryItem = this.repositoryItemButtonEdit1;
+                        //        }
+                        //    }
+                        //}
                         break;
                 }
             }
@@ -954,34 +957,47 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                     //show currency editor for master amount
                     if (_Model.GeneralSetting.Currency.Mode == "E")
                     {
-                        if (!gridView1.GetRowCellValue(gridView1.FocusedRowHandle, TempColumnNames.Tag.ToString()).ToString().StartsWith("BEK"))
-                        {
-                            //if GA and both custom currency and convertion, allow editor
-                            if (gridView1.GetRowCellValue(gridView1.FocusedRowHandle, TempColumnNames.Tag.ToString()).ToString().StartsWith("GA"))
-                            {
-                                if (_Model.GeneralSetting.Convert.Mode != "E")
-                                {
-                                    e.Cancel = true;
-                                }
-                            }
-                            else
-                            {
-                                e.Cancel = true;
-                            }
-                        }
-                    }
-                }
-                else if (gridView1.FocusedColumn.FieldName == TempColumnNames.AmountFix.ToString())
-                {
-                    //disable amount fix editor if use both custom currency and convertion 
-                    if (gridView1.GetRowCellValue(gridView1.FocusedRowHandle, TempColumnNames.Tag.ToString()).ToString().StartsWith("GA"))
-                    {
-                        if (_Model.GeneralSetting.Currency.Mode == "E" && _Model.GeneralSetting.Convert.Mode == "E")
+                        if (String.IsNullOrWhiteSpace(_BasicCalculation.GetCalculationRowCurrencyFieldEditable(
+                            _Model, gridView1.GetDataSourceRowIndex(gridView1.FocusedRowHandle))))
                         {
                             e.Cancel = true;
                         }
                     }
+
+                    //if (_Model.GeneralSetting.Currency.Mode == "E")
+                    //{
+
+                    //    if (!gridView1.GetRowCellValue(
+                    //        gridView1.FocusedRowHandle, TempColumnNames.Tag.ToString()).ToString().StartsWith("BEK"))
+                    //    {                            
+                    //        e.Cancel = true;
+
+                    //        ////if GA and both custom currency and convertion, allow editor
+                    //        //if (gridView1.GetRowCellValue(gridView1.FocusedRowHandle, TempColumnNames.Tag.ToString()).ToString().StartsWith("GA"))
+                    //        //{
+                    //        //    if (_Model.GeneralSetting.Convert.Mode != "E")
+                    //        //    {
+                    //        //        e.Cancel = true;
+                    //        //    }
+                    //        //}
+                    //        //else
+                    //        //{
+                    //        //    e.Cancel = true;
+                    //        //}
+                    //    }
+                    //}
                 }
+                //else if (gridView1.FocusedColumn.FieldName == TempColumnNames.AmountFix.ToString())
+                //{
+                //    //disable amount fix editor if use both custom currency and convertion 
+                //    if (gridView1.GetRowCellValue(gridView1.FocusedRowHandle, TempColumnNames.Tag.ToString()).ToString().StartsWith("GA"))
+                //    {
+                //        if (_Model.GeneralSetting.Currency.Mode == "E" && _Model.GeneralSetting.Convert.Mode == "E")
+                //        {
+                //            e.Cancel = true;
+                //        }
+                //    }
+                //}
             }
         }
 
@@ -992,6 +1008,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
 
         private void MyRepositoryItemButtonEdit1_ButtonClick(object sender, DevExpress.XtraEditors.Controls.ButtonPressedEventArgs e)
         {
+            //unit button click
             if (gridView1.FocusedRowHandle > -1)
             {
                 string sValue = gridView1.GetRowCellValue(gridView1.FocusedRowHandle, TempColumnNames.Convert.ToString()).ToString();
@@ -1015,6 +1032,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
 
         private void MyRepositoryItemButtonEdit2_ButtonClick(object sender, DevExpress.XtraEditors.Controls.ButtonPressedEventArgs e)
         {
+            //currency button click
             if (gridView1.FocusedRowHandle > -1)
             {
                 string sValue = gridView1.GetRowCellValue(gridView1.FocusedRowHandle, TempColumnNames.Currency.ToString()).ToString();
