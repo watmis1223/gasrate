@@ -149,6 +149,8 @@ namespace CalculationOilPrice.Library.Entity.Setting.PriceCalculation.Models
         //basic calculation tempt view, not serialize to json
         public List<CalculationItemModel> CalculationViewItems { get; set; }
 
+        public List<CalculationItemModel> CalculationMarginViewItems { get; set; }n
+
         ////if scale more than 1
         //public List<CalculationScaleModel> ScaleCalculationItems { get; set; }
     }

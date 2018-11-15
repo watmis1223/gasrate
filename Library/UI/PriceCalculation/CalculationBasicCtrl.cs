@@ -202,8 +202,18 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
 
             //setup price scales combobox if needed
             SetScaleCombobox();
+            
 
+            //bind basic calculation gridview
+            BindBasicCalculationView();
 
+            //bind margin calculation gridview if needed
+            BindMarginCalculationView();
+
+        }
+
+        void BindBasicCalculationView()
+        {
             //bind data
             gridControl1.DataSource = _Model.CalculationViewItems;
 
@@ -279,8 +289,66 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                 gridView1.Columns[TempColumnNames.Currency.ToString()].ColumnEdit = this.myRepositoryItemButtonEdit2;
                 gridView1.Columns[TempColumnNames.Currency.ToString()].Caption = " ";
             }
-
         }
+
+        void BindMarginCalculationView()
+        {
+            //show margin gridcontrol if needed
+            if (_Model.GeneralSetting.Options != null && _Model.GeneralSetting.Options.Contains("M"))
+            {
+                this.layoutControlItem4.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.OnlyInRuntime;
+
+                //bind data
+                gridControl2.DataSource = _Model.CalculationMarginViewItems;                
+
+                //gridView2.Columns[TempColumnNames.Sign.ToString()].Width = 15;
+                //gridView2.Columns[TempColumnNames.Sign.ToString()].AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+                //gridView2.Columns[TempColumnNames.Sign.ToString()].OptionsColumn.AllowEdit = false;
+                //gridView2.Columns[TempColumnNames.Sign.ToString()].Caption = " ";
+
+                //gridView2.Columns[TempColumnNames.Description.ToString()].ColumnEdit = this.repositoryItemTextEdit3;
+                //gridView2.Columns[TempColumnNames.Description.ToString()].Caption = "Kostenanteil";
+
+                //gridView2.Columns[TempColumnNames.AmountPercent.ToString()].ColumnEdit = this.repositoryItemTextEdit1;
+                //gridView2.Columns[TempColumnNames.AmountPercent.ToString()].AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
+                //gridView2.Columns[TempColumnNames.AmountPercent.ToString()].Caption = "%";
+
+                //gridView2.Columns[TempColumnNames.AmountFix.ToString()].ColumnEdit = this.repositoryItemTextEdit1;
+                //gridView2.Columns[TempColumnNames.AmountFix.ToString()].AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
+                //gridView2.Columns[TempColumnNames.AmountFix.ToString()].Caption = "Fix";
+                //if (!_AddedEmptyColumn)
+                //{
+                //    AddEmptyColumn(gridView2.Columns[TempColumnNames.AmountFix.ToString()]);
+                //    _AddedEmptyColumn = true;
+                //}
+
+                //gridView2.Columns[TempColumnNames.Total.ToString()].AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
+                //gridView2.Columns[TempColumnNames.Total.ToString()].ColumnEdit = this.repositoryItemTextEdit2;
+                //gridView2.Columns[TempColumnNames.Total.ToString()].Caption = "CHF";
+
+                //gridView2.Columns[TempColumnNames.Tag.ToString()].OptionsColumn.AllowEdit = false;
+                //gridView2.Columns[TempColumnNames.Tag.ToString()].Caption = "Kürzel";
+
+                //gridView2.Columns[TempColumnNames.Group.ToString()].OptionsColumn.AllowEdit = false;
+                //gridView2.Columns[TempColumnNames.Group.ToString()].Visible = false;
+
+                //gridView2.Columns[TempColumnNames.Order.ToString()].OptionsColumn.AllowEdit = false;
+                //gridView2.Columns[TempColumnNames.Order.ToString()].Visible = false;
+
+                //gridView2.Columns[TempColumnNames.IsSummary.ToString()].OptionsColumn.AllowEdit = false;
+                //gridView2.Columns[TempColumnNames.IsSummary.ToString()].Visible = false;
+
+                //gridView2.Columns[TempColumnNames.VariableTotal.ToString()].OptionsColumn.AllowEdit = false;
+                //gridView2.Columns[TempColumnNames.VariableTotal.ToString()].Visible = false;
+
+                //gridView2.Columns[TempColumnNames.Convert.ToString()].OptionsColumn.AllowEdit = false;
+                //gridView2.Columns[TempColumnNames.Convert.ToString()].Visible = false;
+
+                //gridView2.Columns[TempColumnNames.Currency.ToString()].OptionsColumn.AllowEdit = false;
+                //gridView2.Columns[TempColumnNames.Currency.ToString()].Visible = false;
+            }            
+        }
+
 
         void SetBasicCalculationData(ref int order)
         {
@@ -640,6 +708,184 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                     Order = iOrder,
                     Convert = _Model.GeneralSetting.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
                 });
+            }
+        }
+
+        void SetMarginCalculationData()
+        {
+            //add margin items for each note
+            foreach (CalculationNoteModel item in _Model.CalculationNotes)
+            {
+                int order = 0;
+
+                //master amount
+                //int order = 0;
+                item.CalculationMarginItems.Add(new CalculationItemModel()
+                {
+                    Sign = "",
+                    Description = "Bareinkaufspreis",
+                    Tag = "BEK",
+                    Currency = new CurrencyModel() { Currency = "CHF" },
+                    Group = 0,
+                    Order = order
+                });
+
+
+                //group1
+                order += 1;
+                item.CalculationMarginItems.Add(new CalculationItemModel()
+                {
+                    Sign = "+",
+                    Description = "Bezugskosten",
+                    Tag = "BZK",
+                    Currency = new CurrencyModel() { Currency = "CHF" },
+                    Group = 1,
+                    Order = order
+                });
+
+                order += 1;
+                item.CalculationMarginItems.Add(new CalculationItemModel()
+                {
+                    Sign = "+",
+                    Description = "Beschaffungsteilkosten",
+                    Tag = "BEN",
+                    Currency = new CurrencyModel() { Currency = "CHF" },
+                    Group = 1,
+                    Order = order
+                });
+
+                order += 1;
+                item.CalculationMarginItems.Add(new CalculationItemModel()
+                {
+                    Sign = "",
+                    Description = "Einstandspreis",
+                    Tag = "ESTP",
+                    Currency = new CurrencyModel() { Currency = "CHF" },
+                    Group = 1,
+                    IsSummary = true,
+                    SummaryGroups = new List<int>() { 0, 1 },
+                    Order = order
+                });
+
+
+                //group2
+                order += 1;
+                item.CalculationMarginItems.Add(new CalculationItemModel()
+                {
+                    Sign = "+",
+                    Description = "Verwaltungsgemeinkosten",
+                    Tag = "OGK",
+                    Currency = new CurrencyModel() { Currency = "CHF" },
+                    //CalculationBaseGroupRows = new List<int>() { 0, 1 },
+                    Group = 2,
+                    Order = order
+                });
+
+                order += 1;
+                item.CalculationMarginItems.Add(new CalculationItemModel()
+                {
+                    Sign = "+",
+                    Description = "Vertriebsgemeinkosten",
+                    Tag = "VGK",
+                    Currency = new CurrencyModel() { Currency = "CHF" },
+                    //CalculationBaseGroupRows = new List<int>() { 0, 1 },
+                    Group = 2,
+                    Order = order
+                });
+
+                order += 1;
+                item.CalculationMarginItems.Add(new CalculationItemModel()
+                {
+                    Sign = "+",
+                    Description = "Sondereinzelkosten des Vertriebs",
+                    Tag = "VSK",
+                    Currency = new CurrencyModel() { Currency = "CHF" },
+                    //CalculationBaseGroupRows = new List<int>() { 0, 1 },
+                    Group = 2,
+                    Order = order
+                });
+
+                order += 1;
+                item.CalculationMarginItems.Add(new CalculationItemModel()
+                {
+                    Sign = "",
+                    Description = "Verwaltungs- und Vertriebskosten",
+                    Tag = "VVK",
+                    Currency = new CurrencyModel() { Currency = "CHF" },
+                    Group = 2,
+                    //SummaryGroups = new List<int>() { 2 },
+                    Order = order
+                });
+
+                order += 1;
+                item.CalculationMarginItems.Add(new CalculationItemModel()
+                {
+                    Sign = "",
+                    Description = "Summe fix/variabel",
+                    Tag = "SK 1",
+                    Currency = new CurrencyModel() { Currency = "CHF" },
+                    Group = 2,
+                    IsSummary = true,
+                    SummaryGroups = new List<int>() { 0, 1, 2 },
+                    Order = order
+                });
+
+
+                //group3                  
+                order += 1;
+                _Model.CalculationNotes.Last().CalculationItems.Add(new CalculationItemModel()
+                {
+                    Sign = "",
+                    Description = "Gewinnaufschlag",
+                    Tag = "GA",
+                    Currency = new CurrencyModel() { Currency = "CHF" },
+                    IsSummary = true,
+                    //CalculationBaseGroupRows = new List<int>() { 0, 1, 2 },
+                    SummaryGroups = new List<int>() { 0, 1, 2, 3 },
+                    Group = 3,
+                    Order = order
+                });
+
+
+                //group4
+                item.CalculationMarginItems.Add(new CalculationItemModel()
+                {
+                    Sign = "",
+                    Description = "Deckungsbeitrag",
+                    Tag = "VK",
+                    Currency = new CurrencyModel() { Currency = "CHF" },
+                    Group = 4,
+                    //CalculationBaseGroupRows = new List<int>() { 0, 1, 2, 3 },
+                    //SummaryGroups = new List<int>() { 0, 1, 2, 3, 4 },
+                    Order = order
+                });
+
+                item.CalculationMarginItems.Add(new CalculationItemModel()
+                {
+                    Sign = "",
+                    Description = "Barverkaufspreis",
+                    Tag = "VK(bar)",
+                    Currency = new CurrencyModel() { Currency = "CHF" },
+                    Group = 4,
+                    IsSummary = true,
+                    SummaryGroups = new List<int>() { 0, 1, 2, 3 },
+                    Order = order
+                });
+
+
+                //group5
+                item.CalculationMarginItems.Add(new CalculationItemModel()
+                {
+                    Sign = "",
+                    Description = "Bruttoverkaufspreis",
+                    Tag = "VK(brutto)",
+                    Currency = new CurrencyModel() { Currency = "CHF" },
+                    Group = 5,
+                    IsSummary = true,
+                    SummaryGroups = new List<int>() { 0, 1, 2, 3, 4 },
+                    Order = order
+                });
+
             }
         }
 
