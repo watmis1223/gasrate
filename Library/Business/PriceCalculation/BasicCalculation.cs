@@ -165,23 +165,25 @@ namespace CalculationOilPrice.Library.Business.PriceCalculation
                                     isSpecial = true;
                                 }
 
-                                //if use scale
-                                if (model.ScaleCalculationItems.Count > 1 && item.Tag == "GA")
-                                {
-                                    if (model.GeneralSetting.PriceScale.MarkUp == "F")
-                                    {
-                                        UpdateCalculationRowAmount(model, item.Order, item.AmountFix, false, isSpecial, false);
-                                    }
-                                    else
-                                    {
-                                        UpdateCalculationRowAmount(model, item.Order, item.AmountPercent, true, isSpecial, false);
-                                    }
-                                }
-                                else
-                                {
-                                    //if not use scale
-                                    UpdateCalculationRowAmount(model, item.Order, item.AmountPercent, true, isSpecial, false);
-                                }
+                                UpdateCalculationRowAmount(model, item.Order, item.AmountPercent, true, isSpecial, false);
+
+                                ////if use scale
+                                //if (model.ScaleCalculationItems.Count > 1 && item.Tag == "GA")
+                                //{
+                                //    if (model.GeneralSetting.PriceScale.MarkUp == "F")
+                                //    {
+                                //        UpdateCalculationRowAmount(model, item.Order, item.AmountFix, false, isSpecial, false);
+                                //    }
+                                //    else
+                                //    {
+                                //        UpdateCalculationRowAmount(model, item.Order, item.AmountPercent, true, isSpecial, false);
+                                //    }
+                                //}
+                                //else
+                                //{
+                                //    //if not use scale
+                                //    UpdateCalculationRowAmount(model, item.Order, item.AmountPercent, true, isSpecial, false);
+                                //}
                             }
 
                             //if special field
@@ -293,6 +295,7 @@ namespace CalculationOilPrice.Library.Business.PriceCalculation
             //formular for SKT, PV, RBT(maximum input is 99.99 %
             // if edit one cell only (SKT or PV or RBT)
             // [90 % +10 % from input = 100 %]    [10 % from input]
+            // 108.131 from (VK(bar))
             // (((100 / 90) * 108.131) *          (10 / 100))        = 12.0145555556
 
             //if edit multiple cell (SKT, PV)
@@ -300,6 +303,7 @@ namespace CalculationOilPrice.Library.Business.PriceCalculation
             // if SKT = 4, PV = 6 so sum is 10
             // so if SKT = 1
             // [90 % +10 % from input = 100 %]    [10 % from input]
+            // 108.131 from (VK(bar))
             // (((100 / 90) * 108.131) *          (10 / 100))        = 12.0145555556
             // SKT = 12.0145555556 * (4/10) = 4.80582222224 (40%)
             // PV = 12.0145555556 * (6/10) = 7.20873333336 (60%)

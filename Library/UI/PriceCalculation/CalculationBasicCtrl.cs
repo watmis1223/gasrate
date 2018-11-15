@@ -767,13 +767,14 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             {
                 bool isSpecial = false;
                 string sTag = gridView1.GetRowCellValue(e.RowHandle, TempColumnNames.Tag.ToString()).ToString();
+                int iRowOrder = (int)gridView1.GetRowCellValue(e.RowHandle, TempColumnNames.Order.ToString());
 
                 //if master amount
                 if (sTag == "BEK")
                 {
                     //_Model.MasterAmount = Convert.ToDecimal(e.Value);
-                    _BasicCalculation.UpdateCalculationRowAmount(_Model, e.RowHandle, Convert.ToDecimal(e.Value), false, isSpecial, true);
-                    _BasicCalculation.UpdateCalculationRowCurrencyField(_Model, e.RowHandle, "F");
+                    _BasicCalculation.UpdateCalculationRowAmount(_Model, iRowOrder, Convert.ToDecimal(e.Value), false, isSpecial, true);
+                    _BasicCalculation.UpdateCalculationRowCurrencyField(_Model, iRowOrder, "F");
                 }
                 else
                 {
@@ -785,13 +786,13 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
 
                     if (e.Column.FieldName == TempColumnNames.AmountPercent.ToString())
                     {
-                        _BasicCalculation.UpdateCalculationRowAmount(_Model, e.RowHandle, Convert.ToDecimal(e.Value), true, isSpecial, true);
-                        _BasicCalculation.UpdateCalculationRowCurrencyField(_Model, e.RowHandle, "");
+                        _BasicCalculation.UpdateCalculationRowAmount(_Model, iRowOrder, Convert.ToDecimal(e.Value), true, isSpecial, true);
+                        _BasicCalculation.UpdateCalculationRowCurrencyField(_Model, iRowOrder, "");
                     }
                     else if (e.Column.FieldName == TempColumnNames.AmountFix.ToString())
                     {
-                        _BasicCalculation.UpdateCalculationRowAmount(_Model, e.RowHandle, Convert.ToDecimal(e.Value), false, isSpecial, true);
-                        _BasicCalculation.UpdateCalculationRowCurrencyField(_Model, e.RowHandle, "F");
+                        _BasicCalculation.UpdateCalculationRowAmount(_Model, iRowOrder, Convert.ToDecimal(e.Value), false, isSpecial, true);
+                        _BasicCalculation.UpdateCalculationRowCurrencyField(_Model, iRowOrder, "F");
                     }
                 }
 
@@ -914,27 +915,6 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                                 e.RepositoryItem = this.repositoryItemButtonEdit1;
                             }
                         }
-                        break;
-                    default:
-                        //if (e.Column.FieldName == TempColumnNames.Currency.ToString())
-                        //{
-                        //    //null editor item
-                        //    if (_Model.GeneralSetting.Currency.Mode == "E")
-                        //    {
-                        //        //allow currency button if use both custom currency and convertion for GA
-                        //        if (_Model.GeneralSetting.Convert.Mode == "E")
-                        //        {
-                        //            if (sTag != "GA")
-                        //            {
-                        //                e.RepositoryItem = this.repositoryItemButtonEdit1;
-                        //            }
-                        //        }
-                        //        else
-                        //        {
-                        //            e.RepositoryItem = this.repositoryItemButtonEdit1;
-                        //        }
-                        //    }
-                        //}
                         break;
                 }
             }

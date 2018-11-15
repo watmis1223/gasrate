@@ -125,6 +125,7 @@ namespace CalculationOilPrice.Library.Entity.Setting.PriceCalculation.Models
         }
     }
 
+    //main model
     public class CalculationModel
     {
         //database ros id
