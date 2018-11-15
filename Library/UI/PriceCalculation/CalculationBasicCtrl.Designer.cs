@@ -196,7 +196,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             this.myRepositoryItemButtonEdit1.AutoHeight = false;
             this.myRepositoryItemButtonEdit1.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Glyph)});
-            this.myRepositoryItemButtonEdit1.Name = "repositoryItemButtonEdit2";
+            this.myRepositoryItemButtonEdit1.Name = "myRepositoryItemButtonEdit1";
             this.myRepositoryItemButtonEdit1.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.HideTextEditor;
             this.myRepositoryItemButtonEdit1.ButtonClick += MyRepositoryItemButtonEdit1_ButtonClick;
             // 
@@ -205,7 +205,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             this.myRepositoryItemButtonEdit2.AutoHeight = false;
             this.myRepositoryItemButtonEdit2.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Glyph)});            
-            this.myRepositoryItemButtonEdit2.Name = "repositoryItemButtonEdit2";
+            this.myRepositoryItemButtonEdit2.Name = "myRepositoryItemButtonEdit2";
             this.myRepositoryItemButtonEdit2.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.HideTextEditor;
             this.myRepositoryItemButtonEdit2.ButtonClick += MyRepositoryItemButtonEdit2_ButtonClick;
             // 
