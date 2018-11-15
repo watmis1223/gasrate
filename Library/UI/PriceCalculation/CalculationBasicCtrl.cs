@@ -55,7 +55,8 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             IsSummary,
             SummaryGroups,
             Convert,
-            UpdatedAmountField
+            UpdatedAmountField,
+            VariableTotal
         }
 
         public CalculationBasicCtrl()
@@ -102,32 +103,40 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             newCol.OptionsColumn.AllowSize = false;
         }
 
-        public void Init(GeneralSettingModel generalSettingModel, PriceSetting priceSetting)
+        public void New(GeneralSettingModel generalSettingModel, PriceCalculationSetting priceCalculationSetting)
         {
             _Model = new CalculationModel()
             {
+                //set new id
+                ID = priceCalculationSetting.CalculationCounter + 1,
                 GeneralSetting = generalSettingModel,
-                PriceSetting = priceSetting,
-                BasicCalculationItems = new List<CalculationItemModel>(),
-                ScaleCalculationItems = new List<CalculationScaleModel>()
+                PriceSetting = priceCalculationSetting.PriceSetting,
+                CalculationNotes = new List<CalculationNoteModel>(),
+                CalculationViewItems = new List<CalculationItemModel>()
+                //BasicCalculationItems = new List<CalculationItemModel>(),
+                //ScaleCalculationItems = new List<CalculationScaleModel>()
             };
 
             //setup data
             InitData();
 
+            //refresh gridview
+            RefreshGrid();
+        }
+
+        void SetScaleCombobox()
+        {
             //setup price scales combobox
             //if price scale more than 1
-            if (generalSettingModel.PriceScale.Scale > 1)
+            if (_Model.GeneralSetting.PriceScale.Scale > 1)
             {
-                //_Model.CalculationScaleItems = new List<CalculationScaleModel>();
-
                 List<PriceScaleComboboxItem> oItems = new List<PriceScaleComboboxItem>();
 
                 //add basic calculation first
                 oItems.Add(new PriceScaleComboboxItem() { Value = 0, Caption = "Grundberechnung" });
 
                 //setup price scale dropdown items
-                for (int i = 1; i <= generalSettingModel.PriceScale.Scale; i++)
+                for (int i = 1; i <= _Model.GeneralSetting.PriceScale.Scale; i++)
                 {
                     oItems.Add(new PriceScaleComboboxItem() { Value = i, Caption = String.Format("Staffel {0}", i) });
                 }
@@ -138,21 +147,20 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                 cboPriceScales.ItemIndex = 0;
                 this.layoutControlItem2.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.OnlyInRuntime;
             }
-
-            //refresh gridview
-            RefreshGrid();
         }
 
         private void RefreshGrid()
         {
             //set filter
             gridView1.ActiveFilter.Clear();
-            _Model.BasicCalculationItems.RemoveAll(item => item.Group > 3);
+
+            //remove scale items if needed
+            _Model.CalculationViewItems.RemoveAll(item => item.Group > 3);
 
             //append first scale calculation items to basic calculation on init
             if (_Model.GeneralSetting.PriceScale.Scale == 1)
             {
-                _Model.BasicCalculationItems.AddRange(_Model.ScaleCalculationItems[0].CalculationItems);
+                _Model.CalculationViewItems.AddRange(_Model.CalculationNotes[1].CalculationItems);
             }
             else
             {
@@ -163,24 +171,14 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                 if (cboPriceScales.ItemIndex > 0)
                 {
                     // add price-scale calculation item to gridview
-                    _Model.BasicCalculationItems.AddRange(_Model.ScaleCalculationItems[cboPriceScales.ItemIndex - 1].CalculationItems);
-                    txtScaleNumber.EditValue = _Model.ScaleCalculationItems[cboPriceScales.ItemIndex - 1].Scale;
+                    _Model.CalculationViewItems.AddRange(_Model.CalculationNotes[cboPriceScales.ItemIndex].CalculationItems);
+                    txtScaleNumber.EditValue = _Model.CalculationNotes[cboPriceScales.ItemIndex].Quantity;
                     _BasicCalculation.UpdateGroupAmountAll(_Model, false);
 
                     gridView1.ActiveFilter.NonColumnFilter = "[Group] > 3";
 
                     //display scale-number input
                     this.layoutControlItem3.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.OnlyInRuntime;
-
-
-                    //if (cboPriceScales.ItemIndex == 0)
-                    //{
-                    //    gridView1.ActiveFilter.NonColumnFilter = "[Group] < 4";
-                    //}
-                    //else
-                    //{
-                    //    gridView1.ActiveFilter.NonColumnFilter = "[Group] > 3";
-                    //}
                 }
             }
 
@@ -190,12 +188,24 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
         private void InitData()
         {
             int itemOrder = 0;
-            SetBasicCalculationData(_Model.GeneralSetting, _Model.PriceSetting, ref itemOrder);
-            SetPriceScaleCalculationData(_Model.GeneralSetting, _Model.PriceSetting, itemOrder);
+            SetBasicCalculationData(ref itemOrder);
+            SetPriceScaleCalculationData(itemOrder);
+
+            //add view items
+            if (_Model.CalculationViewItems.Count == 0)
+            {
+                _Model.CalculationViewItems.AddRange(_Model.CalculationNotes[0].CalculationItems);
+            }
+
+            //predefine scale amount
             SetPredefineProfitAmount();
 
+            //setup price scales combobox if needed
+            SetScaleCombobox();
+
+
             //bind data
-            gridControl1.DataSource = _Model.BasicCalculationItems;
+            gridControl1.DataSource = _Model.CalculationViewItems;
 
             //Setup columns
             gridView1.RowSeparatorHeight = 2;
@@ -237,6 +247,9 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             gridView1.Columns[TempColumnNames.IsSummary.ToString()].OptionsColumn.AllowEdit = false;
             gridView1.Columns[TempColumnNames.IsSummary.ToString()].Visible = false;
 
+            gridView1.Columns[TempColumnNames.VariableTotal.ToString()].OptionsColumn.AllowEdit = false;
+            gridView1.Columns[TempColumnNames.VariableTotal.ToString()].Visible = false;
+
             //gridView1.Columns[TempColumnNames.UpdatedAmountField.ToString()].OptionsColumn.AllowEdit = false;
             //gridView1.Columns[TempColumnNames.UpdatedAmountField.ToString()].Visible = false;
 
@@ -269,11 +282,20 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
 
         }
 
-        void SetBasicCalculationData(GeneralSettingModel generalSettingModel, PriceSetting priceSetting, ref int order)
+        void SetBasicCalculationData(ref int order)
         {
+            //always start with zero
+            _Model.CalculationNotes.Add(new CalculationNoteModel()
+            {
+                ID = 0,
+                CalculationItems = new List<CalculationItemModel>(),
+                CalculationMarginItems = new List<CalculationItemModel>()
+            });
+
+
             //group1
             //int order = 0;
-            _Model.BasicCalculationItems.Add(new CalculationItemModel()
+            _Model.CalculationNotes.Last().CalculationItems.Add(new CalculationItemModel()
             {
                 Sign = "",
                 Description = "Bareinkaufspreis",
@@ -285,23 +307,19 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                 Currency = new CurrencyModel() { Currency = "CHF" },
                 Group = 0,
                 Order = order,
-                Convert = generalSettingModel.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
+                Convert = _Model.GeneralSetting.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
             });
 
             order += 1;
-            _Model.BasicCalculationItems.Add(new CalculationItemModel()
+            _Model.CalculationNotes.Last().CalculationItems.Add(new CalculationItemModel()
             {
                 Sign = "+",
                 Description = "Bezugskosten",
-                AmountPercent = 0,
-                AmountFix = 0,
-                Total = 0,
                 Tag = "BZK",
-                //Currency = generalSettingModel.Currency.Currency,
                 Currency = new CurrencyModel() { Currency = "CHF" },
                 Group = 1,
                 Order = order,
-                Convert = generalSettingModel.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
+                Convert = _Model.GeneralSetting.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
             });
 
             if (_Model.GeneralSetting.TextLines != null)
@@ -311,422 +329,335 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                 {
                     count += 1;
                     order += 1;
-                    _Model.BasicCalculationItems.Add(new CalculationItemModel()
+                    _Model.CalculationNotes.Last().CalculationItems.Add(new CalculationItemModel()
                     {
                         Sign = "+",
                         Description = item,
-                        AmountPercent = 0,
-                        AmountFix = 0,
-                        Total = 0,
                         Tag = String.Format("BEN {0}", count),
-                        //Currency = generalSettingModel.Currency.Currency,
                         Currency = new CurrencyModel() { Currency = "CHF" },
                         Group = 1,
                         Order = order,
-                        Convert = generalSettingModel.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
+                        Convert = _Model.GeneralSetting.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
                     });
                 }
             }
 
             order += 1;
-            _Model.BasicCalculationItems.Add(new CalculationItemModel()
+            _Model.CalculationNotes.Last().CalculationItems.Add(new CalculationItemModel()
             {
                 Sign = "=",
                 Description = "Einstandspreis",
-                AmountPercent = 0,
-                AmountFix = 0,
-                Total = 0,
                 Tag = "ESTP",
-                //Currency = generalSettingModel.Currency.Currency,
                 Currency = new CurrencyModel() { Currency = "CHF" },
                 Group = 1,
                 IsSummary = true,
                 SummaryGroups = new List<int>() { 0, 1 },
                 Order = order,
-                Convert = generalSettingModel.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
+                Convert = _Model.GeneralSetting.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
             });
 
 
             //group2
             order += 1;
-            _Model.BasicCalculationItems.Add(new CalculationItemModel()
+            _Model.CalculationNotes.Last().CalculationItems.Add(new CalculationItemModel()
             {
                 Sign = "+",
                 Description = "Verwaltungsgemeinkosten",
-                AmountPercent = 0,
-                AmountFix = 0,
-                Total = 0,
                 Tag = "OGK",
-                //Currency = generalSettingModel.Currency.Currency,
                 Currency = new CurrencyModel() { Currency = "CHF" },
                 CalculationBaseGroupRows = new List<int>() { 0, 1 },
                 Group = 2,
                 Order = order,
-                Convert = generalSettingModel.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
+                Convert = _Model.GeneralSetting.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
             });
 
             order += 1;
-            _Model.BasicCalculationItems.Add(new CalculationItemModel()
+            _Model.CalculationNotes.Last().CalculationItems.Add(new CalculationItemModel()
             {
                 Sign = "+",
                 Description = "Vertriebsgemeinkosten",
-                AmountPercent = 0,
-                AmountFix = 0,
-                Total = 0,
                 Tag = "VGK",
-                //Currency = generalSettingModel.Currency.Currency,
                 Currency = new CurrencyModel() { Currency = "CHF" },
                 CalculationBaseGroupRows = new List<int>() { 0, 1 },
                 Group = 2,
                 Order = order,
-                Convert = generalSettingModel.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
+                Convert = _Model.GeneralSetting.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
             });
 
             order += 1;
-            _Model.BasicCalculationItems.Add(new CalculationItemModel()
+            _Model.CalculationNotes.Last().CalculationItems.Add(new CalculationItemModel()
             {
                 Sign = "=",
                 Description = "Sondereinzelkosten des Vertriebs",
-                AmountPercent = 0,
-                AmountFix = 0,
-                Total = 0,
                 Tag = "VSK",
-                //Currency = generalSettingModel.Currency.Currency,
                 Currency = new CurrencyModel() { Currency = "CHF" },
                 CalculationBaseGroupRows = new List<int>() { 0, 1 },
                 Group = 2,
                 Order = order,
-                Convert = generalSettingModel.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
+                Convert = _Model.GeneralSetting.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
             });
 
             order += 1;
-            _Model.BasicCalculationItems.Add(new CalculationItemModel()
+            _Model.CalculationNotes.Last().CalculationItems.Add(new CalculationItemModel()
             {
                 Sign = "=",
                 Description = "Verwaltungs- und Vertriebskosten",
-                AmountPercent = 0,
-                AmountFix = 0,
-                Total = 0,
                 Tag = "VVK",
-                //Currency = generalSettingModel.Currency.Currency,
                 Currency = new CurrencyModel() { Currency = "CHF" },
                 Group = 2,
                 IsSummary = true,
                 SummaryGroups = new List<int>() { 2 },
                 Order = order,
-                Convert = generalSettingModel.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
+                Convert = _Model.GeneralSetting.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
             });
 
             order += 1;
-            _Model.BasicCalculationItems.Add(new CalculationItemModel()
+            _Model.CalculationNotes.Last().CalculationItems.Add(new CalculationItemModel()
             {
                 Sign = "=",
                 Description = "Einstandspreis",
-                AmountPercent = 0,
-                AmountFix = 0,
-                Total = 0,
                 Tag = "ESTP",
-                //Currency = generalSettingModel.Currency.Currency,
                 Currency = new CurrencyModel() { Currency = "CHF" },
                 Group = 2,
                 IsSummary = true,
                 SummaryGroups = new List<int>() { 0, 1 },
                 Order = order,
-                Convert = generalSettingModel.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
+                Convert = _Model.GeneralSetting.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
             });
 
             order += 1;
-            _Model.BasicCalculationItems.Add(new CalculationItemModel()
+            _Model.CalculationNotes.Last().CalculationItems.Add(new CalculationItemModel()
             {
                 Sign = "=",
                 Description = "Selbstkosten 1",
-                AmountPercent = 0,
-                AmountFix = 0,
-                Total = 0,
                 Tag = "SK 1",
-                //Currency = generalSettingModel.Currency.Currency,
                 Currency = new CurrencyModel() { Currency = "CHF" },
                 Group = 2,
                 IsSummary = true,
                 SummaryGroups = new List<int>() { 0, 1, 2 },
                 Order = order,
-                Convert = generalSettingModel.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
+                Convert = _Model.GeneralSetting.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
             });
 
 
             //group3
             order += 1;
-            _Model.BasicCalculationItems.Add(new CalculationItemModel()
+            _Model.CalculationNotes.Last().CalculationItems.Add(new CalculationItemModel()
             {
                 Sign = "+",
                 Description = "Lagerhaltungskosten",
-                AmountPercent = 0,
-                AmountFix = 0,
-                Total = 0,
                 Tag = "LHK",
-                //Currency = generalSettingModel.Currency.Currency,
                 Currency = new CurrencyModel() { Currency = "CHF" },
                 CalculationBaseGroupRows = new List<int>() { 0, 1, 2 },
                 Group = 3,
                 Order = order,
-                Convert = generalSettingModel.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
+                Convert = _Model.GeneralSetting.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
             });
 
             order += 1;
-            _Model.BasicCalculationItems.Add(new CalculationItemModel()
+            _Model.CalculationNotes.Last().CalculationItems.Add(new CalculationItemModel()
             {
                 Sign = "+",
                 Description = "Verpackungsanteil",
-                AmountPercent = 0,
-                AmountFix = 0,
-                Total = 0,
                 Tag = "VPA",
-                //Currency = generalSettingModel.Currency.Currency,
                 Currency = new CurrencyModel() { Currency = "CHF" },
                 CalculationBaseGroupRows = new List<int>() { 0, 1, 2 },
                 Group = 3,
                 Order = order,
-                Convert = generalSettingModel.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
+                Convert = _Model.GeneralSetting.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
             });
 
             order += 1;
-            _Model.BasicCalculationItems.Add(new CalculationItemModel()
+            _Model.CalculationNotes.Last().CalculationItems.Add(new CalculationItemModel()
             {
                 Sign = "+",
                 Description = "Transportanteil",
-                AmountPercent = 0,
-                AmountFix = 0,
-                Total = 0,
                 Tag = "TRA",
-                //Currency = generalSettingModel.Currency.Currency,
                 Currency = new CurrencyModel() { Currency = "CHF" },
                 CalculationBaseGroupRows = new List<int>() { 0, 1, 2 },
                 Group = 3,
                 Order = order,
-                Convert = generalSettingModel.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
+                Convert = _Model.GeneralSetting.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
             });
 
             order += 1;
-            _Model.BasicCalculationItems.Add(new CalculationItemModel()
+            _Model.CalculationNotes.Last().CalculationItems.Add(new CalculationItemModel()
             {
                 Sign = "=",
                 Description = "Selbstkosten 2",
-                AmountPercent = 0,
-                AmountFix = 0,
-                Total = 0,
                 Tag = "SK 2",
-                //Currency = generalSettingModel.Currency.Currency,
                 Currency = new CurrencyModel() { Currency = "CHF" },
                 Group = 3,
                 IsSummary = true,
                 SummaryGroups = new List<int>() { 0, 1, 2, 3 },
                 Order = order,
-                Convert = generalSettingModel.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
+                Convert = _Model.GeneralSetting.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
             });
         }
 
-        void SetPriceScaleCalculationData(GeneralSettingModel generalSettingModel, PriceSetting priceSetting, int order)
+        void SetPriceScaleCalculationData(int order)
         {
-            for (int i = 0; i < generalSettingModel.PriceScale.Scale; i++)
+            //price scale id start by 1
+            for (int i = 1; i <= _Model.GeneralSetting.PriceScale.Scale; i++)
             {
                 int iOrder = order;
 
-                CalculationScaleModel oScale = new CalculationScaleModel()
+                _Model.CalculationNotes.Add(new CalculationNoteModel()
                 {
                     ID = i,
-                    Scale = 0,
-                    CalculationItems = new List<CalculationItemModel>()
-                };
+                    CalculationItems = new List<CalculationItemModel>(),
+                    CalculationMarginItems = new List<CalculationItemModel>()
+                });
 
                 //group4   
                 iOrder += 1;
-                oScale.CalculationItems.Add(new CalculationItemModel()
+                _Model.CalculationNotes.Last().CalculationItems.Add(new CalculationItemModel()
                 {
                     Sign = "+",
                     Description = "Gewinnaufschlag",
-                    AmountPercent = 0,
-                    AmountFix = 0,
-                    Total = 0,
                     Tag = "GA",
-                    //Currency = generalSettingModel.Currency.Currency,
                     Currency = new CurrencyModel() { Currency = "CHF" },
                     CalculationBaseGroupRows = new List<int>() { 0, 1, 2, 3 },
                     Group = 4,
-                    //Group = 0,
                     Order = iOrder,
-                    Convert = generalSettingModel.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
+                    Convert = _Model.GeneralSetting.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
                 });
 
                 iOrder += 1;
-                oScale.CalculationItems.Add(new CalculationItemModel()
+                _Model.CalculationNotes.Last().CalculationItems.Add(new CalculationItemModel()
                 {
                     Sign = "=",
                     Description = "Barverkaufspreis",
-                    AmountPercent = 0,
-                    AmountFix = 0,
-                    Total = 0,
                     Tag = "VK(bar)",
-                    //Currency = generalSettingModel.Currency.Currency,
                     Currency = new CurrencyModel() { Currency = "CHF" },
                     Group = 4,
-                    //Group = 0,
                     IsSummary = true,
                     SummaryGroups = new List<int>() { 0, 1, 2, 3, 4 },
                     Order = iOrder,
-                    Convert = generalSettingModel.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
+                    Convert = _Model.GeneralSetting.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
                 });
 
 
                 //group5
                 iOrder += 1;
-                oScale.CalculationItems.Add(new CalculationItemModel()
+                _Model.CalculationNotes.Last().CalculationItems.Add(new CalculationItemModel()
                 {
                     Sign = "+",
                     Description = "Kundenskonto",
-                    AmountPercent = priceSetting.CashDiscount,
-                    AmountFix = 0,
-                    Total = 0,
+                    AmountPercent = _Model.PriceSetting.CashDiscount,
                     Tag = "SKT",
-                    //Currency = generalSettingModel.Currency.Currency,
                     Currency = new CurrencyModel() { Currency = "CHF" },
                     CalculationBaseGroupRows = new List<int>() { 0, 1, 2, 3, 4 },
                     Group = 5,
-                    //Group = 1,
                     Order = iOrder,
-                    Convert = generalSettingModel.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
+                    Convert = _Model.GeneralSetting.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
                 });
 
                 iOrder += 1;
-                oScale.CalculationItems.Add(new CalculationItemModel()
+                _Model.CalculationNotes.Last().CalculationItems.Add(new CalculationItemModel()
                 {
                     Sign = "+",
                     Description = "Verhandlungsspielraum",
-                    AmountPercent = priceSetting.SalesBonus,
-                    AmountFix = 0,
-                    Total = 0,
+                    AmountPercent = _Model.PriceSetting.SalesBonus,
                     Tag = "PV",
-                    //Currency = generalSettingModel.Currency.Currency,
                     Currency = new CurrencyModel() { Currency = "CHF" },
                     CalculationBaseGroupRows = new List<int>() { 0, 1, 2, 3, 4 },
                     Group = 5,
-                    //Group = 1,
                     Order = iOrder,
-                    Convert = generalSettingModel.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
+                    Convert = _Model.GeneralSetting.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
                 });
 
                 iOrder += 1;
-                oScale.CalculationItems.Add(new CalculationItemModel()
+                _Model.CalculationNotes.Last().CalculationItems.Add(new CalculationItemModel()
                 {
                     Sign = "=",
                     Description = "Zielverkaufspreis",
-                    AmountPercent = 0,
-                    AmountFix = 0,
-                    Total = 0,
                     Tag = "VK(ziel)",
-                    //Currency = generalSettingModel.Currency.Currency,
                     Currency = new CurrencyModel() { Currency = "CHF" },
                     Group = 5,
-                    //Group = 1,
                     IsSummary = true,
                     SummaryGroups = new List<int>() { 0, 1, 2, 3, 4, 5 },
                     Order = iOrder,
-                    Convert = generalSettingModel.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
+                    Convert = _Model.GeneralSetting.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
                 });
 
 
                 //group6
                 iOrder += 1;
-                oScale.CalculationItems.Add(new CalculationItemModel()
+                _Model.CalculationNotes.Last().CalculationItems.Add(new CalculationItemModel()
                 {
                     Sign = "+",
                     Description = "Kundenrabatt",
-                    AmountPercent = priceSetting.CustomerDiscount,
-                    AmountFix = 0,
-                    Total = 0,
+                    AmountPercent = _Model.PriceSetting.CustomerDiscount,
                     Tag = "RBT",
-                    //Currency = generalSettingModel.Currency.Currency,
                     Currency = new CurrencyModel() { Currency = "CHF" },
                     CalculationBaseGroupRows = new List<int>() { 0, 1, 2, 3, 4, 5 },
                     Group = 6,
-                    //Group = 2,
                     Order = iOrder,
-                    Convert = generalSettingModel.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
+                    Convert = _Model.GeneralSetting.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
                 });
 
                 iOrder += 1;
-                oScale.CalculationItems.Add(new CalculationItemModel()
+                _Model.CalculationNotes.Last().CalculationItems.Add(new CalculationItemModel()
                 {
                     Sign = "=",
                     Description = "Nettoverkaufspreis",
-                    AmountPercent = 0,
-                    AmountFix = 0,
-                    Total = 0,
                     Tag = "VK(liste)",
-                    //Currency = generalSettingModel.Currency.Currency,
                     Currency = new CurrencyModel() { Currency = "CHF" },
                     Group = 6,
-                    //Group = 2,
                     IsSummary = true,
                     SummaryGroups = new List<int>() { 0, 1, 2, 3, 4, 5, 6 },
                     Order = iOrder,
-                    Convert = generalSettingModel.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
+                    Convert = _Model.GeneralSetting.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
                 });
 
 
                 //group7
                 iOrder += 1;
-                oScale.CalculationItems.Add(new CalculationItemModel()
+                _Model.CalculationNotes.Last().CalculationItems.Add(new CalculationItemModel()
                 {
                     Sign = "+",
                     Description = "Mehrwertsteuer",
-                    AmountPercent = priceSetting.VatTaxes,
-                    AmountFix = 0,
-                    Total = 0,
+                    AmountPercent = _Model.PriceSetting.VatTaxes,
                     Tag = "MWST",
-                    //Currency = generalSettingModel.Currency.Currency,
                     Currency = new CurrencyModel() { Currency = "CHF" },
                     CalculationBaseGroupRows = new List<int>() { 0, 1, 2, 3, 4, 5, 6 },
                     Group = 7,
-                    //Group = 3,
                     Order = iOrder,
-                    Convert = generalSettingModel.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
+                    Convert = _Model.GeneralSetting.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
                 });
 
                 iOrder += 1;
-                oScale.CalculationItems.Add(new CalculationItemModel()
+                _Model.CalculationNotes.Last().CalculationItems.Add(new CalculationItemModel()
                 {
                     Sign = "=",
                     Description = "Bruttoverkaufspreis",
-                    AmountPercent = 0,
-                    AmountFix = 0,
-                    Total = 0,
                     Tag = "VK(brutto)",
-                    //Currency = generalSettingModel.Currency.Currency,
                     Currency = new CurrencyModel() { Currency = "CHF" },
                     Group = 7,
-                    //Group = 3,
                     IsSummary = true,
                     SummaryGroups = new List<int>() { 0, 1, 2, 3, 4, 5, 6, 7 },
                     Order = iOrder,
-                    Convert = generalSettingModel.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
+                    Convert = _Model.GeneralSetting.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
                 });
-
-                _Model.ScaleCalculationItems.Add(oScale);
             }
         }
 
         void SetPredefineProfitAmount()
         {
-            //set predefined profit amount            
-            if (_Model.ScaleCalculationItems.Count > 1)
+            //set predefined profit amount for each scale
+            int iScaleCount = _Model.CalculationNotes.Count(item => item.ID > 0);
+
+            if (iScaleCount > 1)
             {
                 if (_Model.GeneralSetting.PriceScale.MinProfit > 0 && _Model.GeneralSetting.PriceScale.MaxProfit > 0)
                 {
                     //everage amount excluded first item
                     decimal iEverageAmount = (_Model.GeneralSetting.PriceScale.MaxProfit -
-                        _Model.GeneralSetting.PriceScale.MinProfit) / (_Model.ScaleCalculationItems.Count - 1);
+                        _Model.GeneralSetting.PriceScale.MinProfit) / (iScaleCount - 1);
 
-                    for (int i = 0; i < _Model.ScaleCalculationItems.Count; i++)
+                    //scale item start from ID 1
+                    for (int i = 0; i < iScaleCount; i++)
                     {
                         decimal iProfitAmount = 0;
                         if (i == 0)
@@ -734,7 +665,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                             // set first predefined
                             iProfitAmount = _Model.GeneralSetting.PriceScale.MaxProfit;
                         }
-                        else if (i == _Model.ScaleCalculationItems.Count - 1)
+                        else if (i == (iScaleCount - 1))
                         {
                             // set last predefined
                             iProfitAmount = _Model.GeneralSetting.PriceScale.MinProfit;
@@ -742,18 +673,19 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                         else
                         {
                             // set rest predefined
-                            iProfitAmount = iEverageAmount * ((_Model.ScaleCalculationItems.Count - 1) - i);
+                            //iProfitAmount = iEverageAmount * ((_Model.CalculationNotes.Count - 1) - i);
+                            iProfitAmount = _Model.GeneralSetting.PriceScale.MaxProfit - (iEverageAmount * i);
                         }
 
                         //update amount to calculation model
                         //if percent or fix predefined
                         if (_Model.GeneralSetting.PriceScale.MarkUp == "P")
                         {
-                            _BasicCalculation.UpdateRowAmountPercent(_Model, _Model.ScaleCalculationItems[i].CalculationItems[0], iProfitAmount, skipBaseGroupRows: true);
+                            _BasicCalculation.UpdateRowAmountPercent(_Model, _Model.CalculationNotes[i + 1].CalculationItems[0], iProfitAmount, skipBaseGroupRows: true);
                         }
                         else
                         {
-                            _BasicCalculation.UpdateRowAmountFix(_Model, _Model.ScaleCalculationItems[i].CalculationItems[0], iProfitAmount, skipBaseGroupRows: true);
+                            _BasicCalculation.UpdateRowAmountFix(_Model, _Model.CalculationNotes[i + 1].CalculationItems[0], iProfitAmount, skipBaseGroupRows: true);
                         }
                     }
                 }
@@ -1061,7 +993,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
         {
             if (cboPriceScales.ItemIndex > 0)
             {
-                _Model.ScaleCalculationItems[cboPriceScales.ItemIndex - 1].Scale = Convert.ToDecimal(txtScaleNumber.Text);
+                _Model.CalculationNotes[cboPriceScales.ItemIndex].Quantity = Convert.ToDecimal(txtScaleNumber.Text);
             }
         }
     }

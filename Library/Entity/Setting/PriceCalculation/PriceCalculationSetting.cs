@@ -6,7 +6,7 @@ using System.Text;
 namespace CalculationOilPrice.Library.Entity.Setting.PriceCalculation
 {
     [Serializable]
-    class PriceCalculationSetting
+    public class PriceCalculationSetting
     {                
         public PriceSetting PriceSetting;
         public TextSetting TextSetting;

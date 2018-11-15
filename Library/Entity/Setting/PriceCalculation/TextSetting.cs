@@ -7,7 +7,7 @@ using System.Runtime.Serialization;
 namespace CalculationOilPrice.Library.Entity.Setting.PriceCalculation
 {
     [Serializable]
-    internal class TextSetting
+    public class TextSetting
     {
         public string Text1;
         public string Text2;

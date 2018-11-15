@@ -10,7 +10,7 @@ namespace CalculationOilPrice.Library.Business.PriceCalculation
     {
         public string GetCalculationRowUnitValue(CalculationModel model, int rowID)
         {
-            CalculationItemModel oCalRow = model.BasicCalculationItems[rowID];
+            CalculationItemModel oCalRow = model.CalculationViewItems[rowID];
             if (oCalRow != null && oCalRow.Convert != null)
             {
                 return oCalRow.Convert.Unit;
@@ -21,7 +21,7 @@ namespace CalculationOilPrice.Library.Business.PriceCalculation
 
         public string GetCalculationRowCurrencyValue(CalculationModel model, int rowID)
         {
-            CalculationItemModel oCalRow = model.BasicCalculationItems[rowID];
+            CalculationItemModel oCalRow = model.CalculationViewItems[rowID];
             if (oCalRow != null)
             {
                 return oCalRow.Currency.Currency;
@@ -33,7 +33,7 @@ namespace CalculationOilPrice.Library.Business.PriceCalculation
         public string GetCalculationRowCurrencyFieldEditable(CalculationModel model, int rowID)
         {
             //set editable currency field
-            CalculationItemModel oCalRow = model.BasicCalculationItems[rowID];
+            CalculationItemModel oCalRow = model.CalculationViewItems[rowID];
             if (oCalRow != null && oCalRow.Currency != null)
             {
                 //return editable currency field
@@ -45,7 +45,7 @@ namespace CalculationOilPrice.Library.Business.PriceCalculation
 
         public void UpdateCalculationRowUnit(CalculationModel model, int rowID, string unit)
         {
-            CalculationItemModel oCalRow = model.BasicCalculationItems[rowID];
+            CalculationItemModel oCalRow = model.CalculationViewItems[rowID];
             if (oCalRow != null && oCalRow.Convert != null)
             {
                 // if not edit cell, set F (fix) as default when click convert button               
@@ -67,7 +67,7 @@ namespace CalculationOilPrice.Library.Business.PriceCalculation
         public void UpdateCalculationRowCurrency(CalculationModel model, int rowID, string currency)
         {
             //only BEK and GA can change currency
-            CalculationItemModel oCalRow = model.BasicCalculationItems[rowID];
+            CalculationItemModel oCalRow = model.CalculationViewItems[rowID];
             if (oCalRow != null)
             {
                 //CHF or custom one
@@ -105,7 +105,7 @@ namespace CalculationOilPrice.Library.Business.PriceCalculation
             //set editable currency field
             if (model.GeneralSetting.Currency.Mode == "E")
             {
-                CalculationItemModel oCalRow = model.BasicCalculationItems[rowID];
+                CalculationItemModel oCalRow = model.CalculationViewItems[rowID];
                 if (oCalRow != null)
                 {
                     //CHF or custom one
@@ -116,7 +116,7 @@ namespace CalculationOilPrice.Library.Business.PriceCalculation
 
         public void UpdateGroupAmountAll(CalculationModel model, bool updateGroupOnly)
         {
-            var oModels = model.BasicCalculationItems.FindAll(item => item.IsSummary);
+            var oModels = model.CalculationViewItems.FindAll(item => item.IsSummary);
 
             foreach (CalculationItemModel item in oModels)
             {
@@ -126,7 +126,7 @@ namespace CalculationOilPrice.Library.Business.PriceCalculation
 
         void UpdateGroupAmount(CalculationModel model, int group, int groupID, bool updateGroupOnly)
         {
-            CalculationItemModel oGroup = model.BasicCalculationItems.Find(item => item.Group == group && item.Order == groupID && item.IsSummary);
+            CalculationItemModel oGroup = model.CalculationViewItems.Find(item => item.Group == group && item.Order == groupID && item.IsSummary);
 
             if (oGroup != null)
             {
@@ -136,7 +136,7 @@ namespace CalculationOilPrice.Library.Business.PriceCalculation
                 foreach (int i in oGroup.SummaryGroups)
                 {
                     //get items per group
-                    var oModels = model.BasicCalculationItems.FindAll(item => item.Group == i && !item.IsSummary);
+                    var oModels = model.CalculationViewItems.FindAll(item => item.Group == i && !item.IsSummary);
 
                     if (!updateGroupOnly)
                     {
@@ -220,7 +220,7 @@ namespace CalculationOilPrice.Library.Business.PriceCalculation
 
         public void UpdateCalculationRowAmount(CalculationModel model, int rowID, decimal value, bool isPercent, bool specialCalculation, bool isCellEdit)
         {
-            CalculationItemModel oCalRow = model.BasicCalculationItems[rowID];
+            CalculationItemModel oCalRow = model.CalculationViewItems[rowID];
 
             //if convert needed
             if (isCellEdit)
@@ -281,10 +281,10 @@ namespace CalculationOilPrice.Library.Business.PriceCalculation
         void UpdateRowAmountPercentSpecial(CalculationModel model, CalculationItemModel calRow, decimal value)
         {
             //decimal iBaseAmount = model.MasterAmount;
-            decimal iBaseAmount = model.BasicCalculationItems[0].AmountFix;
-            if (model.BasicCalculationItems[0].Currency.Currency != "CHF")
+            decimal iBaseAmount = model.CalculationViewItems[0].AmountFix;
+            if (model.CalculationViewItems[0].Currency.Currency != "CHF")
             {
-                iBaseAmount = model.BasicCalculationItems[0].Total;
+                iBaseAmount = model.CalculationViewItems[0].Total;
             }
 
             if (calRow.CalculationBaseGroupRows != null)
@@ -315,7 +315,7 @@ namespace CalculationOilPrice.Library.Business.PriceCalculation
             if (calRow.Tag == "SKT" || calRow.Tag == "PV")
             {
                 decimal iSummaryPercent = value;
-                var oCalculationRows = model.BasicCalculationItems.FindAll(item => !item.IsSummary && item.Group == calRow.Group);
+                var oCalculationRows = model.CalculationViewItems.FindAll(item => !item.IsSummary && item.Group == calRow.Group);
                 iSummaryPercent = oCalculationRows.Sum(item => item.AmountPercent);
 
                 if (iSummaryPercent > 0 && iSummaryPercent < 100)
@@ -331,10 +331,10 @@ namespace CalculationOilPrice.Library.Business.PriceCalculation
         public void UpdateRowAmountPercent(CalculationModel model, CalculationItemModel calRow, decimal value, bool skipBaseGroupRows = false)
         {
             //decimal iBaseAmount = model.MasterAmount;
-            decimal iBaseAmount = model.BasicCalculationItems[0].AmountFix;
-            if (model.BasicCalculationItems[0].Currency.Currency != "CHF")
+            decimal iBaseAmount = model.CalculationViewItems[0].AmountFix;
+            if (model.CalculationViewItems[0].Currency.Currency != "CHF")
             {
-                iBaseAmount = model.BasicCalculationItems[0].Total;
+                iBaseAmount = model.CalculationViewItems[0].Total;
             }
 
             if (!skipBaseGroupRows)
@@ -430,10 +430,10 @@ namespace CalculationOilPrice.Library.Business.PriceCalculation
         public void UpdateRowAmountFix(CalculationModel model, CalculationItemModel calRow, decimal value, bool skipBaseGroupRows = false)
         {
             //decimal iBaseAmount = model.MasterAmount;
-            decimal iBaseAmount = model.BasicCalculationItems[0].AmountFix;
-            if (model.BasicCalculationItems[0].Currency.Currency != "CHF")
+            decimal iBaseAmount = model.CalculationViewItems[0].AmountFix;
+            if (model.CalculationViewItems[0].Currency.Currency != "CHF")
             {
-                iBaseAmount = model.BasicCalculationItems[0].Total;
+                iBaseAmount = model.CalculationViewItems[0].Total;
             }
 
             if (!skipBaseGroupRows)
@@ -489,7 +489,7 @@ namespace CalculationOilPrice.Library.Business.PriceCalculation
 
             foreach (int i in calculationGroups)
             {
-                var oCalculationRows = model.BasicCalculationItems.FindAll(item => !item.IsSummary && calculationGroups.Contains(item.Group));
+                var oCalculationRows = model.CalculationViewItems.FindAll(item => !item.IsSummary && calculationGroups.Contains(item.Group));
 
                 if (oCalculationRows != null)
                 {

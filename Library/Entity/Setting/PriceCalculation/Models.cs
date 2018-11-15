@@ -90,18 +90,21 @@ namespace CalculationOilPrice.Library.Entity.Setting.PriceCalculation.Models
         public decimal Total { get; set; }
         public string Tag { get; set; }
         public int Group { get; set; }
-        //public bool IsSummaryGroup { get; set; }
-        //public bool IsSummaryGroupPlusTotalAmount { get; set; }
         public int Order { get; set; }
         public bool IsSummary { get; set; }
         public List<int> SummaryGroups { get; set; }
-        public List<int> CalculationBaseGroupRows { get; set; }        
+        public List<int> CalculationBaseGroupRows { get; set; }
+
+
+        //keep margin
+        public decimal VariableTotal { get; set; }
+
     }
 
     public class ConvertModel
     {
         public string Unit { get; set; }
-        public decimal OriginalAmount { get; set; }        
+        public decimal OriginalAmount { get; set; }
 
         [Description("P=Percent, F=Fix, T=Total, S=Special")]
         public String ConvertAmountField { get; set; }
@@ -141,18 +144,36 @@ namespace CalculationOilPrice.Library.Entity.Setting.PriceCalculation.Models
         public PriceSetting PriceSetting { get; set; }
 
 
-        //basic calculation
-        public List<CalculationItemModel> BasicCalculationItems { get; set; }
+        public List<CalculationNoteModel> CalculationNotes { get; set; }
 
-        //if scale more than 1
-        public List<CalculationScaleModel> ScaleCalculationItems { get; set; }
+        //basic calculation tempt view, not serialize to json
+        public List<CalculationItemModel> CalculationViewItems { get; set; }
+
+        ////if scale more than 1
+        //public List<CalculationScaleModel> ScaleCalculationItems { get; set; }
     }
-    public class CalculationScaleModel
+
+    //calculation note
+    public class CalculationNoteModel
     {
-        public long ID { get; set; }
-        public decimal Scale { get; set; }
+        //database ros id
+        public long ID { get; set; }        
+
+        //basic calculation
         public List<CalculationItemModel> CalculationItems { get; set; }
+
+        public List<CalculationItemModel> CalculationMarginItems { get; set; }
+
+        //keep scale unit number
+        public decimal Quantity { get; set; }
     }
+
+    //public class CalculationScaleModel
+    //{
+    //    public long ID { get; set; }
+    //    public decimal Scale { get; set; }
+    //    public List<CalculationItemModel> CalculationItems { get; set; }
+    //}
 
     #endregion
 }
