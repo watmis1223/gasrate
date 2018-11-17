@@ -114,7 +114,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             // 
             // gridControl2
             // 
-            this.gridControl2.Location = new System.Drawing.Point(12, 571);
+            this.gridControl2.Location = new System.Drawing.Point(12, 493);
             this.gridControl2.MainView = this.gridView2;
             this.gridControl2.Name = "gridControl2";
             this.gridControl2.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
@@ -124,7 +124,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             this.repositoryItemButtonEdit1,
             this.myRepositoryItemButtonEdit1,
             this.myRepositoryItemButtonEdit2});
-            this.gridControl2.Size = new System.Drawing.Size(1508, 511);
+            this.gridControl2.Size = new System.Drawing.Size(1508, 589);
             this.gridControl2.TabIndex = 22;
             this.gridControl2.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gridView2});
@@ -243,7 +243,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             this.repositoryItemButtonEdit1,
             this.myRepositoryItemButtonEdit1,
             this.myRepositoryItemButtonEdit2});
-            this.gridControl1.Size = new System.Drawing.Size(1508, 511);
+            this.gridControl1.Size = new System.Drawing.Size(1508, 433);
             this.gridControl1.TabIndex = 19;
             this.gridControl1.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gridView1});
@@ -346,7 +346,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             this.layoutControlItem1.Control = this.gridControl1;
             this.layoutControlItem1.Location = new System.Drawing.Point(0, 44);
             this.layoutControlItem1.Name = "layoutControlItem1";
-            this.layoutControlItem1.Size = new System.Drawing.Size(1512, 515);
+            this.layoutControlItem1.Size = new System.Drawing.Size(1512, 437);
             this.layoutControlItem1.TextSize = new System.Drawing.Size(0, 0);
             this.layoutControlItem1.TextVisible = false;
             // 
@@ -377,9 +377,9 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             // layoutControlItem4
             // 
             this.layoutControlItem4.Control = this.gridControl2;
-            this.layoutControlItem4.Location = new System.Drawing.Point(0, 559);
+            this.layoutControlItem4.Location = new System.Drawing.Point(0, 481);
             this.layoutControlItem4.Name = "layoutControlItem4";
-            this.layoutControlItem4.Size = new System.Drawing.Size(1512, 515);
+            this.layoutControlItem4.Size = new System.Drawing.Size(1512, 593);
             this.layoutControlItem4.TextSize = new System.Drawing.Size(0, 0);
             this.layoutControlItem4.TextVisible = false;
             // 

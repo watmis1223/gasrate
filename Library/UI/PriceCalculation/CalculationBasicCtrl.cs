@@ -371,7 +371,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
 
                 //show footer
                 gridView2.OptionsView.ShowFooter = true;                
-
+                
                 //this.layoutControlItem4.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.OnlyInRuntime;                
 
                 gridView2.Columns[TempColumnNames.Sign.ToString()].Width = 20;
@@ -1528,6 +1528,28 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
         private void CboPriceScales_EditValueChanged(object sender, EventArgs e)
         {
             RefreshGrid();
+
+            if (_Model.GeneralSetting.Options.Contains("M"))
+            {
+                if (cboPriceScales.ItemIndex == 0)
+                {
+                    //margin grid layout
+                    this.layoutControlItem4.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Never;
+                }
+                else
+                {
+                    //margin grid layout
+                    this.layoutControlItem4.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Always;
+
+                    //bind margin calculation gridview if needed
+                    BindMarginCalculationView();
+
+                    //calculate margin
+                    _MarginCalculation.UpdateBaseAmountAll(_Model);
+
+                    gridView2.RefreshData();
+                }
+            }            
         }
 
         private void CboMargin_EditValueChanged(object sender, EventArgs e)
