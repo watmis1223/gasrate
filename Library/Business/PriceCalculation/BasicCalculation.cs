@@ -54,12 +54,6 @@ namespace CalculationOilPrice.Library.Business.PriceCalculation
                     oCalRow.Convert.ConvertAmountField = "F";
                 }
 
-                //// GA tag and use custom currency, set P (percent) as default
-                //if (oCalRow.Tag == "GA" && model.GeneralSetting.Currency.Mode == "E")
-                //{
-                //    oCalRow.Convert.ConvertAmountField = "P";
-                //}
-
                 oCalRow.Convert.Unit = unit;
             }
         }
@@ -72,31 +66,6 @@ namespace CalculationOilPrice.Library.Business.PriceCalculation
             {
                 //CHF or custom one
                 oCalRow.Currency.Currency = currency;
-                //oCalRow.Currency.CurrencyBaseAmountField = "F";
-
-                //if (oCalRow.Tag == "BEK")
-                //{
-                //    oCalRow.Currency.CurrencyBaseAmountField = "T";
-                //}
-                //else
-                //{
-                //    oCalRow.Currency.CurrencyBaseAmountField = "F";
-                //}
-
-                ////update master amount
-                //if (model.GeneralSetting.Currency.Rate > 0)
-                //{
-                //    if (oCalRow.Currency.Currency != "CHF")
-                //    {
-                //        //if BEK
-                //        oCalRow.Total = oCalRow.AmountFix * model.GeneralSetting.Currency.Rate;
-                //    }
-                //    else
-                //    {
-                //        //if BEK
-                //        oCalRow.Total = oCalRow.AmountFix;
-                //    }
-                //}
             }
         }
 
@@ -222,9 +191,10 @@ namespace CalculationOilPrice.Library.Business.PriceCalculation
         {
             CalculationItemModel oCalRow = model.CalculationViewItems[rowID];
 
-            //if convert needed
+            //if edited value on grid's cell
             if (isCellEdit)
             {
+                //if convert needed
                 if (oCalRow.Convert != null)
                 {
                     //if edited P then convert F

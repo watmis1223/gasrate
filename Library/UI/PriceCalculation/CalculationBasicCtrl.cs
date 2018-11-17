@@ -32,6 +32,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
         public event SaveChangedCallback SaveChanged;
 
         BasicCalculation _BasicCalculation = new BasicCalculation();
+        MarginCalculation _MarginCalculation = new MarginCalculation();
 
 
         CalculationModel _Model;
@@ -56,7 +57,8 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             SummaryGroups,
             Convert,
             UpdatedAmountField,
-            VariableTotal
+            VariableTotal,
+            EditedField
         }
 
         public CalculationBasicCtrl()
@@ -70,9 +72,14 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             //text edit for non editable cell
             this.repositoryItemButtonEdit1.Buttons.Clear();
 
-            //hide dropdown
+            //hide scale dropdown
             this.layoutControlItem2.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Never;
+
+            //scale unit layout
             this.layoutControlItem3.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Never;
+
+            // margin layout
+            this.layoutControlItem4.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Never;
         }
 
         void GridControl_Paint(object sender, PaintEventArgs e)
@@ -112,7 +119,8 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                 GeneralSetting = generalSettingModel,
                 PriceSetting = priceCalculationSetting.PriceSetting,
                 CalculationNotes = new List<CalculationNoteModel>(),
-                CalculationViewItems = new List<CalculationItemModel>()
+                CalculationViewItems = new List<CalculationItemModel>(),
+                CalculationMarginViewItems = new List<CalculationItemModel>()
                 //BasicCalculationItems = new List<CalculationItemModel>(),
                 //ScaleCalculationItems = new List<CalculationScaleModel>()
             };
@@ -122,6 +130,9 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
 
             //refresh gridview
             RefreshGrid();
+
+            //refresh margin gridview 
+            RefreshGridMargin();
         }
 
         void SetScaleCombobox()
@@ -185,6 +196,11 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             gridView1.RefreshData();
         }
 
+        private void RefreshGridMargin()
+        {
+            gridView2.RefreshData();
+        }
+
         private void InitData()
         {
             int itemOrder = 0;
@@ -202,10 +218,23 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
 
             //setup price scales combobox if needed
             SetScaleCombobox();
-            
+
 
             //bind basic calculation gridview
             BindBasicCalculationView();
+
+
+
+            /////// margin data /////////////////
+
+            //set margin data
+            SetMarginCalculationData();
+
+            //add view items
+            if (_Model.CalculationMarginViewItems.Count == 0)
+            {
+                _Model.CalculationMarginViewItems.AddRange(_Model.CalculationNotes[0].CalculationMarginItems);
+            }
 
             //bind margin calculation gridview if needed
             BindMarginCalculationView();
@@ -220,13 +249,17 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             //Setup columns
             gridView1.RowSeparatorHeight = 2;
 
+
             gridView1.Columns[TempColumnNames.Sign.ToString()].Width = 15;
             gridView1.Columns[TempColumnNames.Sign.ToString()].AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
             gridView1.Columns[TempColumnNames.Sign.ToString()].OptionsColumn.AllowEdit = false;
             gridView1.Columns[TempColumnNames.Sign.ToString()].Caption = " ";
+            gridView1.Columns[TempColumnNames.Sign.ToString()].OptionsColumn.FixedWidth = true;
 
+            gridView1.Columns[TempColumnNames.Description.ToString()].Width = 200;
             gridView1.Columns[TempColumnNames.Description.ToString()].ColumnEdit = this.repositoryItemTextEdit3;
             gridView1.Columns[TempColumnNames.Description.ToString()].Caption = "Kostenanteil";
+            gridView1.Columns[TempColumnNames.Description.ToString()].OptionsColumn.FixedWidth = true;
 
             gridView1.Columns[TempColumnNames.AmountPercent.ToString()].ColumnEdit = this.repositoryItemTextEdit1;
             gridView1.Columns[TempColumnNames.AmountPercent.ToString()].AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
@@ -245,8 +278,10 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             gridView1.Columns[TempColumnNames.Total.ToString()].ColumnEdit = this.repositoryItemTextEdit2;
             gridView1.Columns[TempColumnNames.Total.ToString()].Caption = "CHF";
 
+            gridView1.Columns[TempColumnNames.Tag.ToString()].Width = 80;
             gridView1.Columns[TempColumnNames.Tag.ToString()].OptionsColumn.AllowEdit = false;
             gridView1.Columns[TempColumnNames.Tag.ToString()].Caption = "Kürzel";
+            gridView1.Columns[TempColumnNames.Tag.ToString()].OptionsColumn.FixedWidth = true;
 
             gridView1.Columns[TempColumnNames.Group.ToString()].OptionsColumn.AllowEdit = false;
             gridView1.Columns[TempColumnNames.Group.ToString()].Visible = false;
@@ -260,8 +295,8 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             gridView1.Columns[TempColumnNames.VariableTotal.ToString()].OptionsColumn.AllowEdit = false;
             gridView1.Columns[TempColumnNames.VariableTotal.ToString()].Visible = false;
 
-            //gridView1.Columns[TempColumnNames.UpdatedAmountField.ToString()].OptionsColumn.AllowEdit = false;
-            //gridView1.Columns[TempColumnNames.UpdatedAmountField.ToString()].Visible = false;
+            gridView1.Columns[TempColumnNames.EditedField.ToString()].OptionsColumn.AllowEdit = false;
+            gridView1.Columns[TempColumnNames.EditedField.ToString()].Visible = false;
 
             // set visible for unit converter button
             // A is off, E is on           
@@ -296,57 +331,60 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             //show margin gridcontrol if needed
             if (_Model.GeneralSetting.Options != null && _Model.GeneralSetting.Options.Contains("M"))
             {
-                this.layoutControlItem4.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.OnlyInRuntime;
-
                 //bind data
-                gridControl2.DataSource = _Model.CalculationMarginViewItems;                
+                gridControl2.DataSource = _Model.CalculationMarginViewItems;
 
-                //gridView2.Columns[TempColumnNames.Sign.ToString()].Width = 15;
-                //gridView2.Columns[TempColumnNames.Sign.ToString()].AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-                //gridView2.Columns[TempColumnNames.Sign.ToString()].OptionsColumn.AllowEdit = false;
-                //gridView2.Columns[TempColumnNames.Sign.ToString()].Caption = " ";
+                //this.layoutControlItem4.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.OnlyInRuntime;                
 
-                //gridView2.Columns[TempColumnNames.Description.ToString()].ColumnEdit = this.repositoryItemTextEdit3;
-                //gridView2.Columns[TempColumnNames.Description.ToString()].Caption = "Kostenanteil";
+                gridView2.Columns[TempColumnNames.Sign.ToString()].Width = 15;
+                gridView2.Columns[TempColumnNames.Sign.ToString()].AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+                gridView2.Columns[TempColumnNames.Sign.ToString()].OptionsColumn.AllowEdit = false;
+                gridView2.Columns[TempColumnNames.Sign.ToString()].Caption = " ";
+                gridView2.Columns[TempColumnNames.Sign.ToString()].OptionsColumn.FixedWidth = true;
 
-                //gridView2.Columns[TempColumnNames.AmountPercent.ToString()].ColumnEdit = this.repositoryItemTextEdit1;
-                //gridView2.Columns[TempColumnNames.AmountPercent.ToString()].AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
-                //gridView2.Columns[TempColumnNames.AmountPercent.ToString()].Caption = "%";
+                gridView2.Columns[TempColumnNames.Description.ToString()].Width = 200;
+                gridView2.Columns[TempColumnNames.Description.ToString()].OptionsColumn.AllowEdit = false;
+                gridView2.Columns[TempColumnNames.Description.ToString()].Caption = "Kostenanteil";
+                gridView2.Columns[TempColumnNames.Description.ToString()].OptionsColumn.FixedWidth = true;
 
-                //gridView2.Columns[TempColumnNames.AmountFix.ToString()].ColumnEdit = this.repositoryItemTextEdit1;
-                //gridView2.Columns[TempColumnNames.AmountFix.ToString()].AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
-                //gridView2.Columns[TempColumnNames.AmountFix.ToString()].Caption = "Fix";
-                //if (!_AddedEmptyColumn)
-                //{
-                //    AddEmptyColumn(gridView2.Columns[TempColumnNames.AmountFix.ToString()]);
-                //    _AddedEmptyColumn = true;
-                //}
+                gridView2.Columns[TempColumnNames.AmountPercent.ToString()].ColumnEdit = this.repositoryItemTextEdit1;
+                gridView2.Columns[TempColumnNames.AmountPercent.ToString()].AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
+                gridView2.Columns[TempColumnNames.AmountPercent.ToString()].Caption = "Fixkosten %";
 
-                //gridView2.Columns[TempColumnNames.Total.ToString()].AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
-                //gridView2.Columns[TempColumnNames.Total.ToString()].ColumnEdit = this.repositoryItemTextEdit2;
-                //gridView2.Columns[TempColumnNames.Total.ToString()].Caption = "CHF";
+                gridView2.Columns[TempColumnNames.AmountFix.ToString()].ColumnEdit = this.repositoryItemTextEdit1;
+                gridView2.Columns[TempColumnNames.AmountFix.ToString()].AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
+                gridView2.Columns[TempColumnNames.AmountFix.ToString()].Caption = "Fixkosten";
 
-                //gridView2.Columns[TempColumnNames.Tag.ToString()].OptionsColumn.AllowEdit = false;
-                //gridView2.Columns[TempColumnNames.Tag.ToString()].Caption = "Kürzel";
+                gridView2.Columns[TempColumnNames.Total.ToString()].AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
+                gridView2.Columns[TempColumnNames.Total.ToString()].ColumnEdit = this.repositoryItemTextEdit2;
+                gridView2.Columns[TempColumnNames.Total.ToString()].Caption = "Vollkosten";
+                gridView2.Columns[TempColumnNames.Total.ToString()].VisibleIndex = 2;
 
-                //gridView2.Columns[TempColumnNames.Group.ToString()].OptionsColumn.AllowEdit = false;
-                //gridView2.Columns[TempColumnNames.Group.ToString()].Visible = false;
+                gridView2.Columns[TempColumnNames.VariableTotal.ToString()].ColumnEdit = this.repositoryItemTextEdit1;
+                gridView2.Columns[TempColumnNames.VariableTotal.ToString()].AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
+                gridView2.Columns[TempColumnNames.VariableTotal.ToString()].Caption = "Variable K";
 
-                //gridView2.Columns[TempColumnNames.Order.ToString()].OptionsColumn.AllowEdit = false;
-                //gridView2.Columns[TempColumnNames.Order.ToString()].Visible = false;
+                gridView2.Columns[TempColumnNames.EditedField.ToString()].OptionsColumn.AllowEdit = false;
+                gridView2.Columns[TempColumnNames.EditedField.ToString()].Visible = false;
 
-                //gridView2.Columns[TempColumnNames.IsSummary.ToString()].OptionsColumn.AllowEdit = false;
-                //gridView2.Columns[TempColumnNames.IsSummary.ToString()].Visible = false;
+                gridView2.Columns[TempColumnNames.Tag.ToString()].OptionsColumn.AllowEdit = false;
+                gridView2.Columns[TempColumnNames.Tag.ToString()].Visible = false;
 
-                //gridView2.Columns[TempColumnNames.VariableTotal.ToString()].OptionsColumn.AllowEdit = false;
-                //gridView2.Columns[TempColumnNames.VariableTotal.ToString()].Visible = false;
+                gridView2.Columns[TempColumnNames.Group.ToString()].OptionsColumn.AllowEdit = false;
+                gridView2.Columns[TempColumnNames.Group.ToString()].Visible = false;
 
-                //gridView2.Columns[TempColumnNames.Convert.ToString()].OptionsColumn.AllowEdit = false;
-                //gridView2.Columns[TempColumnNames.Convert.ToString()].Visible = false;
+                gridView2.Columns[TempColumnNames.Order.ToString()].OptionsColumn.AllowEdit = false;
+                gridView2.Columns[TempColumnNames.Order.ToString()].Visible = false;
 
-                //gridView2.Columns[TempColumnNames.Currency.ToString()].OptionsColumn.AllowEdit = false;
-                //gridView2.Columns[TempColumnNames.Currency.ToString()].Visible = false;
-            }            
+                gridView2.Columns[TempColumnNames.IsSummary.ToString()].OptionsColumn.AllowEdit = false;
+                gridView2.Columns[TempColumnNames.IsSummary.ToString()].Visible = false;
+
+                gridView2.Columns[TempColumnNames.Convert.ToString()].OptionsColumn.AllowEdit = false;
+                gridView2.Columns[TempColumnNames.Convert.ToString()].Visible = false;
+
+                gridView2.Columns[TempColumnNames.Currency.ToString()].OptionsColumn.AllowEdit = false;
+                gridView2.Columns[TempColumnNames.Currency.ToString()].Visible = false;
+            }
         }
 
 
@@ -725,6 +763,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                     Sign = "",
                     Description = "Bareinkaufspreis",
                     Tag = "BEK",
+                    AmountPercent = 100,
                     Currency = new CurrencyModel() { Currency = "CHF" },
                     Group = 0,
                     Order = order
@@ -738,6 +777,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                     Sign = "+",
                     Description = "Bezugskosten",
                     Tag = "BZK",
+                    AmountPercent = 100,
                     Currency = new CurrencyModel() { Currency = "CHF" },
                     Group = 1,
                     Order = order
@@ -749,6 +789,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                     Sign = "+",
                     Description = "Beschaffungsteilkosten",
                     Tag = "BEN",
+                    AmountPercent = 100,
                     Currency = new CurrencyModel() { Currency = "CHF" },
                     Group = 1,
                     Order = order
@@ -775,6 +816,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                     Sign = "+",
                     Description = "Verwaltungsgemeinkosten",
                     Tag = "OGK",
+                    AmountPercent = 100,
                     Currency = new CurrencyModel() { Currency = "CHF" },
                     //CalculationBaseGroupRows = new List<int>() { 0, 1 },
                     Group = 2,
@@ -787,6 +829,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                     Sign = "+",
                     Description = "Vertriebsgemeinkosten",
                     Tag = "VGK",
+                    AmountPercent = 100,
                     Currency = new CurrencyModel() { Currency = "CHF" },
                     //CalculationBaseGroupRows = new List<int>() { 0, 1 },
                     Group = 2,
@@ -799,6 +842,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                     Sign = "+",
                     Description = "Sondereinzelkosten des Vertriebs",
                     Tag = "VSK",
+                    AmountPercent = 100,
                     Currency = new CurrencyModel() { Currency = "CHF" },
                     //CalculationBaseGroupRows = new List<int>() { 0, 1 },
                     Group = 2,
@@ -813,10 +857,13 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                     Tag = "VVK",
                     Currency = new CurrencyModel() { Currency = "CHF" },
                     Group = 2,
-                    //SummaryGroups = new List<int>() { 2 },
+                    IsSummary = true,
+                    SummaryGroups = new List<int>() { 2 },
                     Order = order
                 });
 
+
+                //group3
                 order += 1;
                 item.CalculationMarginItems.Add(new CalculationItemModel()
                 {
@@ -824,51 +871,26 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                     Description = "Summe fix/variabel",
                     Tag = "SK 1",
                     Currency = new CurrencyModel() { Currency = "CHF" },
-                    Group = 2,
+                    Group = 3,
                     IsSummary = true,
                     SummaryGroups = new List<int>() { 0, 1, 2 },
                     Order = order
                 });
 
 
-                //group3                  
+                //group4                  
                 order += 1;
-                _Model.CalculationNotes.Last().CalculationItems.Add(new CalculationItemModel()
+                item.CalculationMarginItems.Add(new CalculationItemModel()
                 {
                     Sign = "",
                     Description = "Gewinnaufschlag",
                     Tag = "GA",
+                    AmountPercent = 100,
                     Currency = new CurrencyModel() { Currency = "CHF" },
-                    IsSummary = true,
+                    //IsSummary = true,
                     //CalculationBaseGroupRows = new List<int>() { 0, 1, 2 },
-                    SummaryGroups = new List<int>() { 0, 1, 2, 3 },
-                    Group = 3,
-                    Order = order
-                });
-
-
-                //group4
-                item.CalculationMarginItems.Add(new CalculationItemModel()
-                {
-                    Sign = "",
-                    Description = "Deckungsbeitrag",
-                    Tag = "VK",
-                    Currency = new CurrencyModel() { Currency = "CHF" },
+                    //SummaryGroups = new List<int>() { 0, 1, 2, 3 },
                     Group = 4,
-                    //CalculationBaseGroupRows = new List<int>() { 0, 1, 2, 3 },
-                    //SummaryGroups = new List<int>() { 0, 1, 2, 3, 4 },
-                    Order = order
-                });
-
-                item.CalculationMarginItems.Add(new CalculationItemModel()
-                {
-                    Sign = "",
-                    Description = "Barverkaufspreis",
-                    Tag = "VK(bar)",
-                    Currency = new CurrencyModel() { Currency = "CHF" },
-                    Group = 4,
-                    IsSummary = true,
-                    SummaryGroups = new List<int>() { 0, 1, 2, 3 },
                     Order = order
                 });
 
@@ -877,12 +899,43 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                 item.CalculationMarginItems.Add(new CalculationItemModel()
                 {
                     Sign = "",
-                    Description = "Bruttoverkaufspreis",
-                    Tag = "VK(brutto)",
+                    Description = "Deckungsbeitrag",
+                    Tag = "VK",
                     Currency = new CurrencyModel() { Currency = "CHF" },
                     Group = 5,
+                    //CalculationBaseGroupRows = new List<int>() { 0, 1, 2, 3 },
                     IsSummary = true,
-                    SummaryGroups = new List<int>() { 0, 1, 2, 3, 4 },
+                    SummaryGroups = new List<int>() { 0, 1, 2, 4 },
+                    Order = order
+                });
+
+
+                //group6
+                item.CalculationMarginItems.Add(new CalculationItemModel()
+                {
+                    Sign = "",
+                    Description = "Barverkaufspreis",
+                    Tag = "VK(bar)",
+                    AmountPercent = 100,
+                    Currency = new CurrencyModel() { Currency = "CHF" },
+                    Group = 6,
+                    //IsSummary = true,
+                    //SummaryGroups = new List<int>() { 0, 1, 2, 3, 4, 5 },
+                    Order = order
+                });
+
+
+                //group7
+                item.CalculationMarginItems.Add(new CalculationItemModel()
+                {
+                    Sign = "",
+                    Description = "Bruttoverkaufspreis",
+                    Tag = "VK(brutto)",
+                    AmountPercent = 100,
+                    Currency = new CurrencyModel() { Currency = "CHF" },
+                    Group = 7,
+                    //IsSummary = true,
+                    //SummaryGroups = new List<int>() { 0, 1, 2, 3, 4, 5, 6 },
                     Order = order
                 });
 
@@ -975,9 +1028,65 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                 }
 
                 _BasicCalculation.UpdateGroupAmountAll(_Model, false);
+                _MarginCalculation.UpdateBaseAmountAll(_Model);
             }
 
             gridView1.RefreshData();
+            gridView2.RefreshData();
+        }
+
+        private void gridView2_CellValueChanged(object sender, DevExpress.XtraGrid.Views.Base.CellValueChangedEventArgs e)
+        {
+            //calculation here  
+            if (e.RowHandle > -1)
+            {
+                //bool isSpecial = false;
+                //string sTag = gridView2.GetRowCellValue(e.RowHandle, TempColumnNames.Tag.ToString()).ToString();
+                int iRowOrder = (int)gridView2.GetRowCellValue(e.RowHandle, TempColumnNames.Order.ToString());
+                decimal iBaseTotal = _MarginCalculation.GetBaseTotal(_Model, iRowOrder);
+                decimal iValue = Convert.ToDecimal(e.Value);
+
+                if (e.Column.FieldName == TempColumnNames.AmountPercent.ToString())
+                {
+                    if (iValue < 0 || iValue > 100)
+                    {
+                        _MarginCalculation.UpdateMarginRowAmountPercent(_Model, iRowOrder, (decimal)gridView2.ActiveEditor.OldEditValue);
+                    }
+                    else
+                    {
+                        //_MarginCalculation.UpdateMarginRowAmountPercent(_Model, iRowOrder, iValue);
+                        _MarginCalculation.UpdateMarginRowEditedField(_Model, iRowOrder, "P");
+                    }
+                }
+                else if (e.Column.FieldName == TempColumnNames.AmountFix.ToString())
+                {
+                    if (iValue > iBaseTotal)
+                    {
+                        _MarginCalculation.UpdateMarginRowAmountFix(_Model, iRowOrder, (decimal)gridView2.ActiveEditor.OldEditValue);
+                    }
+                    else
+                    {
+                        //_MarginCalculation.UpdateMarginRowAmountFix(_Model, iRowOrder, iValue);
+                        _MarginCalculation.UpdateMarginRowEditedField(_Model, iRowOrder, "F");
+                    }
+                }
+                else if (e.Column.FieldName == TempColumnNames.VariableTotal.ToString())
+                {
+                    if (iValue > iBaseTotal)
+                    {
+                        _MarginCalculation.UpdateMarginRowAmountVariable(_Model, iRowOrder, (decimal)gridView2.ActiveEditor.OldEditValue);
+                    }
+                    else
+                    {
+                        //_MarginCalculation.UpdateMarginRowAmountVariable(_Model, iRowOrder, iValue);
+                        _MarginCalculation.UpdateMarginRowEditedField(_Model, iRowOrder, "V");
+                    }
+                }
+
+                _MarginCalculation.UpdateBaseAmountAll(_Model);
+            }
+
+            gridView2.RefreshData();
         }
 
         private void gridView1_ValidatingEditor(object sender, DevExpress.XtraEditors.Controls.BaseContainerValidateEditorEventArgs e)
@@ -1029,6 +1138,41 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                         break;
                     case "VK(brutto)":
                         e.Appearance.BackColor = Color.SandyBrown;
+                        break;
+                }
+            }
+        }
+
+        private void gridView2_RowStyle(object sender, DevExpress.XtraGrid.Views.Grid.RowStyleEventArgs e)
+        {
+            if (e.RowHandle > -1)
+            {
+                string sTag = gridView2.GetRowCellValue(e.RowHandle, TempColumnNames.Tag.ToString()).ToString();
+
+                //switch (sTag)
+                //{
+                //    case "BEK": //Bareinkaufspreis
+                //    case "ESTP": //Einstandspreis
+                //    case "VVK": //Verwaltungs- und Vertriebskosten
+                //    case "SK 1": //Summe fix/variabel
+                //    case "GA": //Gewinnaufschlag
+                //    case "VK": //Deckungsbeitrag
+                //    case "VK(bar)": //Barverkaufspreis
+                //    case "VK(brutto)": //Bruttoverkaufspreis
+                //        break;
+                //}
+
+                switch (sTag)
+                {
+                    case "BEK":
+                    case "ESTP":
+                    case "VVK":
+                    case "SK 1":
+                    case "GA": //Gewinnaufschlag
+                    case "VK": //Deckungsbeitrag
+                    case "VK(bar)": //Barverkaufspreis
+                    case "VK(brutto)": //Bruttoverkaufspreis
+                        e.Appearance.BackColor = Color.Gainsboro;
                         break;
                 }
             }
@@ -1098,14 +1242,109 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             }
         }
 
+        private void gridView2_CustomRowCellEdit(object sender, DevExpress.XtraGrid.Views.Grid.CustomRowCellEditEventArgs e)
+        {
+            //disable editor for particular row's cell
+            if (e.RowHandle > -1)
+            {
+                string sTag = gridView2.GetRowCellValue(e.RowHandle, TempColumnNames.Tag.ToString()).ToString();
+
+                //switch (sTag)
+                //{
+                //    case "BEK": //Bareinkaufspreis
+                //    case "ESTP": //Einstandspreis
+                //    case "VVK": //Verwaltungs- und Vertriebskosten
+                //    case "SK 1": //Summe fix/variabel
+                //    case "GA": //Gewinnaufschlag
+                //    case "VK": //Deckungsbeitrag
+                //    case "VK(bar)": //Barverkaufspreis
+                //    case "VK(brutto)": //Bruttoverkaufspreis
+                //        break;
+                //}
+
+                if (e.Column.FieldName == TempColumnNames.Total.ToString())
+                {
+                    switch (sTag)
+                    {
+                        case "ESTP": //Einstandspreis                        
+                        case "SK 1": //Summe fix/variabel
+                        case "GA": //Gewinnaufschlag
+                        case "VK": //Deckungsbeitrag
+                        case "VK(bar)": //Barverkaufspreis
+                        case "VK(brutto)": //Bruttoverkaufspreis
+                            //null editor item
+                            e.RepositoryItem = this.repositoryItemButtonEdit1;
+                            break;
+                    }
+                }
+                else if (e.Column.FieldName == TempColumnNames.AmountPercent.ToString())
+                {
+                    switch (sTag)
+                    {
+                        case "BEK": //Bareinkaufspreis
+                        case "ESTP": //Einstandspreis       
+                        case "VVK": //Verwaltungs- und Vertriebskosten
+                        case "SK 1": //Summe fix/variabel
+                        case "GA": //Gewinnaufschlag
+                        case "VK": //Deckungsbeitrag
+                        case "VK(bar)": //Barverkaufspreis
+                        case "VK(brutto)": //Bruttoverkaufspreis
+                            //null editor item
+                            e.RepositoryItem = this.repositoryItemButtonEdit1;
+                            break;
+                    }
+                }
+                else if (e.Column.FieldName == TempColumnNames.AmountFix.ToString())
+                {
+                    switch (sTag)
+                    {
+                        case "BEK": //Bareinkaufspreis
+                        case "VK(bar)": //Barverkaufspreis
+                        case "VK(brutto)": //Bruttoverkaufspreis
+                            //null editor item
+                            e.RepositoryItem = this.repositoryItemButtonEdit1;
+                            break;
+                        case "ESTP": //Einstandspreis
+                        case "VVK": //Verwaltungs- und Vertriebskosten
+                        case "SK 1": //Summe fix/variabel
+                        case "GA": //Gewinnaufschlag
+                        case "VK": //Deckungsbeitrag
+                            e.RepositoryItem = this.repositoryItemTextEdit2;
+                            break;
+
+                    }
+                }
+                else if (e.Column.FieldName == TempColumnNames.VariableTotal.ToString())
+                {
+                    switch (sTag)
+                    {
+                        case "GA": //Gewinnaufschlag
+                            //null editor item
+                            e.RepositoryItem = this.repositoryItemButtonEdit1;
+                            break;
+                        case "BEK": //Bareinkaufspreis
+                        case "ESTP": //Einstandspreis
+                        case "VVK": //Verwaltungs- und Vertriebskosten
+                        case "SK 1": //Summe fix/variabel
+                        case "VK": //Deckungsbeitrag
+                        case "VK(bar)": //Barverkaufspreis
+                        case "VK(brutto)": //Bruttoverkaufspreis
+                            e.RepositoryItem = this.repositoryItemTextEdit2;
+                            break;
+                    }
+                }
+            }
+        }
+
         private void gridView1_ShowingEditor(object sender, CancelEventArgs e)
         {
             if (gridView1.FocusedRowHandle > -1)
             {
+                string sTag = gridView1.GetRowCellValue(gridView1.FocusedRowHandle, TempColumnNames.Tag.ToString()).ToString();
                 //allow edit description for BEN(s) items only
                 if (gridView1.FocusedColumn.FieldName == TempColumnNames.Description.ToString())
                 {
-                    if (!gridView1.GetRowCellValue(gridView1.FocusedRowHandle, TempColumnNames.Tag.ToString()).ToString().StartsWith("BEN"))
+                    if (!sTag.StartsWith("BEN"))
                     {
                         e.Cancel = true;
                     }
@@ -1121,41 +1360,122 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                             e.Cancel = true;
                         }
                     }
-
-                    //if (_Model.GeneralSetting.Currency.Mode == "E")
-                    //{
-
-                    //    if (!gridView1.GetRowCellValue(
-                    //        gridView1.FocusedRowHandle, TempColumnNames.Tag.ToString()).ToString().StartsWith("BEK"))
-                    //    {                            
-                    //        e.Cancel = true;
-
-                    //        ////if GA and both custom currency and convertion, allow editor
-                    //        //if (gridView1.GetRowCellValue(gridView1.FocusedRowHandle, TempColumnNames.Tag.ToString()).ToString().StartsWith("GA"))
-                    //        //{
-                    //        //    if (_Model.GeneralSetting.Convert.Mode != "E")
-                    //        //    {
-                    //        //        e.Cancel = true;
-                    //        //    }
-                    //        //}
-                    //        //else
-                    //        //{
-                    //        //    e.Cancel = true;
-                    //        //}
-                    //    }
-                    //}
                 }
-                //else if (gridView1.FocusedColumn.FieldName == TempColumnNames.AmountFix.ToString())
-                //{
-                //    //disable amount fix editor if use both custom currency and convertion 
-                //    if (gridView1.GetRowCellValue(gridView1.FocusedRowHandle, TempColumnNames.Tag.ToString()).ToString().StartsWith("GA"))
-                //    {
-                //        if (_Model.GeneralSetting.Currency.Mode == "E" && _Model.GeneralSetting.Convert.Mode == "E")
-                //        {
-                //            e.Cancel = true;
-                //        }
-                //    }
-                //}
+                else if (gridView1.FocusedColumn.FieldName == TempColumnNames.AmountPercent.ToString() ||
+                    gridView1.FocusedColumn.FieldName == TempColumnNames.AmountFix.ToString() ||
+                    gridView1.FocusedColumn.FieldName == TempColumnNames.Total.ToString())
+                {
+                    switch (sTag)
+                    {
+                        case "VK(bar)":
+                            gridView2.Appearance.FocusedCell.BackColor = Color.Lavender;
+                            e.Cancel = true;
+                            break;
+                        case "VK(ziel)":
+                            gridView2.Appearance.FocusedCell.BackColor = Color.PaleTurquoise;
+                            e.Cancel = true;
+                            break;
+                        case "VK(liste)":
+                            gridView2.Appearance.FocusedCell.BackColor = Color.MediumAquamarine;
+                            e.Cancel = true;
+                            break;
+                        case "VK(brutto)":
+                            gridView2.Appearance.FocusedCell.BackColor = Color.SandyBrown;
+                            e.Cancel = true;
+                            break;
+                        case "ESTP":
+                        case "VVK":
+                        case "SK 1":
+                        case "SK 2":
+                            gridView2.Appearance.FocusedCell.BackColor = Color.Gainsboro;
+                            e.Cancel = true;
+                            break;
+                        default:
+                            if (gridView1.FocusedColumn.FieldName == TempColumnNames.Total.ToString())
+                            {
+                                e.Cancel = true;
+                            }
+                            break;
+                    }
+                }
+            }
+        }
+
+        private void gridView2_ShowingEditor(object sender, CancelEventArgs e)
+        {
+            if (gridView2.FocusedRowHandle > -1)
+            {
+                string sTag = gridView2.GetRowCellValue(gridView2.FocusedRowHandle, TempColumnNames.Tag.ToString()).ToString();
+
+                //allow edit description for BEN(s) items only
+                if (gridView2.FocusedColumn.FieldName == TempColumnNames.Total.ToString())
+                {
+                    switch (sTag)
+                    {
+                        case "BEK":
+                        case "ESTP": ////Einstandspreis
+                        case "VVK": //Verwaltungs- und Vertriebskosten
+                        case "SK 1": //Summe fix/variabel
+                        case "GA": //Gewinnaufschlag
+                        case "VK": //Deckungsbeitrag
+                        case "VK(bar)": //Barverkaufspreis
+                        case "VK(brutto)": //Bruttoverkaufspreis
+                            gridView2.Appearance.FocusedCell.BackColor = Color.Gainsboro;
+                            e.Cancel = true;
+                            break;
+                    }
+                }
+                else if (gridView2.FocusedColumn.FieldName == TempColumnNames.AmountPercent.ToString())
+                {
+                    switch (sTag)
+                    {
+                        case "BEK":
+                        case "ESTP": ////Einstandspreis
+                        case "VVK": //Verwaltungs- und Vertriebskosten
+                        case "SK 1": //Summe fix/variabel
+                        case "GA": //Gewinnaufschlag
+                        case "VK": //Deckungsbeitrag
+                        case "VK(bar)": //Barverkaufspreis
+                        case "VK(brutto)": //Bruttoverkaufspreis
+                            gridView2.Appearance.FocusedCell.BackColor = Color.Gainsboro;
+                            e.Cancel = true;
+                            break;
+                    }
+                }
+                else if (gridView2.FocusedColumn.FieldName == TempColumnNames.AmountFix.ToString())
+                {
+                    switch (sTag)
+                    {
+                        case "BEK":
+                        case "ESTP": ////Einstandspreis
+                        case "VVK": //Verwaltungs- und Vertriebskosten
+                        case "SK 1": //Summe fix/variabel
+                        case "GA": //Gewinnaufschlag
+                        case "VK": //Deckungsbeitrag
+                        case "VK(bar)": //Barverkaufspreis
+                        case "VK(brutto)": //Bruttoverkaufspreis
+                            gridView2.Appearance.FocusedCell.BackColor = Color.Gainsboro;
+                            e.Cancel = true;
+                            break;
+                    }
+                }
+                else if (gridView2.FocusedColumn.FieldName == TempColumnNames.VariableTotal.ToString())
+                {
+                    switch (sTag)
+                    {
+                        case "BEK":
+                        case "ESTP": ////Einstandspreis
+                        case "VVK": //Verwaltungs- und Vertriebskosten
+                        case "SK 1": //Summe fix/variabel
+                        case "GA": //Gewinnaufschlag
+                        case "VK": //Deckungsbeitrag
+                        case "VK(bar)": //Barverkaufspreis
+                        case "VK(brutto)": //Bruttoverkaufspreis
+                            gridView2.Appearance.FocusedCell.BackColor = Color.Gainsboro;
+                            e.Cancel = true;
+                            break;
+                    }
+                }
             }
         }
 
@@ -1214,6 +1534,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
 
         private void gridView1_CustomDrawCell(object sender, DevExpress.XtraGrid.Views.Base.RowCellCustomDrawEventArgs e)
         {
+            //for button edit controls, set button's caption
             if (e.RowHandle > -1)
             {
                 if (e.Column.FieldName == TempColumnNames.Convert.ToString())
@@ -1237,6 +1558,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
 
         private void TxtScaleNumber_EditValueChanged(object sender, System.EventArgs e)
         {
+            //after button edit control click, update value to calculation model
             if (cboPriceScales.ItemIndex > 0)
             {
                 _Model.CalculationNotes[cboPriceScales.ItemIndex].Quantity = Convert.ToDecimal(txtScaleNumber.Text);

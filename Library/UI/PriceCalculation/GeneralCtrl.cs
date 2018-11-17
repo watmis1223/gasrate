@@ -14,6 +14,7 @@ using System.Globalization;
 using CalculationOilPrice.Library.Entity.Setting.PriceCalculation;
 using CalculationOilPrice.Library.Entity.Setting.PriceCalculation.Models;
 using System.Linq;
+using DevExpress.XtraEditors.Controls;
 
 namespace CalculationOilPrice.Library.UI.PriceCalculation
 {
@@ -154,9 +155,9 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
         {
             List<string> oList = new List<string>();
 
-            foreach (var item in chkOptionList.SelectedItems)
+            foreach (CheckedListBoxItem item in chkOptionList.CheckedItems)
             {
-                oList.Add(item.ToString());
+                oList.Add(item.Value.ToString());
             }
 
             return oList;

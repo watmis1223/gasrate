@@ -95,9 +95,11 @@ namespace CalculationOilPrice.Library.Entity.Setting.PriceCalculation.Models
         public List<int> SummaryGroups { get; set; }
         public List<int> CalculationBaseGroupRows { get; set; }
 
-
         //keep margin
         public decimal VariableTotal { get; set; }
+
+        //P percent, F fix, V variable total, T total
+        public string EditedField { get; set; }
 
     }
 
@@ -149,8 +151,8 @@ namespace CalculationOilPrice.Library.Entity.Setting.PriceCalculation.Models
         //basic calculation tempt view, not serialize to json
         public List<CalculationItemModel> CalculationViewItems { get; set; }
 
-        public List<CalculationItemModel> CalculationMarginViewItems { get; set; }n
-
+        public List<CalculationItemModel> CalculationMarginViewItems { get; set; }
+        
         ////if scale more than 1
         //public List<CalculationScaleModel> ScaleCalculationItems { get; set; }
     }
