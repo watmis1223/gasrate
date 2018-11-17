@@ -7,7 +7,7 @@ using System.Text;
 namespace CalculationOilPrice.Library.Entity.Setting.PriceCalculation.Models
 {
 
-    public class PriceScaleComboboxItem
+    public class ComboboxItemModel
     {
         public int Value { get; set; }
         public string Caption { get; set; }

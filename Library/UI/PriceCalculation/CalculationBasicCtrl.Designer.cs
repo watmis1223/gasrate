@@ -31,17 +31,18 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
         private void InitializeComponent()
         {
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
+            this.cboMargin = new DevExpress.XtraEditors.LookUpEdit();
             this.gridControl2 = new DevExpress.XtraGrid.GridControl();
             this.gridView2 = new DevExpress.XtraGrid.Views.Grid.GridView();
-            this.txtScaleNumber = new DevExpress.XtraEditors.TextEdit();
-            this.gridControl1 = new DevExpress.XtraGrid.GridControl();
-            this.gridView1 = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.repositoryItemTextEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemTextEdit();
             this.repositoryItemTextEdit2 = new DevExpress.XtraEditors.Repository.RepositoryItemTextEdit();
             this.repositoryItemTextEdit3 = new DevExpress.XtraEditors.Repository.RepositoryItemTextEdit();
             this.repositoryItemButtonEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemButtonEdit();
             this.myRepositoryItemButtonEdit1 = new CalculationOilPrice.Library.UI.Component.MyRepositoryItemButtonEdit();
             this.myRepositoryItemButtonEdit2 = new CalculationOilPrice.Library.UI.Component.MyRepositoryItemButtonEdit();
+            this.txtScaleNumber = new DevExpress.XtraEditors.TextEdit();
+            this.gridControl1 = new DevExpress.XtraGrid.GridControl();
+            this.gridView1 = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.btnSave = new DevExpress.XtraEditors.SimpleButton();
             this.cboPriceScales = new DevExpress.XtraEditors.LookUpEdit();
             this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
@@ -51,19 +52,21 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
             this.layoutControlItem3 = new DevExpress.XtraLayout.LayoutControlItem();
             this.layoutControlItem4 = new DevExpress.XtraLayout.LayoutControlItem();
+            this.layoutControlItem5 = new DevExpress.XtraLayout.LayoutControlItem();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             this.layoutControl1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.cboMargin.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridControl2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridView2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.txtScaleNumber.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.gridControl1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.gridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemTextEdit1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemTextEdit2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemTextEdit3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemButtonEdit1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.myRepositoryItemButtonEdit1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.myRepositoryItemButtonEdit2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.txtScaleNumber.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridControl1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cboPriceScales.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem15)).BeginInit();
@@ -72,10 +75,12 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem4)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem5)).BeginInit();
             this.SuspendLayout();
             // 
             // layoutControl1
             // 
+            this.layoutControl1.Controls.Add(this.cboMargin);
             this.layoutControl1.Controls.Add(this.gridControl2);
             this.layoutControl1.Controls.Add(this.txtScaleNumber);
             this.layoutControl1.Controls.Add(this.gridControl1);
@@ -90,11 +95,35 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             this.layoutControl1.TabIndex = 0;
             this.layoutControl1.Text = "layoutControl1";
             // 
+            // cboMargin
+            // 
+            this.cboMargin.Location = new System.Drawing.Point(716, 12);
+            this.cboMargin.Name = "cboMargin";
+            this.cboMargin.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.cboMargin.Properties.Columns.AddRange(new DevExpress.XtraEditors.Controls.LookUpColumnInfo[] {
+            new DevExpress.XtraEditors.Controls.LookUpColumnInfo("ID", "", 20, DevExpress.Utils.FormatType.None, "", false, DevExpress.Utils.HorzAlignment.Default, DevExpress.Data.ColumnSortOrder.None, DevExpress.Utils.DefaultBoolean.Default),
+            new DevExpress.XtraEditors.Controls.LookUpColumnInfo("Caption", "", 20, DevExpress.Utils.FormatType.None, "", true, DevExpress.Utils.HorzAlignment.Default, DevExpress.Data.ColumnSortOrder.None, DevExpress.Utils.DefaultBoolean.False)});
+            this.cboMargin.Properties.NullText = "";
+            this.cboMargin.Properties.PopupSizeable = false;
+            this.cboMargin.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.Standard;
+            this.cboMargin.Size = new System.Drawing.Size(300, 40);
+            this.cboMargin.StyleController = this.layoutControl1;
+            this.cboMargin.TabIndex = 23;
+            this.cboMargin.EditValueChanged += new System.EventHandler(this.CboMargin_EditValueChanged);
+            // 
             // gridControl2
             // 
             this.gridControl2.Location = new System.Drawing.Point(12, 571);
             this.gridControl2.MainView = this.gridView2;
             this.gridControl2.Name = "gridControl2";
+            this.gridControl2.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
+            this.repositoryItemTextEdit1,
+            this.repositoryItemTextEdit2,
+            this.repositoryItemTextEdit3,
+            this.repositoryItemButtonEdit1,
+            this.myRepositoryItemButtonEdit1,
+            this.myRepositoryItemButtonEdit2});
             this.gridControl2.Size = new System.Drawing.Size(1508, 511);
             this.gridControl2.TabIndex = 22;
             this.gridControl2.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
@@ -102,6 +131,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             // 
             // gridView2
             // 
+            this.gridView2.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.None;
             this.gridView2.GridControl = this.gridControl2;
             this.gridView2.Name = "gridView2";
             this.gridView2.OptionsBehavior.AllowAddRows = DevExpress.Utils.DefaultBoolean.False;
@@ -119,10 +149,70 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             this.gridView2.OptionsView.ShowGroupExpandCollapseButtons = false;
             this.gridView2.OptionsView.ShowGroupPanel = false;
             this.gridView2.OptionsView.ShowIndicator = false;
+            this.gridView2.CustomDrawFooterCell += new DevExpress.XtraGrid.Views.Grid.FooterCellCustomDrawEventHandler(this.gridView2_CustomDrawFooterCell);
+            this.gridView2.CustomDrawFooter += new DevExpress.XtraGrid.Views.Base.RowObjectCustomDrawEventHandler(this.gridView2_CustomDrawFooter);
             this.gridView2.RowStyle += new DevExpress.XtraGrid.Views.Grid.RowStyleEventHandler(this.gridView2_RowStyle);
             this.gridView2.CustomRowCellEdit += new DevExpress.XtraGrid.Views.Grid.CustomRowCellEditEventHandler(this.gridView2_CustomRowCellEdit);
+            this.gridView2.CustomSummaryCalculate += new DevExpress.Data.CustomSummaryEventHandler(this.gridView2_CustomSummaryCalculate);
             this.gridView2.ShowingEditor += new System.ComponentModel.CancelEventHandler(this.gridView2_ShowingEditor);
-            this.gridView2.CellValueChanged += new DevExpress.XtraGrid.Views.Base.CellValueChangedEventHandler(this.gridView2_CellValueChanged);           
+            this.gridView2.CellValueChanged += new DevExpress.XtraGrid.Views.Base.CellValueChangedEventHandler(this.gridView2_CellValueChanged);
+            // 
+            // repositoryItemTextEdit1
+            // 
+            this.repositoryItemTextEdit1.Appearance.Options.UseTextOptions = true;
+            this.repositoryItemTextEdit1.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
+            this.repositoryItemTextEdit1.AutoHeight = false;
+            this.repositoryItemTextEdit1.DisplayFormat.FormatString = "n4";
+            this.repositoryItemTextEdit1.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
+            this.repositoryItemTextEdit1.EditFormat.FormatString = "n4";
+            this.repositoryItemTextEdit1.EditFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
+            this.repositoryItemTextEdit1.Mask.EditMask = "n4";
+            this.repositoryItemTextEdit1.Mask.MaskType = DevExpress.XtraEditors.Mask.MaskType.Numeric;
+            this.repositoryItemTextEdit1.Name = "repositoryItemTextEdit1";
+            this.repositoryItemTextEdit1.NullText = "0.0000";
+            // 
+            // repositoryItemTextEdit2
+            // 
+            this.repositoryItemTextEdit2.Appearance.Options.UseTextOptions = true;
+            this.repositoryItemTextEdit2.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
+            this.repositoryItemTextEdit2.AutoHeight = false;
+            this.repositoryItemTextEdit2.DisplayFormat.FormatString = "n4";
+            this.repositoryItemTextEdit2.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
+            this.repositoryItemTextEdit2.EditFormat.FormatString = "n4";
+            this.repositoryItemTextEdit2.EditFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
+            this.repositoryItemTextEdit2.Mask.EditMask = "n4";
+            this.repositoryItemTextEdit2.Mask.MaskType = DevExpress.XtraEditors.Mask.MaskType.Numeric;
+            this.repositoryItemTextEdit2.Name = "repositoryItemTextEdit2";
+            this.repositoryItemTextEdit2.NullText = "0.0000";
+            this.repositoryItemTextEdit2.ReadOnly = true;
+            // 
+            // repositoryItemTextEdit3
+            // 
+            this.repositoryItemTextEdit3.Appearance.Options.UseTextOptions = true;
+            this.repositoryItemTextEdit3.AutoHeight = false;
+            this.repositoryItemTextEdit3.Name = "repositoryItemTextEdit3";
+            // 
+            // repositoryItemButtonEdit1
+            // 
+            this.repositoryItemButtonEdit1.AllowFocused = false;
+            this.repositoryItemButtonEdit1.Name = "repositoryItemButtonEdit1";
+            this.repositoryItemButtonEdit1.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.HideTextEditor;
+            // 
+            // myRepositoryItemButtonEdit1
+            // 
+            this.myRepositoryItemButtonEdit1.AutoHeight = false;
+            this.myRepositoryItemButtonEdit1.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Glyph)});
+            this.myRepositoryItemButtonEdit1.Name = "myRepositoryItemButtonEdit1";
+            this.myRepositoryItemButtonEdit1.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.HideTextEditor;
+            // 
+            // myRepositoryItemButtonEdit2
+            // 
+            this.myRepositoryItemButtonEdit2.AutoHeight = false;
+            this.myRepositoryItemButtonEdit2.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Glyph)});
+            this.myRepositoryItemButtonEdit2.Name = "myRepositoryItemButtonEdit2";
+            this.myRepositoryItemButtonEdit2.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.HideTextEditor;
             // 
             // txtScaleNumber
             // 
@@ -185,63 +275,6 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             this.gridView1.CellValueChanged += new DevExpress.XtraGrid.Views.Base.CellValueChangedEventHandler(this.gridView1_CellValueChanged);
             this.gridView1.ValidatingEditor += new DevExpress.XtraEditors.Controls.BaseContainerValidateEditorEventHandler(this.gridView1_ValidatingEditor);
             // 
-            // repositoryItemTextEdit1
-            // 
-            this.repositoryItemTextEdit1.Appearance.Options.UseTextOptions = true;
-            this.repositoryItemTextEdit1.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
-            this.repositoryItemTextEdit1.AutoHeight = false;
-            this.repositoryItemTextEdit1.DisplayFormat.FormatString = "n4";
-            this.repositoryItemTextEdit1.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
-            this.repositoryItemTextEdit1.EditFormat.FormatString = "n4";
-            this.repositoryItemTextEdit1.EditFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
-            this.repositoryItemTextEdit1.Mask.EditMask = "n4";
-            this.repositoryItemTextEdit1.Mask.MaskType = DevExpress.XtraEditors.Mask.MaskType.Numeric;
-            this.repositoryItemTextEdit1.Name = "repositoryItemTextEdit1";
-            this.repositoryItemTextEdit1.NullText = "0.0000";
-            // 
-            // repositoryItemTextEdit2
-            // 
-            this.repositoryItemTextEdit2.Appearance.Options.UseTextOptions = true;
-            this.repositoryItemTextEdit2.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
-            this.repositoryItemTextEdit2.AutoHeight = false;
-            this.repositoryItemTextEdit2.DisplayFormat.FormatString = "n4";
-            this.repositoryItemTextEdit2.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
-            this.repositoryItemTextEdit2.EditFormat.FormatString = "n4";
-            this.repositoryItemTextEdit2.EditFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
-            this.repositoryItemTextEdit2.Mask.EditMask = "n4";
-            this.repositoryItemTextEdit2.Mask.MaskType = DevExpress.XtraEditors.Mask.MaskType.Numeric;
-            this.repositoryItemTextEdit2.Name = "repositoryItemTextEdit2";
-            this.repositoryItemTextEdit2.NullText = "0.0000";
-            this.repositoryItemTextEdit2.ReadOnly = true;
-            // 
-            // repositoryItemTextEdit3
-            // 
-            this.repositoryItemTextEdit3.Appearance.Options.UseTextOptions = true;
-            this.repositoryItemTextEdit3.AutoHeight = false;
-            this.repositoryItemTextEdit3.Name = "repositoryItemTextEdit3";
-            // 
-            // repositoryItemButtonEdit1
-            // 
-            this.repositoryItemButtonEdit1.AllowFocused = false;
-            this.repositoryItemButtonEdit1.Name = "repositoryItemButtonEdit1";
-            this.repositoryItemButtonEdit1.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.HideTextEditor;
-            // 
-            // myRepositoryItemButtonEdit1
-            // 
-            this.myRepositoryItemButtonEdit1.AutoHeight = false;
-            this.myRepositoryItemButtonEdit1.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Glyph)});
-            this.myRepositoryItemButtonEdit1.Name = "myRepositoryItemButtonEdit1";
-            this.myRepositoryItemButtonEdit1.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.HideTextEditor;
-            // 
-            // myRepositoryItemButtonEdit2
-            // 
-            this.myRepositoryItemButtonEdit2.AutoHeight = false;
-            this.myRepositoryItemButtonEdit2.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Glyph)});
-            this.myRepositoryItemButtonEdit2.Name = "myRepositoryItemButtonEdit2";
-            this.myRepositoryItemButtonEdit2.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.HideTextEditor;
-            // 
             // btnSave
             // 
             this.btnSave.Location = new System.Drawing.Point(1346, 1086);
@@ -282,7 +315,8 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             this.layoutControlItem1,
             this.layoutControlItem2,
             this.layoutControlItem3,
-            this.layoutControlItem4});
+            this.layoutControlItem4,
+            this.layoutControlItem5});
             this.layoutControlGroup1.Name = "Root";
             this.layoutControlGroup1.Size = new System.Drawing.Size(1532, 1142);
             this.layoutControlGroup1.TextVisible = false;
@@ -335,7 +369,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             this.layoutControlItem3.MaxSize = new System.Drawing.Size(400, 44);
             this.layoutControlItem3.MinSize = new System.Drawing.Size(400, 44);
             this.layoutControlItem3.Name = "layoutControlItem3";
-            this.layoutControlItem3.Size = new System.Drawing.Size(1208, 44);
+            this.layoutControlItem3.Size = new System.Drawing.Size(400, 44);
             this.layoutControlItem3.SizeConstraintsType = DevExpress.XtraLayout.SizeConstraintsType.Custom;
             this.layoutControlItem3.Text = "Mengenangabe der Staffel";
             this.layoutControlItem3.TextSize = new System.Drawing.Size(248, 25);
@@ -349,6 +383,18 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             this.layoutControlItem4.TextSize = new System.Drawing.Size(0, 0);
             this.layoutControlItem4.TextVisible = false;
             // 
+            // layoutControlItem5
+            // 
+            this.layoutControlItem5.Control = this.cboMargin;
+            this.layoutControlItem5.Location = new System.Drawing.Point(704, 0);
+            this.layoutControlItem5.MaxSize = new System.Drawing.Size(304, 44);
+            this.layoutControlItem5.MinSize = new System.Drawing.Size(304, 44);
+            this.layoutControlItem5.Name = "layoutControlItem5";
+            this.layoutControlItem5.Size = new System.Drawing.Size(808, 44);
+            this.layoutControlItem5.SizeConstraintsType = DevExpress.XtraLayout.SizeConstraintsType.Custom;
+            this.layoutControlItem5.TextSize = new System.Drawing.Size(0, 0);
+            this.layoutControlItem5.TextVisible = false;
+            // 
             // CalculationBasicCtrl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
@@ -360,17 +406,18 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             this.Load += new System.EventHandler(this.SettingCtrl_Load);
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
             this.layoutControl1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.cboMargin.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridControl2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridView2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.txtScaleNumber.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.gridControl1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.gridView1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemTextEdit1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemTextEdit2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemTextEdit3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemButtonEdit1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.myRepositoryItemButtonEdit1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.myRepositoryItemButtonEdit2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.txtScaleNumber.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridControl1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridView1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.cboPriceScales.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem15)).EndInit();
@@ -379,6 +426,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem4)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem5)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -391,10 +439,10 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
         private DevExpress.XtraLayout.EmptySpaceItem emptySpaceItem2;
         private DevExpress.XtraGrid.GridControl gridControl1;
         private DevExpress.XtraGrid.Views.Grid.GridView gridView1;
-        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;        
+        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
         private DevExpress.XtraEditors.Repository.RepositoryItemTextEdit repositoryItemTextEdit1;
         private DevExpress.XtraEditors.Repository.RepositoryItemTextEdit repositoryItemTextEdit2;
-        private DevExpress.XtraEditors.Repository.RepositoryItemTextEdit repositoryItemTextEdit3;        
+        private DevExpress.XtraEditors.Repository.RepositoryItemTextEdit repositoryItemTextEdit3;
         private DevExpress.XtraEditors.Repository.RepositoryItemButtonEdit repositoryItemButtonEdit1;
         private MyRepositoryItemButtonEdit myRepositoryItemButtonEdit1;
         private MyRepositoryItemButtonEdit myRepositoryItemButtonEdit2;
@@ -405,5 +453,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
         private DevExpress.XtraGrid.GridControl gridControl2;
         private DevExpress.XtraGrid.Views.Grid.GridView gridView2;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem4;
+        private DevExpress.XtraEditors.LookUpEdit cboMargin;
+        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem5;
     }
 }

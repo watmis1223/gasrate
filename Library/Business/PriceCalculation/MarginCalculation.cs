@@ -175,6 +175,21 @@ namespace CalculationOilPrice.Library.Business.PriceCalculation
             }
         }
 
+        public decimal GetMarginSummarize(CalculationModel model)
+        {
+            decimal iSummary = 0;
+
+            CalculationItemModel oVK = model.CalculationMarginViewItems.Find(item => item.Tag == "VK");
+            CalculationItemModel oVKbrutto = model.CalculationMarginViewItems.Find(item => item.Tag == "VK(brutto)");
+
+            if (oVK != null && (oVKbrutto != null && oVKbrutto.VariableTotal > 0))
+            {
+                iSummary = (oVK.VariableTotal / oVKbrutto.VariableTotal) * 100;
+            }
+
+            return iSummary;
+        }
+
         //public void UpdateCalculationRowAmount(CalculationModel model, int basicItemRowID, decimal value, bool isPercent, bool specialCalculation, bool isCellEdit)
         //{
         //    CalculationItemModel oCalRow = model.CalculationViewItems[rowID];

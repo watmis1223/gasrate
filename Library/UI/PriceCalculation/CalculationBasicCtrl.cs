@@ -78,12 +78,16 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             //scale unit layout
             this.layoutControlItem3.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Never;
 
-            // margin layout
+            // margin grid layout
             this.layoutControlItem4.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Never;
+
+            // margin dropdown layout
+            this.layoutControlItem5.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Never;
         }
 
         void GridControl_Paint(object sender, PaintEventArgs e)
-        {
+        {            
+            //paint empty vertical column(s)
             GridViewInfo vi = gridView1.GetViewInfo() as GridViewInfo;
             using (SolidBrush brush = new SolidBrush(vi.PaintAppearance.Empty.BackColor))
             {
@@ -141,15 +145,15 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             //if price scale more than 1
             if (_Model.GeneralSetting.PriceScale.Scale > 1)
             {
-                List<PriceScaleComboboxItem> oItems = new List<PriceScaleComboboxItem>();
+                List<ComboboxItemModel> oItems = new List<ComboboxItemModel>();
 
                 //add basic calculation first
-                oItems.Add(new PriceScaleComboboxItem() { Value = 0, Caption = "Grundberechnung" });
+                oItems.Add(new ComboboxItemModel() { Value = 0, Caption = "Grundberechnung" });
 
                 //setup price scale dropdown items
                 for (int i = 1; i <= _Model.GeneralSetting.PriceScale.Scale; i++)
                 {
-                    oItems.Add(new PriceScaleComboboxItem() { Value = i, Caption = String.Format("Staffel {0}", i) });
+                    oItems.Add(new ComboboxItemModel() { Value = i, Caption = String.Format("Staffel {0}", i) });
                 }
 
                 cboPriceScales.Properties.DataSource = oItems;
@@ -157,6 +161,31 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                 cboPriceScales.Properties.DisplayMember = "Caption";
                 cboPriceScales.ItemIndex = 0;
                 this.layoutControlItem2.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.OnlyInRuntime;
+            }
+        }
+
+        void SetMarginCombobox()
+        {
+            //setup margin combobox
+            //if price scale equals 1
+            if (_Model.GeneralSetting.Options.Contains("M"))
+            {
+                if (_Model.GeneralSetting.PriceScale.Scale == 1)
+                {
+                    List<ComboboxItemModel> oItems = new List<ComboboxItemModel>();
+
+                    //add basic calculation first
+                    oItems.Add(new ComboboxItemModel() { Value = 0, Caption = "Brechnung VK" });
+
+                    //add margin
+                    oItems.Add(new ComboboxItemModel() { Value = 1, Caption = "Deckungsbeitrag" });
+
+                    cboMargin.Properties.DataSource = oItems;
+                    cboMargin.Properties.ValueMember = "Value";
+                    cboMargin.Properties.DisplayMember = "Caption";
+                    cboMargin.ItemIndex = 0;
+                    this.layoutControlItem5.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.OnlyInRuntime;
+                }
             }
         }
 
@@ -219,7 +248,6 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             //setup price scales combobox if needed
             SetScaleCombobox();
 
-
             //bind basic calculation gridview
             BindBasicCalculationView();
 
@@ -230,6 +258,10 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             //set margin data
             SetMarginCalculationData();
 
+            //set margin combobox
+            SetMarginCombobox();
+
+
             //add view items
             if (_Model.CalculationMarginViewItems.Count == 0)
             {
@@ -237,8 +269,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             }
 
             //bind margin calculation gridview if needed
-            BindMarginCalculationView();
-
+            BindMarginCalculationView();          
         }
 
         void BindBasicCalculationView()
@@ -247,8 +278,8 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             gridControl1.DataSource = _Model.CalculationViewItems;
 
             //Setup columns
+            //set vertical gap
             gridView1.RowSeparatorHeight = 2;
-
 
             gridView1.Columns[TempColumnNames.Sign.ToString()].Width = 15;
             gridView1.Columns[TempColumnNames.Sign.ToString()].AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
@@ -334,9 +365,16 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                 //bind data
                 gridControl2.DataSource = _Model.CalculationMarginViewItems;
 
+                //Setup columns
+                //set vertical gap
+                gridView2.RowSeparatorHeight = 2;
+
+                //show footer
+                gridView2.OptionsView.ShowFooter = true;                
+
                 //this.layoutControlItem4.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.OnlyInRuntime;                
 
-                gridView2.Columns[TempColumnNames.Sign.ToString()].Width = 15;
+                gridView2.Columns[TempColumnNames.Sign.ToString()].Width = 20;
                 gridView2.Columns[TempColumnNames.Sign.ToString()].AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
                 gridView2.Columns[TempColumnNames.Sign.ToString()].OptionsColumn.AllowEdit = false;
                 gridView2.Columns[TempColumnNames.Sign.ToString()].Caption = " ";
@@ -384,6 +422,14 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
 
                 gridView2.Columns[TempColumnNames.Currency.ToString()].OptionsColumn.AllowEdit = false;
                 gridView2.Columns[TempColumnNames.Currency.ToString()].Visible = false;
+
+                //add footer column1
+                if (gridView2.Columns[TempColumnNames.Description.ToString()].Summary.Count == 0)
+                {
+                    gridView2.Columns[TempColumnNames.Description.ToString()].Summary.Add(DevExpress.Data.SummaryItemType.Custom, 
+                        "Col1Row1",
+                        "Der Deckungsbeitrag beträgt {0:n4}% vom Bruttoverkaufspreis");                    
+                }
             }
         }
 
@@ -1484,6 +1530,31 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             RefreshGrid();
         }
 
+        private void CboMargin_EditValueChanged(object sender, EventArgs e)
+        {
+            if (cboMargin.ItemIndex == 0)
+            {
+                //basic grid layout
+                this.layoutControlItem1.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Always;
+
+                //margin grid layout
+                this.layoutControlItem4.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Never;
+            }
+            else
+            {
+                //basic grid layout
+                this.layoutControlItem1.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Never;
+
+                //margin grid layout
+                this.layoutControlItem4.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Always;
+
+                //bind margin calculation gridview if needed
+                BindMarginCalculationView();
+
+                gridView2.RefreshData();
+            }
+        }
+
         private void MyRepositoryItemButtonEdit1_ButtonClick(object sender, DevExpress.XtraEditors.Controls.ButtonPressedEventArgs e)
         {
             //unit button click
@@ -1562,6 +1633,54 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             if (cboPriceScales.ItemIndex > 0)
             {
                 _Model.CalculationNotes[cboPriceScales.ItemIndex].Quantity = Convert.ToDecimal(txtScaleNumber.Text);
+            }
+        }
+
+        private void gridView2_CustomSummaryCalculate(object sender, DevExpress.Data.CustomSummaryEventArgs e)
+        {
+            GridColumnSummaryItem customSummaryItem = e.Item as GridColumnSummaryItem;
+
+            if (e.SummaryProcess == DevExpress.Data.CustomSummaryProcess.Finalize)
+            {
+                //summary column 1
+                if (customSummaryItem.FieldName == "Col1Row1")
+                {
+                    e.TotalValue = _MarginCalculation.GetMarginSummarize(_Model);
+                }                
+            }
+        }
+
+        private void gridView2_CustomDrawFooter(object sender, DevExpress.XtraGrid.Views.Base.RowObjectCustomDrawEventArgs e)
+        {
+            //GridView view = sender as GridView;
+            //Rectangle r1 = (view.GetViewInfo() as GridViewInfo).ColumnsInfo[1].Bounds;
+            //Rectangle r2 = (view.GetViewInfo() as GridViewInfo).ColumnsInfo[2].Bounds;
+            //Rectangle r11 = (view.GetViewInfo() as GridViewInfo).FooterInfo.Cells[0].Bounds;
+            //Rectangle r12 = (view.GetViewInfo() as GridViewInfo).FooterInfo.Cells[1].Bounds;
+        }
+
+        private void gridView2_CustomDrawFooterCell(object sender, FooterCellCustomDrawEventArgs e)
+        {
+            GridView view = sender as GridView;
+            if (e.Column.Caption == "Kostenanteil")
+            {
+                Rectangle r = e.Info.Bounds;
+                Rectangle r11 = (view.GetViewInfo() as GridViewInfo).ColumnsInfo[view.Columns[TempColumnNames.Description.ToString()]].Bounds;
+
+                e.Bounds.Inflate(-5, -5);
+                e.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+                e.Info.Bounds = new Rectangle(r11.Left, r.Top, r11.Width + 200, r.Height);
+                e.DefaultDraw();                
+
+
+                //Rectangle r = e.Info.Bounds;
+                //string text = e.Info.DisplayText;
+                //Rectangle r11 = (view.GetViewInfo() as GridViewInfo).ColumnsInfo[view.Columns[TempColumnNames.Description.ToString()]].Bounds;
+                ////Rectangle r12 = (view.GetViewInfo() as GridViewInfo).ColumnsInfo[view.Columns[TempColumnNames.Total.ToString()]].Bounds;
+                //e.Info.Bounds = new Rectangle(r11.Left, r.Top, r11.Width + 200, r.Height);
+                //e.Painter.DrawObject(e.Info);
+                //e.Info.Bounds = r;
+                e.Handled = true;
             }
         }
     }
