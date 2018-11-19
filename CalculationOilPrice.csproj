@@ -189,6 +189,8 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Library\Business\PriceCalculation\CostCalculation.cs" />
+    <Compile Include="Library\Business\PriceCalculation\ICalculation.cs" />
     <Compile Include="Library\Business\PriceCalculation\MarginCalculation.cs" />
     <Compile Include="Library\Business\PriceCalculation\BasicCalculation.cs" />
     <Compile Include="Library\Entity\Commission.cs" />

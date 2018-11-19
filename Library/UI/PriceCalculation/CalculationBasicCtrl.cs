@@ -31,7 +31,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
         public delegate void SaveChangedCallback();
         public event SaveChangedCallback SaveChanged;
 
-        BasicCalculation _BasicCalculation = new BasicCalculation();
+        ICalculation _Calculation = new BasicCalculation();
         MarginCalculation _MarginCalculation = new MarginCalculation();
 
 
@@ -58,7 +58,8 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             Convert,
             UpdatedAmountField,
             VariableTotal,
-            EditedField
+            EditedField,
+            CostCalculatonGroup
         }
 
         public CalculationBasicCtrl()
@@ -86,7 +87,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
         }
 
         void GridControl_Paint(object sender, PaintEventArgs e)
-        {            
+        {
             //paint empty vertical column(s)
             GridViewInfo vi = gridView1.GetViewInfo() as GridViewInfo;
             using (SolidBrush brush = new SolidBrush(vi.PaintAppearance.Empty.BackColor))
@@ -129,6 +130,9 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                 //ScaleCalculationItems = new List<CalculationScaleModel>()
             };
 
+            //set calculation method first
+            SetCalculationMethod();
+
             //setup data
             InitData();
 
@@ -137,6 +141,14 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
 
             //refresh margin gridview 
             RefreshGridMargin();
+        }
+
+        void SetCalculationMethod()
+        {
+            if (_Model.GeneralSetting.CostType == "P")
+            {
+                _Calculation = new CostCalculation();
+            }
         }
 
         void SetScaleCombobox()
@@ -213,7 +225,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                     // add price-scale calculation item to gridview
                     _Model.CalculationViewItems.AddRange(_Model.CalculationNotes[cboPriceScales.ItemIndex].CalculationItems);
                     txtScaleNumber.EditValue = _Model.CalculationNotes[cboPriceScales.ItemIndex].Quantity;
-                    _BasicCalculation.UpdateGroupAmountAll(_Model, false);
+                    _Calculation.UpdateGroupAmountAll(_Model, false);
 
                     gridView1.ActiveFilter.NonColumnFilter = "[Group] > 3";
 
@@ -269,7 +281,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             }
 
             //bind margin calculation gridview if needed
-            BindMarginCalculationView();          
+            BindMarginCalculationView();
         }
 
         void BindBasicCalculationView()
@@ -329,6 +341,9 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             gridView1.Columns[TempColumnNames.EditedField.ToString()].OptionsColumn.AllowEdit = false;
             gridView1.Columns[TempColumnNames.EditedField.ToString()].Visible = false;
 
+            gridView1.Columns[TempColumnNames.CostCalculatonGroup.ToString()].OptionsColumn.AllowEdit = false;
+            gridView1.Columns[TempColumnNames.CostCalculatonGroup.ToString()].Visible = false;
+
             // set visible for unit converter button
             // A is off, E is on           
             if (_Model.GeneralSetting.Convert.Mode == "A")
@@ -370,8 +385,8 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                 gridView2.RowSeparatorHeight = 2;
 
                 //show footer
-                gridView2.OptionsView.ShowFooter = true;                
-                
+                gridView2.OptionsView.ShowFooter = true;
+
                 //this.layoutControlItem4.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.OnlyInRuntime;                
 
                 gridView2.Columns[TempColumnNames.Sign.ToString()].Width = 20;
@@ -423,12 +438,15 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                 gridView2.Columns[TempColumnNames.Currency.ToString()].OptionsColumn.AllowEdit = false;
                 gridView2.Columns[TempColumnNames.Currency.ToString()].Visible = false;
 
+                gridView2.Columns[TempColumnNames.CostCalculatonGroup.ToString()].OptionsColumn.AllowEdit = false;
+                gridView2.Columns[TempColumnNames.CostCalculatonGroup.ToString()].Visible = false;
+
                 //add footer column1
                 if (gridView2.Columns[TempColumnNames.Description.ToString()].Summary.Count == 0)
                 {
-                    gridView2.Columns[TempColumnNames.Description.ToString()].Summary.Add(DevExpress.Data.SummaryItemType.Custom, 
+                    gridView2.Columns[TempColumnNames.Description.ToString()].Summary.Add(DevExpress.Data.SummaryItemType.Custom,
                         "Col1Row1",
-                        "Der Deckungsbeitrag beträgt {0:n4}% vom Bruttoverkaufspreis");                    
+                        "Der Deckungsbeitrag beträgt {0:n4}% vom Bruttoverkaufspreis");
                 }
             }
         }
@@ -457,6 +475,11 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                 Tag = "BEK",
                 //Currency = generalSettingModel.Currency.Currency,
                 Currency = new CurrencyModel() { Currency = "CHF" },
+                CostCalculatonGroup = new CostCalculatonGroupModel()
+                {
+                    BaseCalculationGroupRows = new List<int>() { 3, 2, 1 },
+                    SummaryGroups = new List<int> { 3 },
+                },
                 Group = 0,
                 Order = order,
                 Convert = _Model.GeneralSetting.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
@@ -504,6 +527,11 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                 Group = 1,
                 IsSummary = true,
                 SummaryGroups = new List<int>() { 0, 1 },
+                CostCalculatonGroup = new CostCalculatonGroupModel()
+                {
+                    BaseCalculationGroupRows = new List<int>() { 3, 2 },
+                    SummaryGroups = new List<int> { 3 },
+                },
                 Order = order,
                 Convert = _Model.GeneralSetting.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
             });
@@ -517,7 +545,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                 Description = "Verwaltungsgemeinkosten",
                 Tag = "OGK",
                 Currency = new CurrencyModel() { Currency = "CHF" },
-                CalculationBaseGroupRows = new List<int>() { 0, 1 },
+                BaseCalculationGroupRows = new List<int>() { 0, 1 },
                 Group = 2,
                 Order = order,
                 Convert = _Model.GeneralSetting.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
@@ -530,7 +558,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                 Description = "Vertriebsgemeinkosten",
                 Tag = "VGK",
                 Currency = new CurrencyModel() { Currency = "CHF" },
-                CalculationBaseGroupRows = new List<int>() { 0, 1 },
+                BaseCalculationGroupRows = new List<int>() { 0, 1 },
                 Group = 2,
                 Order = order,
                 Convert = _Model.GeneralSetting.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
@@ -539,11 +567,11 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             order += 1;
             _Model.CalculationNotes.Last().CalculationItems.Add(new CalculationItemModel()
             {
-                Sign = "=",
+                Sign = "+",
                 Description = "Sondereinzelkosten des Vertriebs",
                 Tag = "VSK",
                 Currency = new CurrencyModel() { Currency = "CHF" },
-                CalculationBaseGroupRows = new List<int>() { 0, 1 },
+                BaseCalculationGroupRows = new List<int>() { 0, 1 },
                 Group = 2,
                 Order = order,
                 Convert = _Model.GeneralSetting.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
@@ -559,6 +587,11 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                 Group = 2,
                 IsSummary = true,
                 SummaryGroups = new List<int>() { 2 },
+                CostCalculatonGroup = new CostCalculatonGroupModel()
+                {
+                    BaseCalculationGroupRows = new List<int>() { 2 },
+                    SummaryGroups = new List<int>(),
+                },
                 Order = order,
                 Convert = _Model.GeneralSetting.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
             });
@@ -573,6 +606,11 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                 Group = 2,
                 IsSummary = true,
                 SummaryGroups = new List<int>() { 0, 1 },
+                CostCalculatonGroup = new CostCalculatonGroupModel()
+                {
+                    BaseCalculationGroupRows = new List<int>() { 3, 2 },
+                    SummaryGroups = new List<int> { 3 },
+                },
                 Order = order,
                 Convert = _Model.GeneralSetting.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
             });
@@ -587,6 +625,11 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                 Group = 2,
                 IsSummary = true,
                 SummaryGroups = new List<int>() { 0, 1, 2 },
+                CostCalculatonGroup = new CostCalculatonGroupModel()
+                {
+                    BaseCalculationGroupRows = new List<int>() { 3 },
+                    SummaryGroups = new List<int> { 3 },
+                },
                 Order = order,
                 Convert = _Model.GeneralSetting.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
             });
@@ -600,7 +643,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                 Description = "Lagerhaltungskosten",
                 Tag = "LHK",
                 Currency = new CurrencyModel() { Currency = "CHF" },
-                CalculationBaseGroupRows = new List<int>() { 0, 1, 2 },
+                BaseCalculationGroupRows = new List<int>() { 0, 1, 2 },
                 Group = 3,
                 Order = order,
                 Convert = _Model.GeneralSetting.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
@@ -613,7 +656,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                 Description = "Verpackungsanteil",
                 Tag = "VPA",
                 Currency = new CurrencyModel() { Currency = "CHF" },
-                CalculationBaseGroupRows = new List<int>() { 0, 1, 2 },
+                BaseCalculationGroupRows = new List<int>() { 0, 1, 2 },
                 Group = 3,
                 Order = order,
                 Convert = _Model.GeneralSetting.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
@@ -626,7 +669,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                 Description = "Transportanteil",
                 Tag = "TRA",
                 Currency = new CurrencyModel() { Currency = "CHF" },
-                CalculationBaseGroupRows = new List<int>() { 0, 1, 2 },
+                BaseCalculationGroupRows = new List<int>() { 0, 1, 2 },
                 Group = 3,
                 Order = order,
                 Convert = _Model.GeneralSetting.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
@@ -642,6 +685,11 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                 Group = 3,
                 IsSummary = true,
                 SummaryGroups = new List<int>() { 0, 1, 2, 3 },
+                CostCalculatonGroup = new CostCalculatonGroupModel()
+                {
+                    BaseCalculationGroupRows = new List<int>() { 4 },
+                    SummaryGroups = new List<int> { 4 },
+                },
                 Order = order,
                 Convert = _Model.GeneralSetting.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
             });
@@ -669,7 +717,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                     Description = "Gewinnaufschlag",
                     Tag = "GA",
                     Currency = new CurrencyModel() { Currency = "CHF" },
-                    CalculationBaseGroupRows = new List<int>() { 0, 1, 2, 3 },
+                    BaseCalculationGroupRows = new List<int>() { 0, 1, 2, 3 },
                     Group = 4,
                     Order = iOrder,
                     Convert = _Model.GeneralSetting.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
@@ -685,6 +733,11 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                     Group = 4,
                     IsSummary = true,
                     SummaryGroups = new List<int>() { 0, 1, 2, 3, 4 },
+                    CostCalculatonGroup = new CostCalculatonGroupModel()
+                    {
+                        BaseCalculationGroupRows = new List<int>() { 5 },
+                        SummaryGroups = new List<int> { 5 },
+                    },
                     Order = iOrder,
                     Convert = _Model.GeneralSetting.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
                 });
@@ -699,7 +752,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                     AmountPercent = _Model.PriceSetting.CashDiscount,
                     Tag = "SKT",
                     Currency = new CurrencyModel() { Currency = "CHF" },
-                    CalculationBaseGroupRows = new List<int>() { 0, 1, 2, 3, 4 },
+                    BaseCalculationGroupRows = new List<int>() { 0, 1, 2, 3, 4 },
                     Group = 5,
                     Order = iOrder,
                     Convert = _Model.GeneralSetting.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
@@ -713,7 +766,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                     AmountPercent = _Model.PriceSetting.SalesBonus,
                     Tag = "PV",
                     Currency = new CurrencyModel() { Currency = "CHF" },
-                    CalculationBaseGroupRows = new List<int>() { 0, 1, 2, 3, 4 },
+                    BaseCalculationGroupRows = new List<int>() { 0, 1, 2, 3, 4 },
                     Group = 5,
                     Order = iOrder,
                     Convert = _Model.GeneralSetting.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
@@ -729,6 +782,11 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                     Group = 5,
                     IsSummary = true,
                     SummaryGroups = new List<int>() { 0, 1, 2, 3, 4, 5 },
+                    CostCalculatonGroup = new CostCalculatonGroupModel()
+                    {
+                        BaseCalculationGroupRows = new List<int>() { 6 },
+                        SummaryGroups = new List<int> { 6 },
+                    },
                     Order = iOrder,
                     Convert = _Model.GeneralSetting.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
                 });
@@ -743,7 +801,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                     AmountPercent = _Model.PriceSetting.CustomerDiscount,
                     Tag = "RBT",
                     Currency = new CurrencyModel() { Currency = "CHF" },
-                    CalculationBaseGroupRows = new List<int>() { 0, 1, 2, 3, 4, 5 },
+                    BaseCalculationGroupRows = new List<int>() { 0, 1, 2, 3, 4, 5 },
                     Group = 6,
                     Order = iOrder,
                     Convert = _Model.GeneralSetting.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
@@ -759,6 +817,11 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                     Group = 6,
                     IsSummary = true,
                     SummaryGroups = new List<int>() { 0, 1, 2, 3, 4, 5, 6 },
+                    CostCalculatonGroup = new CostCalculatonGroupModel()
+                    {
+                        BaseCalculationGroupRows = new List<int>() { 7 },
+                        SummaryGroups = new List<int> { 7 },
+                    },
                     Order = iOrder,
                     Convert = _Model.GeneralSetting.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
                 });
@@ -773,7 +836,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                     AmountPercent = _Model.PriceSetting.VatTaxes,
                     Tag = "MWST",
                     Currency = new CurrencyModel() { Currency = "CHF" },
-                    CalculationBaseGroupRows = new List<int>() { 0, 1, 2, 3, 4, 5, 6 },
+                    BaseCalculationGroupRows = new List<int>() { 0, 1, 2, 3, 4, 5, 6 },
                     Group = 7,
                     Order = iOrder,
                     Convert = _Model.GeneralSetting.Convert.Mode == "E" ? new ConvertModel() { Unit = "EE" } : null
@@ -1026,11 +1089,11 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                         //if percent or fix predefined
                         if (_Model.GeneralSetting.PriceScale.MarkUp == "P")
                         {
-                            _BasicCalculation.UpdateRowAmountPercent(_Model, _Model.CalculationNotes[i + 1].CalculationItems[0], iProfitAmount, skipBaseGroupRows: true);
+                            _Calculation.UpdateRowAmountPercent(_Model, _Model.CalculationNotes[i + 1].CalculationItems[0], iProfitAmount, skipBaseGroupRows: true);
                         }
                         else
                         {
-                            _BasicCalculation.UpdateRowAmountFix(_Model, _Model.CalculationNotes[i + 1].CalculationItems[0], iProfitAmount, skipBaseGroupRows: true);
+                            _Calculation.UpdateRowAmountFix(_Model, _Model.CalculationNotes[i + 1].CalculationItems[0], iProfitAmount, skipBaseGroupRows: true);
                         }
                     }
                 }
@@ -1047,11 +1110,11 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                 int iRowOrder = (int)gridView1.GetRowCellValue(e.RowHandle, TempColumnNames.Order.ToString());
 
                 //if master amount
-                if (sTag == "BEK")
+                if (sTag == "BEK" || sTag == "VK(brutto)")
                 {
                     //_Model.MasterAmount = Convert.ToDecimal(e.Value);
-                    _BasicCalculation.UpdateCalculationRowAmount(_Model, iRowOrder, Convert.ToDecimal(e.Value), false, isSpecial, true);
-                    _BasicCalculation.UpdateCalculationRowCurrencyField(_Model, iRowOrder, "F");
+                    _Calculation.UpdateCalculationRowAmount(_Model, iRowOrder, Convert.ToDecimal(e.Value), false, isSpecial, true);
+                    _Calculation.UpdateCalculationRowCurrencyField(_Model, iRowOrder, "F");
                 }
                 else
                 {
@@ -1063,17 +1126,17 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
 
                     if (e.Column.FieldName == TempColumnNames.AmountPercent.ToString())
                     {
-                        _BasicCalculation.UpdateCalculationRowAmount(_Model, iRowOrder, Convert.ToDecimal(e.Value), true, isSpecial, true);
-                        _BasicCalculation.UpdateCalculationRowCurrencyField(_Model, iRowOrder, "");
+                        _Calculation.UpdateCalculationRowAmount(_Model, iRowOrder, Convert.ToDecimal(e.Value), true, isSpecial, true);
+                        _Calculation.UpdateCalculationRowCurrencyField(_Model, iRowOrder, "");
                     }
                     else if (e.Column.FieldName == TempColumnNames.AmountFix.ToString())
                     {
-                        _BasicCalculation.UpdateCalculationRowAmount(_Model, iRowOrder, Convert.ToDecimal(e.Value), false, isSpecial, true);
-                        _BasicCalculation.UpdateCalculationRowCurrencyField(_Model, iRowOrder, "F");
+                        _Calculation.UpdateCalculationRowAmount(_Model, iRowOrder, Convert.ToDecimal(e.Value), false, isSpecial, true);
+                        _Calculation.UpdateCalculationRowCurrencyField(_Model, iRowOrder, "F");
                     }
                 }
 
-                _BasicCalculation.UpdateGroupAmountAll(_Model, false);
+                _Calculation.UpdateGroupAmountAll(_Model, false);
                 _MarginCalculation.UpdateBaseAmountAll(_Model);
             }
 
@@ -1233,31 +1296,54 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                 switch (sTag)
                 {
                     case "BEK":
-                        if (e.Column.FieldName == TempColumnNames.AmountPercent.ToString())
+                        if (_Model.GeneralSetting.CostType == "P")
                         {
-                            //null editor item
-                            e.RepositoryItem = this.repositoryItemButtonEdit1;
+                            //if cost calculation
+                            if (e.Column.FieldName == TempColumnNames.AmountPercent.ToString() ||
+                                e.Column.FieldName == TempColumnNames.AmountFix.ToString())
+                            {
+                                //null editor item
+                                e.RepositoryItem = this.repositoryItemButtonEdit1;
+                            }
+                            else if (e.Column.FieldName == TempColumnNames.Convert.ToString())
+                            {
+                                //null editor item
+                                e.RepositoryItem = this.repositoryItemButtonEdit1;
+                            }
                         }
-                        else if (e.Column.FieldName == TempColumnNames.Convert.ToString())
+                        else
                         {
-                            //null editor item
-                            e.RepositoryItem = this.repositoryItemButtonEdit1;
+                            //if basic calculation
+                            if (e.Column.FieldName == TempColumnNames.AmountPercent.ToString())
+                            {
+                                //null editor item
+                                e.RepositoryItem = this.repositoryItemButtonEdit1;
+                            }
+                            else if (e.Column.FieldName == TempColumnNames.Convert.ToString())
+                            {
+                                //null editor item
+                                e.RepositoryItem = this.repositoryItemButtonEdit1;
+                            }
                         }
+
                         break;
                     case "SKT":
                     case "PV":
                     case "RBT":
-                        if (e.Column.FieldName == TempColumnNames.AmountFix.ToString())
+                        if (_Model.GeneralSetting.CostType != "P")
                         {
-                            //null editor item
-                            e.RepositoryItem = this.repositoryItemButtonEdit1;
-                        }
-                        else if (e.Column.FieldName == TempColumnNames.Currency.ToString())
-                        {
-                            //null editor item
-                            if (_Model.GeneralSetting.Currency.Mode == "E")
+                            if (e.Column.FieldName == TempColumnNames.AmountFix.ToString())
                             {
+                                //null editor item
                                 e.RepositoryItem = this.repositoryItemButtonEdit1;
+                            }
+                            else if (e.Column.FieldName == TempColumnNames.Currency.ToString())
+                            {
+                                //null editor item
+                                if (_Model.GeneralSetting.Currency.Mode == "E")
+                                {
+                                    e.RepositoryItem = this.repositoryItemButtonEdit1;
+                                }
                             }
                         }
                         break;
@@ -1268,7 +1354,6 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                     case "VK(bar)":
                     case "VK(ziel)":
                     case "VK(liste)":
-                    case "VK(brutto)":
                         if (e.Column.FieldName == TempColumnNames.AmountPercent.ToString() ||
                             e.Column.FieldName == TempColumnNames.AmountFix.ToString())
                         {
@@ -1283,6 +1368,43 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                                 e.RepositoryItem = this.repositoryItemButtonEdit1;
                             }
                         }
+                        break;
+                    case "VK(brutto)":
+                        if (_Model.GeneralSetting.CostType == "P")
+                        {
+                            //if cost calculation
+                            if (e.Column.FieldName == TempColumnNames.AmountPercent.ToString())
+                            {
+                                //null editor item
+                                e.RepositoryItem = this.repositoryItemButtonEdit1;
+                            }
+                            else if (e.Column.FieldName == TempColumnNames.Currency.ToString())
+                            {
+                                //null editor item
+                                if (_Model.GeneralSetting.Currency.Mode == "E")
+                                {
+                                    e.RepositoryItem = this.repositoryItemButtonEdit1;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (e.Column.FieldName == TempColumnNames.AmountPercent.ToString() ||
+                                e.Column.FieldName == TempColumnNames.AmountFix.ToString())
+                            {
+                                //null editor item
+                                e.RepositoryItem = this.repositoryItemButtonEdit1;
+                            }
+                            else if (e.Column.FieldName == TempColumnNames.Currency.ToString())
+                            {
+                                //null editor item
+                                if (_Model.GeneralSetting.Currency.Mode == "E")
+                                {
+                                    e.RepositoryItem = this.repositoryItemButtonEdit1;
+                                }
+                            }
+                        }
+
                         break;
                 }
             }
@@ -1400,7 +1522,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                     //show currency editor for master amount
                     if (_Model.GeneralSetting.Currency.Mode == "E")
                     {
-                        if (String.IsNullOrWhiteSpace(_BasicCalculation.GetCalculationRowCurrencyFieldEditable(
+                        if (String.IsNullOrWhiteSpace(_Calculation.GetCalculationRowCurrencyFieldEditable(
                             _Model, gridView1.GetDataSourceRowIndex(gridView1.FocusedRowHandle))))
                         {
                             e.Cancel = true;
@@ -1413,6 +1535,12 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                 {
                     switch (sTag)
                     {
+                        case "BEK":
+                            if (_Model.GeneralSetting.CostType == "P")
+                            {
+                                e.Cancel = true;
+                            }
+                            break;
                         case "VK(bar)":
                             gridView2.Appearance.FocusedCell.BackColor = Color.Lavender;
                             e.Cancel = true;
@@ -1426,8 +1554,12 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                             e.Cancel = true;
                             break;
                         case "VK(brutto)":
-                            gridView2.Appearance.FocusedCell.BackColor = Color.SandyBrown;
-                            e.Cancel = true;
+                            if (gridView1.FocusedColumn.FieldName == TempColumnNames.AmountFix.ToString() &&
+                                _Model.GeneralSetting.CostType != "P")
+                            {
+                                gridView2.Appearance.FocusedCell.BackColor = Color.SandyBrown;
+                                e.Cancel = true;
+                            }
                             break;
                         case "ESTP":
                         case "VVK":
@@ -1529,6 +1661,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
         {
             RefreshGrid();
 
+            //if margin enabled
             if (_Model.GeneralSetting.Options.Contains("M"))
             {
                 if (cboPriceScales.ItemIndex == 0)
@@ -1549,7 +1682,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
 
                     gridView2.RefreshData();
                 }
-            }            
+            }
         }
 
         private void CboMargin_EditValueChanged(object sender, EventArgs e)
@@ -1587,15 +1720,15 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                 if (sValue == "EE")
                 {
                     ed.Properties.Buttons[0].Caption = "VE";
-                    _BasicCalculation.UpdateCalculationRowUnit(_Model, gridView1.GetDataSourceRowIndex(gridView1.FocusedRowHandle), "VE");
+                    _Calculation.UpdateCalculationRowUnit(_Model, gridView1.GetDataSourceRowIndex(gridView1.FocusedRowHandle), "VE");
                 }
                 else
                 {
                     ed.Properties.Buttons[0].Caption = "EE";
-                    _BasicCalculation.UpdateCalculationRowUnit(_Model, gridView1.GetDataSourceRowIndex(gridView1.FocusedRowHandle), "EE");
+                    _Calculation.UpdateCalculationRowUnit(_Model, gridView1.GetDataSourceRowIndex(gridView1.FocusedRowHandle), "EE");
                 }
 
-                _BasicCalculation.UpdateGroupAmountAll(_Model, false);
+                _Calculation.UpdateGroupAmountAll(_Model, false);
             }
 
             gridView1.RefreshData();
@@ -1611,15 +1744,15 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                 if (sValue == "CHF")
                 {
                     ed.Properties.Buttons[0].Caption = _Model.GeneralSetting.Currency.Currency;
-                    _BasicCalculation.UpdateCalculationRowCurrency(_Model, gridView1.GetDataSourceRowIndex(gridView1.FocusedRowHandle), _Model.GeneralSetting.Currency.Currency);
+                    _Calculation.UpdateCalculationRowCurrency(_Model, gridView1.GetDataSourceRowIndex(gridView1.FocusedRowHandle), _Model.GeneralSetting.Currency.Currency);
                 }
                 else
                 {
                     ed.Properties.Buttons[0].Caption = "CHF";
-                    _BasicCalculation.UpdateCalculationRowCurrency(_Model, gridView1.GetDataSourceRowIndex(gridView1.FocusedRowHandle), "CHF");
+                    _Calculation.UpdateCalculationRowCurrency(_Model, gridView1.GetDataSourceRowIndex(gridView1.FocusedRowHandle), "CHF");
                 }
 
-                _BasicCalculation.UpdateGroupAmountAll(_Model, false);
+                _Calculation.UpdateGroupAmountAll(_Model, false);
             }
 
             gridView1.RefreshData();
@@ -1635,7 +1768,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                     ButtonEditViewInfo editInfo = (ButtonEditViewInfo)((GridCellInfo)e.Cell).ViewInfo;
                     if (editInfo.RightButtons.Count > 0)
                     {
-                        editInfo.RightButtons[0].Button.Caption = _BasicCalculation.GetCalculationRowUnitValue(_Model, gridView1.GetDataSourceRowIndex(e.RowHandle));
+                        editInfo.RightButtons[0].Button.Caption = _Calculation.GetCalculationRowUnitValue(_Model, gridView1.GetDataSourceRowIndex(e.RowHandle));
                     }
                 }
                 else if (e.Column.FieldName == TempColumnNames.Currency.ToString())
@@ -1643,7 +1776,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                     ButtonEditViewInfo editInfo = (ButtonEditViewInfo)((GridCellInfo)e.Cell).ViewInfo;
                     if (editInfo.RightButtons.Count > 0)
                     {
-                        editInfo.RightButtons[0].Button.Caption = _BasicCalculation.GetCalculationRowCurrencyValue(_Model, gridView1.GetDataSourceRowIndex(e.RowHandle));
+                        editInfo.RightButtons[0].Button.Caption = _Calculation.GetCalculationRowCurrencyValue(_Model, gridView1.GetDataSourceRowIndex(e.RowHandle));
                     }
                 }
             }
@@ -1668,7 +1801,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                 if (customSummaryItem.FieldName == "Col1Row1")
                 {
                     e.TotalValue = _MarginCalculation.GetMarginSummarize(_Model);
-                }                
+                }
             }
         }
 
@@ -1692,7 +1825,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                 e.Bounds.Inflate(-5, -5);
                 e.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
                 e.Info.Bounds = new Rectangle(r11.Left, r.Top, r11.Width + 200, r.Height);
-                e.DefaultDraw();                
+                e.DefaultDraw();
 
 
                 //Rectangle r = e.Info.Bounds;

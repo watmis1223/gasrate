@@ -6,7 +6,7 @@ using System.Text;
 
 namespace CalculationOilPrice.Library.Business.PriceCalculation
 {
-    public class BasicCalculation
+    public class BasicCalculation : ICalculation
     {
         public string GetCalculationRowUnitValue(CalculationModel model, int rowID)
         {
@@ -191,6 +191,12 @@ namespace CalculationOilPrice.Library.Business.PriceCalculation
         {
             CalculationItemModel oCalRow = model.CalculationViewItems[rowID];
 
+            //set edited column
+            if (oCalRow != null)
+            {
+                oCalRow.EditedField = isPercent ? "P" : "F";
+            }
+
             //if edited value on grid's cell
             if (isCellEdit)
             {
@@ -257,9 +263,9 @@ namespace CalculationOilPrice.Library.Business.PriceCalculation
                 iBaseAmount = model.CalculationViewItems[0].Total;
             }
 
-            if (calRow.CalculationBaseGroupRows != null)
+            if (calRow.BaseCalculationGroupRows != null)
             {
-                iBaseAmount = GetCalculationBaseSummaryGroups(model, calRow.CalculationBaseGroupRows);
+                iBaseAmount = GetCalculationBaseSummaryGroups(model, calRow.BaseCalculationGroupRows);
             }
 
             //formular for SKT, PV, RBT(maximum input is 99.99 %
@@ -310,9 +316,9 @@ namespace CalculationOilPrice.Library.Business.PriceCalculation
             if (!skipBaseGroupRows)
             {
                 //get summary from above rows in gridview
-                if (calRow.CalculationBaseGroupRows != null)
+                if (calRow.BaseCalculationGroupRows != null)
                 {
-                    iBaseAmount = GetCalculationBaseSummaryGroups(model, calRow.CalculationBaseGroupRows);
+                    iBaseAmount = GetCalculationBaseSummaryGroups(model, calRow.BaseCalculationGroupRows);
                 }
             }
 
@@ -409,9 +415,9 @@ namespace CalculationOilPrice.Library.Business.PriceCalculation
             if (!skipBaseGroupRows)
             {
                 //get summary from above rows in gridview
-                if (calRow.CalculationBaseGroupRows != null)
+                if (calRow.BaseCalculationGroupRows != null)
                 {
-                    iBaseAmount = GetCalculationBaseSummaryGroups(model, calRow.CalculationBaseGroupRows);
+                    iBaseAmount = GetCalculationBaseSummaryGroups(model, calRow.BaseCalculationGroupRows);
                 }
             }
 

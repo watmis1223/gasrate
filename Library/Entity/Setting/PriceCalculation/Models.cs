@@ -92,8 +92,11 @@ namespace CalculationOilPrice.Library.Entity.Setting.PriceCalculation.Models
         public int Group { get; set; }
         public int Order { get; set; }
         public bool IsSummary { get; set; }
-        public List<int> SummaryGroups { get; set; }
-        public List<int> CalculationBaseGroupRows { get; set; }
+        public List<int> SummaryGroups { get; set; }       
+        public List<int> BaseCalculationGroupRows { get; set; }
+
+        //keep cost calculation
+        public CostCalculatonGroupModel CostCalculatonGroup { get; set; }
 
         //keep margin
         public decimal VariableTotal { get; set; }
@@ -115,6 +118,12 @@ namespace CalculationOilPrice.Library.Entity.Setting.PriceCalculation.Models
         {
             return Unit;
         }
+    }
+
+    public class CostCalculatonGroupModel
+    {
+        public List<int> SummaryGroups { get; set; }
+        public List<int> BaseCalculationGroupRows { get; set; }
     }
 
     public class CurrencyModel
