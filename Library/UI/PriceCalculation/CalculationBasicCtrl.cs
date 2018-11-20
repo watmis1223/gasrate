@@ -120,7 +120,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             _Model = new CalculationModel()
             {
                 //set new id
-                ID = priceCalculationSetting.CalculationCounter + 1,
+                ID = 0,
                 GeneralSetting = generalSettingModel,
                 PriceSetting = priceCalculationSetting.PriceSetting,
                 CalculationNotes = new List<CalculationNoteModel>(),
@@ -1217,6 +1217,9 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
 
         private void btnSave_Click(object sender, EventArgs e)
         {
+            //save model to db
+            StorageOperator.SaveModel(_Model);
+
             if (SaveChanged != null)
             {
                 SaveChanged();

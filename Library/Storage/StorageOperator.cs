@@ -9,7 +9,7 @@ using System.Data.OleDb;
 
 namespace CalculationOilPrice.Library.Storage
 {
-    static class StorageOperator
+    static partial class StorageOperator
     {
         static string GetValueString(DataColumn primaryKey, DataRow currentRow)
         {
