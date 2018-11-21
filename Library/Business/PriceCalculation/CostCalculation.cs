@@ -1,4 +1,4 @@
-﻿using CalculationOilPrice.Library.Entity.Setting.PriceCalculation.Models;
+﻿using CalculationOilPrice.Library.Entity.PriceCalculation.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -67,7 +67,7 @@ namespace CalculationOilPrice.Library.Business.PriceCalculation
                         bool isSpecial = false;
                         if (item.Group == 0)
                         {
-                            UpdateCalculationRowAmount(model, item.Order, item.AmountFix, false, isSpecial, false);
+                            UpdateCalculationRowAmount(model, item.ItemOrder, item.AmountFix, false, isSpecial, false);
                         }
                         else
                         {
@@ -79,11 +79,11 @@ namespace CalculationOilPrice.Library.Business.PriceCalculation
 
                             if (item.EditedField == "P" || String.IsNullOrWhiteSpace(item.EditedField))
                             {
-                                UpdateCalculationRowAmount(model, item.Order, item.AmountPercent, true, isSpecial, false);
+                                UpdateCalculationRowAmount(model, item.ItemOrder, item.AmountPercent, true, isSpecial, false);
                             }
                             else
                             {
-                                UpdateCalculationRowAmount(model, item.Order, item.AmountFix, false, isSpecial, false);
+                                UpdateCalculationRowAmount(model, item.ItemOrder, item.AmountFix, false, isSpecial, false);
                             }
                         }
                     }
@@ -117,10 +117,14 @@ namespace CalculationOilPrice.Library.Business.PriceCalculation
         {
             CalculationItemModel oCalRow = model.CalculationViewItems[rowID];
 
-            //set edited column
-            if (oCalRow != null)
+            //if edited value on grid's cell
+            if (isCellEdit)
             {
-                oCalRow.EditedField = isPercent ? "P" : "F";
+                //set edited column
+                if (oCalRow != null)
+                {
+                    oCalRow.EditedField = isPercent ? "P" : "F";
+                }
             }
 
             UpdateCalculationRowAmount(model, oCalRow, value, isPercent, specialCalculation);

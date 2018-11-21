@@ -6,7 +6,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Configuration;
 using System.Data.OleDb;
-using CalculationOilPrice.Library.Entity.Setting.PriceCalculation.Models;
+using CalculationOilPrice.Library.Entity.PriceCalculation.Models;
 using CalculationOilPrice.Library.Util;
 
 namespace CalculationOilPrice.Library.Storage

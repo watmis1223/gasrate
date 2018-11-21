@@ -1,4 +1,4 @@
-﻿using CalculationOilPrice.Library.Entity.Setting.PriceCalculation.Models;
+﻿using CalculationOilPrice.Library.Entity.PriceCalculation.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -89,13 +89,13 @@ namespace CalculationOilPrice.Library.Business.PriceCalculation
 
             foreach (CalculationItemModel item in oModels)
             {
-                UpdateGroupAmount(model, item.Group, item.Order, updateGroupOnly);
+                UpdateGroupAmount(model, item.Group, item.ItemOrder, updateGroupOnly);
             }
         }
 
         void UpdateGroupAmount(CalculationModel model, int group, int groupID, bool updateGroupOnly)
         {
-            CalculationItemModel oGroup = model.CalculationViewItems.Find(item => item.Group == group && item.Order == groupID && item.IsSummary);
+            CalculationItemModel oGroup = model.CalculationViewItems.Find(item => item.Group == group && item.ItemOrder == groupID && item.IsSummary);
 
             if (oGroup != null)
             {
@@ -124,7 +124,7 @@ namespace CalculationOilPrice.Library.Business.PriceCalculation
                                 //    UpdateCalculationRowAmount(model, item.Order, item.AmountFix, false, isSpecial, false);
                                 //}
 
-                                UpdateCalculationRowAmount(model, item.Order, item.AmountFix, false, isSpecial, false);
+                                UpdateCalculationRowAmount(model, item.ItemOrder, item.AmountFix, false, isSpecial, false);
                             }
                             else
                             {
@@ -134,7 +134,14 @@ namespace CalculationOilPrice.Library.Business.PriceCalculation
                                     isSpecial = true;
                                 }
 
-                                UpdateCalculationRowAmount(model, item.Order, item.AmountPercent, true, isSpecial, false);
+                                if (item.EditedField == "P" || String.IsNullOrWhiteSpace(item.EditedField))
+                                {
+                                    UpdateCalculationRowAmount(model, item.ItemOrder, item.AmountPercent, true, isSpecial, false);
+                                }
+                                else
+                                {
+                                    UpdateCalculationRowAmount(model, item.ItemOrder, item.AmountFix, false, isSpecial, false);
+                                }
 
                                 ////if use scale
                                 //if (model.ScaleCalculationItems.Count > 1 && item.Tag == "GA")
@@ -189,17 +196,17 @@ namespace CalculationOilPrice.Library.Business.PriceCalculation
 
         public void UpdateCalculationRowAmount(CalculationModel model, int rowID, decimal value, bool isPercent, bool specialCalculation, bool isCellEdit)
         {
-            CalculationItemModel oCalRow = model.CalculationViewItems[rowID];
-
-            //set edited column
-            if (oCalRow != null)
-            {
-                oCalRow.EditedField = isPercent ? "P" : "F";
-            }
+            CalculationItemModel oCalRow = model.CalculationViewItems[rowID];            
 
             //if edited value on grid's cell
             if (isCellEdit)
             {
+                //set edited column
+                if (oCalRow != null)
+                {
+                    oCalRow.EditedField = isPercent ? "P" : "F";
+                }
+
                 //if convert needed
                 if (oCalRow.Convert != null)
                 {

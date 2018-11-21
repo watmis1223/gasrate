@@ -1,4 +1,4 @@
-﻿using CalculationOilPrice.Library.Entity.Setting.PriceCalculation.Models;
+﻿using CalculationOilPrice.Library.Entity.PriceCalculation.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -80,13 +80,13 @@ namespace CalculationOilPrice.Library.Business.PriceCalculation
             var oGroups = model.CalculationMarginViewItems.FindAll(item => item.IsSummary);
             foreach (CalculationItemModel item in oGroups)
             {
-                UpdateGroupAmount(model, item.Group, item.Order);
+                UpdateGroupAmount(model, item.Group, item.ItemOrder);
             }
         }
 
         void UpdateGroupAmount(CalculationModel model, int group, int groupID)
         {
-            CalculationItemModel oGroup = model.CalculationMarginViewItems.Find(item => item.Group == group && item.Order == groupID && item.IsSummary);
+            CalculationItemModel oGroup = model.CalculationMarginViewItems.Find(item => item.Group == group && item.ItemOrder == groupID && item.IsSummary);
 
             if (oGroup != null)
             {

@@ -12,7 +12,7 @@ using CalculationOilPrice.Library.Storage;
 using CalculationOilPrice.Library.Entity.Setting;
 using System.Globalization;
 using CalculationOilPrice.Library.Entity.Setting.PriceCalculation;
-using CalculationOilPrice.Library.Entity.Setting.PriceCalculation.Models;
+using CalculationOilPrice.Library.Entity.PriceCalculation.Models;
 using System.Linq;
 using DevExpress.XtraEditors.Controls;
 

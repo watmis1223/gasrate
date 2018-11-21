@@ -206,9 +206,10 @@
     <Compile Include="Library\Entity\Invoice.cs" />
     <Compile Include="Library\Entity\Order.cs" />
     <Compile Include="Library\Entity\OrderInfo.cs" />
+    <Compile Include="Library\Entity\PriceCalculation\Extensions\PriceCalculationModelExtension.cs" />
     <Compile Include="Library\Entity\Setting\GeneralSetting.cs" />
     <Compile Include="Library\Entity\Setting\OilPriceSetting.cs" />
-    <Compile Include="Library\Entity\Setting\PriceCalculation\Models.cs" />
+    <Compile Include="Library\Entity\PriceCalculation\Models.cs" />
     <Compile Include="Library\Entity\Setting\PriceCalculation\PriceCalculationSetting.cs" />
     <Compile Include="Library\Entity\Setting\PriceCalculation\TextSetting.cs" />
     <Compile Include="Library\Entity\Setting\PriceCalculation\PriceSetting.cs" />
@@ -268,6 +269,18 @@
     </Compile>
     <Compile Include="Library\UI\OrderSearchControl.Designer.cs">
       <DependentUpon>OrderSearchControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Library\UI\PriceCalculation\CalculationOptionMargin.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Library\UI\PriceCalculation\CalculationViewMargin.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Library\UI\PriceCalculation\CalculationViewBasic.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Library\UI\PriceCalculation\CalculationOptionScale.cs">
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Library\UI\PriceCalculation\PriceCtrlMain.cs">
       <SubType>UserControl</SubType>

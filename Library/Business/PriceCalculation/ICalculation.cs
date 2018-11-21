@@ -1,4 +1,4 @@
-﻿using CalculationOilPrice.Library.Entity.Setting.PriceCalculation.Models;
+﻿using CalculationOilPrice.Library.Entity.PriceCalculation.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
