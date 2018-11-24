@@ -12,6 +12,7 @@ namespace CalculationOilPrice.Library.Entity.Setting.PriceCalculation
         public TextSetting TextSetting;
         public ReportPathSetting ReportPathSetting;
         public int CalculationCounter;
+        public string ProffixConnection;
 
         public PriceCalculationSetting()
         {
@@ -19,6 +20,7 @@ namespace CalculationOilPrice.Library.Entity.Setting.PriceCalculation
             TextSetting = new TextSetting();
             ReportPathSetting = new ReportPathSetting();
             CalculationCounter = 0;
+            ProffixConnection = "";
         } 
     }
 }

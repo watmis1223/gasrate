@@ -97,7 +97,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             // 
             // cboMargin
             // 
-            this.cboMargin.Location = new System.Drawing.Point(716, 12);
+            this.cboMargin.Location = new System.Drawing.Point(717, 13);
             this.cboMargin.Name = "cboMargin";
             this.cboMargin.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
@@ -114,7 +114,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             // 
             // gridControl2
             // 
-            this.gridControl2.Location = new System.Drawing.Point(12, 493);
+            this.gridControl2.Location = new System.Drawing.Point(13, 493);
             this.gridControl2.MainView = this.gridView2;
             this.gridControl2.Name = "gridControl2";
             this.gridControl2.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
@@ -124,7 +124,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             this.repositoryItemButtonEdit1,
             this.myRepositoryItemButtonEdit1,
             this.myRepositoryItemButtonEdit2});
-            this.gridControl2.Size = new System.Drawing.Size(1508, 589);
+            this.gridControl2.Size = new System.Drawing.Size(1506, 588);
             this.gridControl2.TabIndex = 22;
             this.gridControl2.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gridView2});
@@ -216,7 +216,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             // 
             // txtScaleNumber
             // 
-            this.txtScaleNumber.Location = new System.Drawing.Point(567, 12);
+            this.txtScaleNumber.Location = new System.Drawing.Point(568, 13);
             this.txtScaleNumber.Name = "txtScaleNumber";
             this.txtScaleNumber.Properties.Appearance.Options.UseTextOptions = true;
             this.txtScaleNumber.Properties.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
@@ -233,7 +233,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             // 
             // gridControl1
             // 
-            this.gridControl1.Location = new System.Drawing.Point(12, 56);
+            this.gridControl1.Location = new System.Drawing.Point(13, 57);
             this.gridControl1.MainView = this.gridView1;
             this.gridControl1.Name = "gridControl1";
             this.gridControl1.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
@@ -243,7 +243,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             this.repositoryItemButtonEdit1,
             this.myRepositoryItemButtonEdit1,
             this.myRepositoryItemButtonEdit2});
-            this.gridControl1.Size = new System.Drawing.Size(1508, 433);
+            this.gridControl1.Size = new System.Drawing.Size(1506, 432);
             this.gridControl1.TabIndex = 19;
             this.gridControl1.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gridView1});
@@ -279,7 +279,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             // 
             // btnSave
             // 
-            this.btnSave.Location = new System.Drawing.Point(1346, 1086);
+            this.btnSave.Location = new System.Drawing.Point(1345, 1085);
             this.btnSave.Margin = new System.Windows.Forms.Padding(6);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(174, 44);
@@ -292,7 +292,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             // cboPriceScales
             // 
             this.cboPriceScales.EditValue = "dropDownButton1";
-            this.cboPriceScales.Location = new System.Drawing.Point(12, 12);
+            this.cboPriceScales.Location = new System.Drawing.Point(13, 13);
             this.cboPriceScales.Name = "cboPriceScales";
             this.cboPriceScales.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
@@ -310,7 +310,6 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             // layoutControlGroup1
             // 
             this.layoutControlGroup1.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
-            this.layoutControlGroup1.GroupBordersVisible = false;
             this.layoutControlGroup1.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutControlItem15,
             this.emptySpaceItem2,
@@ -326,7 +325,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             // layoutControlItem15
             // 
             this.layoutControlItem15.Control = this.btnSave;
-            this.layoutControlItem15.Location = new System.Drawing.Point(1334, 1074);
+            this.layoutControlItem15.Location = new System.Drawing.Point(1332, 1072);
             this.layoutControlItem15.Name = "layoutControlItem15";
             this.layoutControlItem15.Size = new System.Drawing.Size(178, 48);
             this.layoutControlItem15.SizeConstraintsType = DevExpress.XtraLayout.SizeConstraintsType.SupportHorzAlignment;
@@ -336,10 +335,10 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             // emptySpaceItem2
             // 
             this.emptySpaceItem2.AllowHotTrack = false;
-            this.emptySpaceItem2.Location = new System.Drawing.Point(0, 1074);
+            this.emptySpaceItem2.Location = new System.Drawing.Point(0, 1072);
             this.emptySpaceItem2.MinSize = new System.Drawing.Size(104, 24);
             this.emptySpaceItem2.Name = "emptySpaceItem2";
-            this.emptySpaceItem2.Size = new System.Drawing.Size(1334, 48);
+            this.emptySpaceItem2.Size = new System.Drawing.Size(1332, 48);
             this.emptySpaceItem2.SizeConstraintsType = DevExpress.XtraLayout.SizeConstraintsType.Custom;
             this.emptySpaceItem2.TextSize = new System.Drawing.Size(0, 0);
             // 
@@ -348,7 +347,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             this.layoutControlItem1.Control = this.gridControl1;
             this.layoutControlItem1.Location = new System.Drawing.Point(0, 44);
             this.layoutControlItem1.Name = "layoutControlItem1";
-            this.layoutControlItem1.Size = new System.Drawing.Size(1512, 437);
+            this.layoutControlItem1.Size = new System.Drawing.Size(1510, 436);
             this.layoutControlItem1.TextSize = new System.Drawing.Size(0, 0);
             this.layoutControlItem1.TextVisible = false;
             // 
@@ -379,9 +378,9 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             // layoutControlItem4
             // 
             this.layoutControlItem4.Control = this.gridControl2;
-            this.layoutControlItem4.Location = new System.Drawing.Point(0, 481);
+            this.layoutControlItem4.Location = new System.Drawing.Point(0, 480);
             this.layoutControlItem4.Name = "layoutControlItem4";
-            this.layoutControlItem4.Size = new System.Drawing.Size(1512, 593);
+            this.layoutControlItem4.Size = new System.Drawing.Size(1510, 592);
             this.layoutControlItem4.TextSize = new System.Drawing.Size(0, 0);
             this.layoutControlItem4.TextVisible = false;
             // 
@@ -392,7 +391,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             this.layoutControlItem5.MaxSize = new System.Drawing.Size(304, 44);
             this.layoutControlItem5.MinSize = new System.Drawing.Size(304, 44);
             this.layoutControlItem5.Name = "layoutControlItem5";
-            this.layoutControlItem5.Size = new System.Drawing.Size(808, 44);
+            this.layoutControlItem5.Size = new System.Drawing.Size(806, 44);
             this.layoutControlItem5.SizeConstraintsType = DevExpress.XtraLayout.SizeConstraintsType.Custom;
             this.layoutControlItem5.TextSize = new System.Drawing.Size(0, 0);
             this.layoutControlItem5.TextVisible = false;

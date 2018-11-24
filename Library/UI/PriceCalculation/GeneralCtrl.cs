@@ -30,6 +30,54 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             return _Model;
         }
 
+        public void SetProffixParam(ProffixResult result, string connectionString)
+        {
+            //load proffix product
+            ProffixLAGArtikelModel oLAGArtikel =
+                StorageOperator.GetProffixLAGArtikelModel(result.ArtikelNrLAG, connectionString);
+            if (oLAGArtikel != null)
+            {
+                string[] oLines = new string[6];
+                oLines[0] = !String.IsNullOrWhiteSpace(oLAGArtikel.ArtikelNrLAG) ? oLAGArtikel.ArtikelNrLAG : "-";
+                oLines[1] = !String.IsNullOrWhiteSpace(oLAGArtikel.Bezeichnung1) ? oLAGArtikel.Bezeichnung1 : "-";
+                oLines[2] = !String.IsNullOrWhiteSpace(oLAGArtikel.Bezeichnung2) ? oLAGArtikel.Bezeichnung2 : "-";
+                oLines[3] = !String.IsNullOrWhiteSpace(oLAGArtikel.Bezeichnung3) ? oLAGArtikel.Bezeichnung3 : "-";
+                oLines[4] = !String.IsNullOrWhiteSpace(oLAGArtikel.Bezeichnung4) ? oLAGArtikel.Bezeichnung4 : "-";
+                oLines[5] = !String.IsNullOrWhiteSpace(oLAGArtikel.Bezeichnung5) ? oLAGArtikel.Bezeichnung5 : "-";
+                txtProductDesc.Lines = oLines;
+            }
+
+            //load proffix supplier
+            List<ProffixLAGLieferantenModel> oLAGLieferantenList =
+                StorageOperator.GetProffixLAGLieferantenModelList(result.ArtikelNrLAG, connectionString);
+            if (oLAGLieferantenList != null)
+            {
+                ddSupplier.Properties.Items.Clear();
+                //ddSupplier.Properties.Items.Add(new ComboboxItemModel() { Caption = "-", Value = 0 });
+                foreach (ProffixLAGLieferantenModel item in oLAGLieferantenList)
+                {
+                    ddSupplier.Properties.Items.Add(new ComboboxItemModel() { Caption = item.Name, Value = item.LaufNr });
+                }
+            }
+
+            //load proffix document
+            ProffixLAGDokumente oProffixLAGDokumente = StorageOperator.GetProffixLAGDokumente(result.ArtikelNrLAG, result.CalculationID, connectionString);
+            if (oProffixLAGDokumente != null)
+            {
+                txtRemark.Text = oProffixLAGDokumente.Bemerkungen;
+            }
+
+            if (result.IsNew)
+            {
+                dtCreate.EditValue = DateTime.Now;
+                btnNew.Enabled = true;
+            }
+            else
+            {
+                btnNew.Enabled = false;
+            }
+        }
+
         public void UINewCalculationMode()
         {
             if (rdoCostTypeList.SelectedIndex == 0)
@@ -129,7 +177,8 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                     Rate = Convert.ToDecimal(txtExchangeRate.Text)
                 },
                 Options = getSelectedOption(),
-                TextLines = getSelectedTextLine()
+                TextLines = getSelectedTextLine(),
+                ProductDesc = getProductDesc()
             };
 
             try
@@ -149,6 +198,23 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             {
                 _Model.Convert.EEUnitNumber = 1;
             }
+        }
+
+        private GeneralProductDesc getProductDesc()
+        {
+            GeneralProductDesc oData = new GeneralProductDesc();
+
+            if (txtProductDesc.Lines != null && txtProductDesc.Lines.Length == 6)
+            {
+                oData.Line1 = txtProductDesc.Lines[0];
+                oData.Line2 = txtProductDesc.Lines[1];
+                oData.Line3 = txtProductDesc.Lines[2];
+                oData.Line4 = txtProductDesc.Lines[3];
+                oData.Line5 = txtProductDesc.Lines[4];
+                oData.Line6 = txtProductDesc.Lines[5];
+            }
+
+            return oData;
         }
 
         private List<string> getSelectedOption()

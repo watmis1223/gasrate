@@ -35,7 +35,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
         ICalculation _Calculation = new BasicCalculation();
         MarginCalculation _MarginCalculation = new MarginCalculation();
 
-        CalculationModel _Model;
+        CalculationModel _Model;               
 
         List<GridColumn> emptyColumns = new List<GridColumn>();
         bool _AddedEmptyColumn = false;
@@ -113,30 +113,66 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             newCol.OptionsColumn.AllowSize = false;
         }
 
-        public void LoadCalculation(CalculationModel model)
+        public CalculationModel GetModel()
         {
-            _Model = model;            
+            return _Model;
+        }
+
+        public void LoadProffixCalculation(GeneralSettingModel generalSettingModel, PriceCalculationSetting moduleSetting, string[] arguments)
+        {
+            //ProffixResult oResult = new ProffixResult(arguments);
+
+            //if (arguments != null)
+            //{
+            //    if (arguments.Length == 2)
+            //    {
+            //        if (arguments[1].TrimStart().TrimEnd().Trim().StartsWith("opencal"))
+            //        {
+            //            //new or load
+            //            string[] sSubParam = arguments[1].Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+
+            //            if (sSubParam.Length == 2)
+            //            {
+            //                //new
+            //                NewCalculation(generalSettingModel, moduleSetting, sSubParam[1]);
+            //            }
+            //            else if (sSubParam.Length > 2)
+            //            {
+            //                //load
+            //            }
+            //        }
+            //    }
+            //}
+        }
+
+        public void LoadCalculation(CalculationModel model, PriceCalculationSetting moduleSetting)
+        {
+            model.ProffixConnection = moduleSetting.ProffixConnection;
+            
+            _Model = model;
 
             //setup everythings
             SetUpCalculation();
         }
 
-        public void NewCalculation(GeneralSettingModel generalSettingModel, PriceSetting priceSetting)
+        public void NewCalculation(GeneralSettingModel generalSettingModel, PriceCalculationSetting moduleSetting)
         {
             _Model = new CalculationModel()
             {
                 //set new id is zero
                 ID = 0,
                 GeneralSetting = generalSettingModel,
+                ProffixConnection = moduleSetting.ProffixConnection,
                 CalculationNotes = new List<CalculationNoteModel>(),
                 CalculationViewItems = new List<CalculationItemModel>(),
+                ArtikelNrLAG = generalSettingModel.ProductDesc.Line1
             };
 
             //setup new calculation
             _Model.SetBasicCalculationNote();
-            _Model.SetScaleCalculationNote(priceSetting, _Model.CalculationNotes.First().CalculationItems.Last().ItemOrder);
+            _Model.SetScaleCalculationNote(moduleSetting.PriceSetting, _Model.CalculationNotes.First().CalculationItems.Last().ItemOrder);
             _Model.SetMarginCalculationNote();
-           
+
             //setup everythings
             SetUpCalculation();
         }
@@ -176,7 +212,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
 
             //refresh margin gridview 
             RefreshGridMargin();
-        }                
+        }
 
         private void btnSave_Click(object sender, EventArgs e)
         {
@@ -306,6 +342,6 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             {
                 _Model.CalculationNotes[cboPriceScales.ItemIndex].Quantity = Convert.ToDecimal(txtScaleNumber.Text);
             }
-        }        
+        }
     }
 }

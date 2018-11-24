@@ -42,19 +42,24 @@ namespace CalculationOilPrice
                     pnlMain.Controls.Add(_OilModule);
                     break;
                 case ApplicationModules.PriceModuleCalculation:
-                    _PriceModule.SetArguments(arguments);
-                    _PriceModule.ModuleCalculationMode();
                     pnlMain.Controls.Add(_PriceModule);
+                    _PriceModule.ModuleCalculationMode();
                     break;
                 case ApplicationModules.PriceModuleSetting:
-                    _PriceModule.SetArguments(arguments);
-                    _PriceModule.ModuleSettingMode();
                     pnlMain.Controls.Add(_PriceModule);
+                    _PriceModule.ModuleSettingMode();
                     break;
-                    //default:
-                    //    break;
+                case ApplicationModules.PriceModuleCalculationByProffix:
+                    pnlMain.Controls.Add(_PriceModule);
+                    _PriceModule.ModuleCalculationByProffixMode(arguments);
+                    break;
 
             }
+        }
+
+        public void CallByProffix(string[] arguments)
+        {
+            ShowModule(ApplicationModules.PriceModuleCalculationByProffix, arguments);
         }
 
         private void brBtnOil_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)

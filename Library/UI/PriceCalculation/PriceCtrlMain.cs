@@ -12,6 +12,7 @@ using CalculationOilPrice.Library.Storage;
 using CalculationOilPrice.Library.Entity.Setting;
 using System.Globalization;
 using CalculationOilPrice.Library.Entity.Setting.PriceCalculation;
+using CalculationOilPrice.Library.Entity.PriceCalculation.Models;
 
 namespace CalculationOilPrice.Library.UI.PriceCalculation
 {
@@ -21,7 +22,8 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
         public event SettingSaveChangedCallback SettingSaveChanged;
 
         PriceCalculationSetting _PriceCalculationSetting;
-        string[] _Arguments;
+
+        List<ComboboxItemModel> _CalculationList = new List<ComboboxItemModel>();
 
         public PriceCtrlMain()
         {
@@ -36,11 +38,8 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
 
             //set text line to general control
             generalCtrl1.SetTextLine(_PriceCalculationSetting.TextSetting);
-        }
 
-        public void SetArguments(string[] arguments)
-        {
-            _Arguments = arguments;
+            lstCalculation.DataSource = _CalculationList;
         }
 
         public void ModuleSettingMode()
@@ -59,12 +58,43 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             mainTabControl.SelectedTabPage = generalTabPage;
         }
 
-        void AddCalculationTreeItem()
+        void AddCalculationListItem(CalculationModel model)
         {
-            if (_Arguments != null && _Arguments.Length > 0)
+            if (model == null)
             {
+                return;
+            }
+
+            _CalculationList.Add(new ComboboxItemModel()
+            {
+                Caption = model.GeneralSetting.Remark,
+                Value = model.ID,
+                Model = model
+            });
+
+            lstCalculation.Refresh();
+        }
+
+        public void ModuleCalculationByProffixMode(string[] arguments)
+        {
+            settingTabPage.PageVisible = false;
+            generalTabPage.PageVisible = true;
+            calculationTabPage.PageVisible = true;
+            mainTabControl.SelectedTabPage = generalTabPage;
+
+            //if call from proffix, arguments should not null
+            ProffixResult oResult = new ProffixResult(arguments);
+            generalCtrl1.SetProffixParam(oResult, _PriceCalculationSetting.ProffixConnection);
+
+            if (oResult.IsLoad)
+            {
+                //load calculation item from db by id
 
             }
+            //else
+            //{
+            //    //AddCalculationListItem(null);
+            //}
         }
 
         void ReloadPriceCalculationSetting(bool refresh)
@@ -82,7 +112,8 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             mainTabControl.SelectedTabPage = calculationTabPage;
 
             //reload calculation control           
-            calculationBasicCtrl1.NewCalculation(generalCtrl1.GetModel(), _PriceCalculationSetting.PriceSetting);
+            calculationBasicCtrl1.NewCalculation(generalCtrl1.GetModel(), _PriceCalculationSetting);
+            AddCalculationListItem(calculationBasicCtrl1.GetModel());            
         }
     }
 }

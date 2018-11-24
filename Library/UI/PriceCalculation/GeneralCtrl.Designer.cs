@@ -28,6 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
+            DevExpress.XtraEditors.Controls.EditorButtonImageOptions editorButtonImageOptions1 = new DevExpress.XtraEditors.Controls.EditorButtonImageOptions();
+            DevExpress.Utils.SerializableAppearanceObject serializableAppearanceObject1 = new DevExpress.Utils.SerializableAppearanceObject();
+            DevExpress.Utils.SerializableAppearanceObject serializableAppearanceObject2 = new DevExpress.Utils.SerializableAppearanceObject();
+            DevExpress.Utils.SerializableAppearanceObject serializableAppearanceObject3 = new DevExpress.Utils.SerializableAppearanceObject();
+            DevExpress.Utils.SerializableAppearanceObject serializableAppearanceObject4 = new DevExpress.Utils.SerializableAppearanceObject();
             DevExpress.XtraEditors.Controls.EditorButtonImageOptions editorButtonImageOptions2 = new DevExpress.XtraEditors.Controls.EditorButtonImageOptions();
             DevExpress.Utils.SerializableAppearanceObject serializableAppearanceObject5 = new DevExpress.Utils.SerializableAppearanceObject();
             DevExpress.Utils.SerializableAppearanceObject serializableAppearanceObject6 = new DevExpress.Utils.SerializableAppearanceObject();
@@ -48,12 +53,8 @@
             DevExpress.Utils.SerializableAppearanceObject serializableAppearanceObject18 = new DevExpress.Utils.SerializableAppearanceObject();
             DevExpress.Utils.SerializableAppearanceObject serializableAppearanceObject19 = new DevExpress.Utils.SerializableAppearanceObject();
             DevExpress.Utils.SerializableAppearanceObject serializableAppearanceObject20 = new DevExpress.Utils.SerializableAppearanceObject();
-            DevExpress.XtraEditors.Controls.EditorButtonImageOptions editorButtonImageOptions6 = new DevExpress.XtraEditors.Controls.EditorButtonImageOptions();
-            DevExpress.Utils.SerializableAppearanceObject serializableAppearanceObject21 = new DevExpress.Utils.SerializableAppearanceObject();
-            DevExpress.Utils.SerializableAppearanceObject serializableAppearanceObject22 = new DevExpress.Utils.SerializableAppearanceObject();
-            DevExpress.Utils.SerializableAppearanceObject serializableAppearanceObject23 = new DevExpress.Utils.SerializableAppearanceObject();
-            DevExpress.Utils.SerializableAppearanceObject serializableAppearanceObject24 = new DevExpress.Utils.SerializableAppearanceObject();
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
+            this.txtProductDesc = new DevExpress.XtraEditors.MemoEdit();
             this.btnNew = new DevExpress.XtraEditors.SimpleButton();
             this.txtMaxProfit = new DevExpress.XtraEditors.TextEdit();
             this.txtMinProfit = new DevExpress.XtraEditors.TextEdit();
@@ -93,7 +94,7 @@
             this.layoutControlItem10 = new DevExpress.XtraLayout.LayoutControlItem();
             this.layoutControlItem8 = new DevExpress.XtraLayout.LayoutControlItem();
             this.layoutControlGroup6 = new DevExpress.XtraLayout.LayoutControlGroup();
-            this.emptySpaceItem1 = new DevExpress.XtraLayout.EmptySpaceItem();
+            this.layoutControlItem22 = new DevExpress.XtraLayout.LayoutControlItem();
             this.layoutControlItem21 = new DevExpress.XtraLayout.LayoutControlItem();
             this.layoutControlGroup7 = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem17 = new DevExpress.XtraLayout.LayoutControlItem();
@@ -114,6 +115,7 @@
             this.emptySpaceItem8 = new DevExpress.XtraLayout.EmptySpaceItem();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             this.layoutControl1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.txtProductDesc.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtMaxProfit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtMinProfit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.rdoAmountMarkupList.Properties)).BeginInit();
@@ -123,6 +125,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.dtCreate.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtEmployee.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtInfo.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ddSupplier.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtRemark.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chkOptionList)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.rdoCostTypeList.Properties)).BeginInit();
@@ -151,7 +154,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem10)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem8)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup6)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem22)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem21)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup7)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem17)).BeginInit();
@@ -174,6 +177,7 @@
             // 
             // layoutControl1
             // 
+            this.layoutControl1.Controls.Add(this.txtProductDesc);
             this.layoutControl1.Controls.Add(this.btnNew);
             this.layoutControl1.Controls.Add(this.txtMaxProfit);
             this.layoutControl1.Controls.Add(this.txtMinProfit);
@@ -203,6 +207,14 @@
             this.layoutControl1.Size = new System.Drawing.Size(1532, 1142);
             this.layoutControl1.TabIndex = 0;
             this.layoutControl1.Text = "layoutControl1";
+            // 
+            // txtProductDesc
+            // 
+            this.txtProductDesc.Location = new System.Drawing.Point(853, 61);
+            this.txtProductDesc.Name = "txtProductDesc";
+            this.txtProductDesc.Size = new System.Drawing.Size(654, 536);
+            this.txtProductDesc.StyleController = this.layoutControl1;
+            this.txtProductDesc.TabIndex = 35;
             // 
             // btnNew
             // 
@@ -343,18 +355,20 @@
             // 
             // ddSupplier
             // 
-            this.ddSupplier.Location = new System.Drawing.Point(172, 423);
+            this.ddSupplier.EditValue = "-";
+            this.ddSupplier.Location = new System.Drawing.Point(172, 425);
             this.ddSupplier.Name = "ddSupplier";
-            this.ddSupplier.Size = new System.Drawing.Size(651, 42);
+            this.ddSupplier.Size = new System.Drawing.Size(651, 40);
             this.ddSupplier.StyleController = this.layoutControl1;
             this.ddSupplier.TabIndex = 24;
-            this.ddSupplier.Text = "-";
+            this.ddSupplier.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             // 
             // txtRemark
             // 
             this.txtRemark.Location = new System.Drawing.Point(172, 181);
             this.txtRemark.Name = "txtRemark";
-            this.txtRemark.Size = new System.Drawing.Size(651, 238);
+            this.txtRemark.Size = new System.Drawing.Size(651, 240);
             this.txtRemark.StyleController = this.layoutControl1;
             this.txtRemark.TabIndex = 23;
             // 
@@ -461,12 +475,11 @@
             this.txtExchangeRate.EditValue = "1.0000";
             this.txtExchangeRate.Location = new System.Drawing.Point(632, 921);
             this.txtExchangeRate.Name = "txtExchangeRate";
-            this.txtExchangeRate.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Glyph, "=", -1, true, true, true, editorButtonImageOptions2, new DevExpress.Utils.KeyShortcut(System.Windows.Forms.Keys.None), serializableAppearanceObject5, serializableAppearanceObject6, serializableAppearanceObject7, serializableAppearanceObject8, "", null, null, DevExpress.Utils.ToolTipAnchor.Default),
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Glyph, "CHF", -1, true, true, false, editorButtonImageOptions3, new DevExpress.Utils.KeyShortcut(System.Windows.Forms.Keys.None), serializableAppearanceObject9, serializableAppearanceObject10, serializableAppearanceObject11, serializableAppearanceObject12, "", null, null, DevExpress.Utils.ToolTipAnchor.Default)});
-            this.txtExchangeRate.Properties.ReadOnly = true;
             this.txtExchangeRate.Properties.Appearance.Options.UseTextOptions = true;
             this.txtExchangeRate.Properties.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
+            this.txtExchangeRate.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Glyph, "=", -1, true, true, true, editorButtonImageOptions1, new DevExpress.Utils.KeyShortcut(System.Windows.Forms.Keys.None), serializableAppearanceObject1, serializableAppearanceObject2, serializableAppearanceObject3, serializableAppearanceObject4, "", null, null, DevExpress.Utils.ToolTipAnchor.Default),
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Glyph, "CHF", -1, true, true, false, editorButtonImageOptions2, new DevExpress.Utils.KeyShortcut(System.Windows.Forms.Keys.None), serializableAppearanceObject5, serializableAppearanceObject6, serializableAppearanceObject7, serializableAppearanceObject8, "", null, null, DevExpress.Utils.ToolTipAnchor.Default)});
             this.txtExchangeRate.Properties.DisplayFormat.FormatString = "n4";
             this.txtExchangeRate.Properties.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
             this.txtExchangeRate.Properties.EditFormat.FormatString = "n4";
@@ -474,6 +487,7 @@
             this.txtExchangeRate.Properties.Mask.EditMask = "n4";
             this.txtExchangeRate.Properties.Mask.MaskType = DevExpress.XtraEditors.Mask.MaskType.Numeric;
             this.txtExchangeRate.Properties.NullText = "0.0000";
+            this.txtExchangeRate.Properties.ReadOnly = true;
             this.txtExchangeRate.Size = new System.Drawing.Size(191, 40);
             this.txtExchangeRate.StyleController = this.layoutControl1;
             this.txtExchangeRate.TabIndex = 32;
@@ -485,8 +499,8 @@
             this.txtUnitNumber.Properties.Appearance.Options.UseTextOptions = true;
             this.txtUnitNumber.Properties.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
             this.txtUnitNumber.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Glyph, "1 Stk =", -1, true, true, true, editorButtonImageOptions4, new DevExpress.Utils.KeyShortcut(System.Windows.Forms.Keys.None), serializableAppearanceObject13, serializableAppearanceObject14, serializableAppearanceObject15, serializableAppearanceObject16, "", null, null, DevExpress.Utils.ToolTipAnchor.Default),
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Glyph, "x 1 Stk", -1, true, true, false, editorButtonImageOptions5, new DevExpress.Utils.KeyShortcut(System.Windows.Forms.Keys.None), serializableAppearanceObject17, serializableAppearanceObject18, serializableAppearanceObject19, serializableAppearanceObject20, "", null, null, DevExpress.Utils.ToolTipAnchor.Default)});
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Glyph, "1 Stk =", -1, true, true, true, editorButtonImageOptions3, new DevExpress.Utils.KeyShortcut(System.Windows.Forms.Keys.None), serializableAppearanceObject9, serializableAppearanceObject10, serializableAppearanceObject11, serializableAppearanceObject12, "", null, null, DevExpress.Utils.ToolTipAnchor.Default),
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Glyph, "x 1 Stk", -1, true, true, false, editorButtonImageOptions4, new DevExpress.Utils.KeyShortcut(System.Windows.Forms.Keys.None), serializableAppearanceObject13, serializableAppearanceObject14, serializableAppearanceObject15, serializableAppearanceObject16, "", null, null, DevExpress.Utils.ToolTipAnchor.Default)});
             this.txtUnitNumber.Properties.DisplayFormat.FormatString = "n4";
             this.txtUnitNumber.Properties.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
             this.txtUnitNumber.Properties.EditFormat.FormatString = "n4";
@@ -505,7 +519,7 @@
             this.txtConvertCurrency.Location = new System.Drawing.Point(446, 921);
             this.txtConvertCurrency.Name = "txtConvertCurrency";
             this.txtConvertCurrency.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Glyph, "1", -1, true, true, true, editorButtonImageOptions6, new DevExpress.Utils.KeyShortcut(System.Windows.Forms.Keys.None), serializableAppearanceObject21, serializableAppearanceObject22, serializableAppearanceObject23, serializableAppearanceObject24, "", null, null, DevExpress.Utils.ToolTipAnchor.Default)});
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Glyph, "1", -1, true, true, true, editorButtonImageOptions5, new DevExpress.Utils.KeyShortcut(System.Windows.Forms.Keys.None), serializableAppearanceObject17, serializableAppearanceObject18, serializableAppearanceObject19, serializableAppearanceObject20, "", null, null, DevExpress.Utils.ToolTipAnchor.Default)});
             this.txtConvertCurrency.Properties.ReadOnly = true;
             this.txtConvertCurrency.Size = new System.Drawing.Size(182, 40);
             this.txtConvertCurrency.StyleController = this.layoutControl1;
@@ -596,7 +610,7 @@
             this.layoutControlItem1.Control = this.txtRemark;
             this.layoutControlItem1.Location = new System.Drawing.Point(0, 120);
             this.layoutControlItem1.Name = "layoutControlItem1";
-            this.layoutControlItem1.Size = new System.Drawing.Size(802, 242);
+            this.layoutControlItem1.Size = new System.Drawing.Size(802, 244);
             this.layoutControlItem1.Text = "Bemerkungen";
             this.layoutControlItem1.TextSize = new System.Drawing.Size(144, 25);
             // 
@@ -630,9 +644,9 @@
             // layoutControlItem2
             // 
             this.layoutControlItem2.Control = this.ddSupplier;
-            this.layoutControlItem2.Location = new System.Drawing.Point(0, 362);
+            this.layoutControlItem2.Location = new System.Drawing.Point(0, 364);
             this.layoutControlItem2.Name = "layoutControlItem2";
-            this.layoutControlItem2.Size = new System.Drawing.Size(802, 46);
+            this.layoutControlItem2.Size = new System.Drawing.Size(802, 44);
             this.layoutControlItem2.Text = "Bemerkungen";
             this.layoutControlItem2.TextSize = new System.Drawing.Size(144, 25);
             // 
@@ -712,19 +726,20 @@
             // layoutControlGroup6
             // 
             this.layoutControlGroup6.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
-            this.emptySpaceItem1});
+            this.layoutControlItem22});
             this.layoutControlGroup6.Location = new System.Drawing.Point(828, 0);
             this.layoutControlGroup6.Name = "layoutControlGroup6";
             this.layoutControlGroup6.Size = new System.Drawing.Size(684, 602);
             this.layoutControlGroup6.Text = "Artikel";
             // 
-            // emptySpaceItem1
+            // layoutControlItem22
             // 
-            this.emptySpaceItem1.AllowHotTrack = false;
-            this.emptySpaceItem1.Location = new System.Drawing.Point(0, 0);
-            this.emptySpaceItem1.Name = "emptySpaceItem1";
-            this.emptySpaceItem1.Size = new System.Drawing.Size(658, 540);
-            this.emptySpaceItem1.TextSize = new System.Drawing.Size(0, 0);
+            this.layoutControlItem22.Control = this.txtProductDesc;
+            this.layoutControlItem22.Location = new System.Drawing.Point(0, 0);
+            this.layoutControlItem22.Name = "layoutControlItem22";
+            this.layoutControlItem22.Size = new System.Drawing.Size(658, 540);
+            this.layoutControlItem22.TextSize = new System.Drawing.Size(0, 0);
+            this.layoutControlItem22.TextVisible = false;
             // 
             // layoutControlItem21
             // 
@@ -919,6 +934,7 @@
             this.Load += new System.EventHandler(this.Ctrl_Load);
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
             this.layoutControl1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.txtProductDesc.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtMaxProfit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtMinProfit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.rdoAmountMarkupList.Properties)).EndInit();
@@ -928,6 +944,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.dtCreate.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtEmployee.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtInfo.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ddSupplier.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtRemark.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.chkOptionList)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.rdoCostTypeList.Properties)).EndInit();
@@ -956,7 +973,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem10)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem8)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup6)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem22)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem21)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup7)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem17)).EndInit();
@@ -983,7 +1000,6 @@
 
         private DevExpress.XtraLayout.LayoutControl layoutControl1;
         private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
-        private DevExpress.XtraLayout.EmptySpaceItem emptySpaceItem1;
         private DevExpress.XtraEditors.SimpleButton btnSave;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem15;
         private DevExpress.XtraLayout.EmptySpaceItem emptySpaceItem2;
@@ -1040,5 +1056,7 @@
         private DevExpress.XtraLayout.EmptySpaceItem emptySpaceItem6;
         private DevExpress.XtraLayout.EmptySpaceItem emptySpaceItem7;
         private DevExpress.XtraLayout.EmptySpaceItem emptySpaceItem8;
+        private DevExpress.XtraEditors.MemoEdit txtProductDesc;
+        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem22;
     }
 }

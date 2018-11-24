@@ -121,7 +121,37 @@ namespace CalculationOilPrice.Library.Storage
             cmd.Dispose();
         }
 
+        static void UpdateRow(DataRow dr, DataColumn primaryKey, List<DataColumn> saveColumns, string connectionString = null)
+        {
+            StringBuilder query = new StringBuilder();
+            string sConn = !String.IsNullOrWhiteSpace(connectionString) ? connectionString : ConfigurationManager.ConnectionStrings["DBConnectionString"].ConnectionString;
 
+            using (SqlConnection connection = new SqlConnection(sConn))
+            {
+                SqlCommand cmd = new SqlCommand();
+                cmd.Connection = connection;
+                query.AppendFormat("update [{0}] set ", dr.Table.TableName);
+                connection.Open();
+
+                foreach (DataColumn dc in saveColumns)
+                {
+                    if (dc.ColumnName == primaryKey.ColumnName)
+                    {
+                        continue;
+                    }
+
+                    query.AppendFormat("[{0}]={1},", dc.ColumnName, GetValueString(dc, dr));
+                }
+                query.Remove(query.Length - 1, 1);
+
+                query.AppendFormat(" where [{0}]={1}", primaryKey.ColumnName, GetValueString(primaryKey, dr));
+
+                cmd.CommandText = query.ToString();
+                cmd.ExecuteNonQuery();
+                connection.Close();
+                cmd.Dispose();
+            }
+        }
 
         public static void SaveTable(DataTable table, DataColumn primaryKey, DataColumn[] ignoreSaveColumns)
         {
@@ -170,7 +200,52 @@ namespace CalculationOilPrice.Library.Storage
             }
         }
 
-        public static DataTable LoadTable(string tableName, DataColumn[] specifyFields, DataColumn[] conditions, DataColumn[] orderFields)
+        public static long InsertRowReturnIdentity(DataRow dr, DataColumn primaryKey, DataColumn[] ignoreSaveColumns)
+        {
+            long iIdentity = 0;
+
+            StringBuilder query = new StringBuilder();
+            StringBuilder queryValues = new StringBuilder();
+            List<DataColumn> saveColumns = GetSaveColumns(dr.Table, ignoreSaveColumns);
+
+            using (SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["DBConnectionString"].ConnectionString))
+            {
+                ///building columns
+                query.AppendFormat("insert into [{0}](", dr.Table.TableName);
+                foreach (DataColumn dc in saveColumns)
+                {
+                    query.AppendFormat("[{0}],", dc.ColumnName);
+                }
+                query.Remove(query.Length - 1, 1);
+                query.Append(")");
+
+                ///Building values routine below
+                SqlCommand cmd = new SqlCommand();
+                cmd.Connection = connection;
+                connection.Open();
+
+                queryValues = new StringBuilder(query.ToString());
+                queryValues.Append(" values(");
+                foreach (DataColumn dc in saveColumns)
+                {
+                    queryValues.AppendFormat("{0},", GetValueString(dc, dr));
+                }
+                queryValues.Remove(queryValues.Length - 1, 1);
+                queryValues.Append(");");
+
+                //select identity
+                queryValues.Append(" SELECT CAST(scope_identity() AS bigint);");
+
+                cmd.CommandText = queryValues.ToString();
+                iIdentity = Convert.ToInt64(cmd.ExecuteScalar());
+                connection.Close();
+                cmd.Dispose();
+            }
+
+            return iIdentity;
+        }
+
+        public static DataTable LoadTable(string tableName, DataColumn[] specifyFields, DataColumn[] conditions, DataColumn[] orderFields, string connectionString = null)
         {
             StringBuilder query = new StringBuilder();
             StringBuilder specifyFieldString = new StringBuilder("*");
@@ -195,7 +270,15 @@ namespace CalculationOilPrice.Library.Storage
                 {
                     if (condition.DefaultValue.GetType() == typeof(string))
                     {
-                        conditionString.AppendFormat(" {0}='{1}' and", condition.ColumnName, condition.DefaultValue.ToString());
+                        if (condition.DefaultValue.ToString().Contains("%"))
+                        {
+                            conditionString.AppendFormat(" {0} like '{1}' and", condition.ColumnName, condition.DefaultValue.ToString());
+                        }
+                        else
+                        {
+                            conditionString.AppendFormat(" {0}='{1}' and", condition.ColumnName, condition.DefaultValue.ToString());
+                        }
+
                     }
                     else
                     {
@@ -225,7 +308,9 @@ namespace CalculationOilPrice.Library.Storage
 
             try
             {
-                using (SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["DBConnectionString"].ConnectionString))
+                string sConn = !String.IsNullOrWhiteSpace(connectionString) ? connectionString : ConfigurationManager.ConnectionStrings["DBConnectionString"].ConnectionString;
+
+                using (SqlConnection connection = new SqlConnection(sConn))
                 {
                     connection.Open();
                     SqlDataAdapter da = new SqlDataAdapter(query.ToString(), connection);

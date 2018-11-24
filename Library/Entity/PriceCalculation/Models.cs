@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using CalculationOilPrice.Library.Entity.Setting.PriceCalculation;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -8,13 +9,86 @@ using System.Web.Script.Serialization;
 
 namespace CalculationOilPrice.Library.Entity.PriceCalculation.Models
 {
+    //LAG_Dokumente
+    public class ProffixLAGDokumente
+    {
+        public int LaufNr { get; set; } //unique no.
+        public string ArtikelNrLAG { get; set; }
+        public string Bemerkungen { get; set; }
+        public string DateiName { get; set; }
+        //public DateTime Datum { get; set; }
+    }
+    public class ProffixLAGArtikelModel
+    {
+        public int LaufNr { get; set; } //unique no.
+        public string ArtikelNrLAG { get; set; }
+        public string Bezeichnung1 { get; set; }
+        public string Bezeichnung2 { get; set; }
+        public string Bezeichnung3 { get; set; }
+        public string Bezeichnung4 { get; set; }
+        public string Bezeichnung5 { get; set; }
+    }
+
+    public class ProffixLAGLieferantenModel
+    {
+        public int LaufNr { get; set; } //unique no.
+        public string ArtikelNrLAG { get; set; }
+        public string Name { get; set; }
+    }
+
+    public class ProffixResult
+    {
+        public bool IsNew { get; set; }
+        public bool IsLoad { get; set; }
+        public string ArtikelNrLAG { get; set; }
+        //public int DokumentNrLAG { get; set; }
+        public string CalculationID { get; set; }
+
+        public ProffixResult(string[] arguments)
+        {
+            //if call from proffix
+            if (arguments != null)
+            {
+                if (arguments.Length == 2)
+                {
+                    if (arguments[1].TrimStart().TrimEnd().Trim().StartsWith("opencal"))
+                    {
+                        //new or load
+                        string[] sSubParam = arguments[1].Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+
+                        if (sSubParam.Length == 2)
+                        {
+                            //new  
+                            IsNew = true;
+                            ArtikelNrLAG = sSubParam[1];
+                        }
+                        else if (sSubParam.Length > 2)
+                        {
+                            //load
+                            IsLoad = true;
+                            ArtikelNrLAG = sSubParam[1];
+                            try
+                            {
+                                CalculationID = sSubParam[2];
+                            }
+                            catch { }
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     public class ComboboxItemModel
     {
-        public int Value { get; set; }
+        public long Value { get; set; }
         public string Caption { get; set; }
+        public CalculationModel Model { get; set; }
+        public override string ToString()
+        {
+            return Caption;
+        }
     }
-
 
     #region GeneralSetting Model
     public class GeneralProductDesc
@@ -149,6 +223,9 @@ namespace CalculationOilPrice.Library.Entity.PriceCalculation.Models
 
         [ScriptIgnore]
         public List<string> TextLines { get; set; }
+
+        [ScriptIgnore]
+        public ProffixResult ProffixResult { get; set; }
     }
     #endregion
 
@@ -286,8 +363,8 @@ namespace CalculationOilPrice.Library.Entity.PriceCalculation.Models
         public GeneralSettingModel GeneralSetting { get; set; }
 
         ////from module's settings
-        //[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        //public PriceSetting PriceSetting { get; set; }
+        //[ScriptIgnore]
+        //public PriceCalculationSetting ModuleSetting { get; set; }
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public List<CalculationNoteModel> CalculationNotes { get; set; }
@@ -298,7 +375,18 @@ namespace CalculationOilPrice.Library.Entity.PriceCalculation.Models
 
         //keep margin
         [ScriptIgnore]
-        public List<CalculationItemModel> CalculationMarginViewItems { get; set; }        
+        public List<CalculationItemModel> CalculationMarginViewItems { get; set; }
+
+        //keep Proffix
+        public string ArtikelNrLAG { get; set; }
+
+        [ScriptIgnore]
+        public string ProffixConnection { get; set; }
+
+        public override string ToString()
+        {
+            return DateTime.Now.ToString();
+        }
     }
 
     //calculation note

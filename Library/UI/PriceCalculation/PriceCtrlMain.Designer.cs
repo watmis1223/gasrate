@@ -30,6 +30,8 @@
         {
             this.mainTabControl = new DevExpress.XtraTab.XtraTabControl();
             this.generalTabPage = new DevExpress.XtraTab.XtraTabPage();
+            this.splitContainerControl1 = new DevExpress.XtraEditors.SplitContainerControl();
+            this.lstCalculation = new DevExpress.XtraEditors.ListBoxControl();
             this.generalCtrl1 = new CalculationOilPrice.Library.UI.PriceCalculation.GeneralCtrl();
             this.settingTabPage = new DevExpress.XtraTab.XtraTabPage();
             this.settingCtrl1 = new CalculationOilPrice.Library.UI.PriceCalculation.SettingCtrl();
@@ -41,6 +43,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.mainTabControl)).BeginInit();
             this.mainTabControl.SuspendLayout();
             this.generalTabPage.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainerControl1)).BeginInit();
+            this.splitContainerControl1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.lstCalculation)).BeginInit();
             this.settingTabPage.SuspendLayout();
             this.calculationTabPage.SuspendLayout();
             this.SuspendLayout();
@@ -56,16 +61,38 @@
             this.mainTabControl.TabPages.AddRange(new DevExpress.XtraTab.XtraTabPage[] {
             this.settingTabPage,
             this.generalTabPage,
-            this.calculationTabPage
-            });
+            this.calculationTabPage});
             // 
             // generalTabPage
             // 
-            this.generalTabPage.Controls.Add(this.generalCtrl1);
+            this.generalTabPage.Controls.Add(this.splitContainerControl1);
             this.generalTabPage.Margin = new System.Windows.Forms.Padding(6);
             this.generalTabPage.Name = "generalTabPage";
             this.generalTabPage.Size = new System.Drawing.Size(1520, 1087);
             this.generalTabPage.Text = "Allgemein";
+            // 
+            // splitContainerControl1
+            // 
+            this.splitContainerControl1.CollapsePanel = DevExpress.XtraEditors.SplitCollapsePanel.Panel1;
+            this.splitContainerControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainerControl1.Location = new System.Drawing.Point(0, 0);
+            this.splitContainerControl1.Name = "splitContainerControl1";
+            this.splitContainerControl1.Panel1.Controls.Add(this.lstCalculation);
+            this.splitContainerControl1.Panel1.Text = "Panel1";
+            this.splitContainerControl1.Panel2.Controls.Add(this.generalCtrl1);
+            this.splitContainerControl1.Panel2.Text = "Panel2";
+            this.splitContainerControl1.Size = new System.Drawing.Size(1520, 1087);
+            this.splitContainerControl1.SplitterPosition = 378;
+            this.splitContainerControl1.TabIndex = 1;
+            this.splitContainerControl1.Text = "splitContainerControl1";
+            // 
+            // lstCalculation
+            // 
+            this.lstCalculation.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lstCalculation.Location = new System.Drawing.Point(0, 0);
+            this.lstCalculation.Name = "lstCalculation";
+            this.lstCalculation.Size = new System.Drawing.Size(378, 1087);
+            this.lstCalculation.TabIndex = 0;
             // 
             // generalCtrl1
             // 
@@ -73,9 +100,9 @@
             this.generalCtrl1.Location = new System.Drawing.Point(0, 0);
             this.generalCtrl1.Margin = new System.Windows.Forms.Padding(6);
             this.generalCtrl1.Name = "generalCtrl1";
-            this.generalCtrl1.Size = new System.Drawing.Size(1520, 1087);
+            this.generalCtrl1.Size = new System.Drawing.Size(1132, 1087);
             this.generalCtrl1.TabIndex = 0;
-            this.generalCtrl1.NewButtonClick += new CalculationOilPrice.Library.UI.PriceCalculation.GeneralCtrl.NewButtonClickCallback(this.generalCtrl1_NewButtonClick);            
+            this.generalCtrl1.NewButtonClick += new CalculationOilPrice.Library.UI.PriceCalculation.GeneralCtrl.NewButtonClickCallback(this.generalCtrl1_NewButtonClick);
             // 
             // settingTabPage
             // 
@@ -145,6 +172,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.mainTabControl)).EndInit();
             this.mainTabControl.ResumeLayout(false);
             this.generalTabPage.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainerControl1)).EndInit();
+            this.splitContainerControl1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.lstCalculation)).EndInit();
             this.settingTabPage.ResumeLayout(false);
             this.calculationTabPage.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -163,5 +193,7 @@
         private DevExpress.XtraBars.Bar bar3;
         private DevExpress.XtraBars.Bar bar2;
         private DevExpress.XtraBars.Bar bar1;
+        private DevExpress.XtraEditors.SplitContainerControl splitContainerControl1;
+        private DevExpress.XtraEditors.ListBoxControl lstCalculation;
     }
 }

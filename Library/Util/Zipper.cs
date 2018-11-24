@@ -63,7 +63,7 @@ namespace CalculationOilPrice.Library.Util
         }
 
         public static string Unzip(byte[] bytes)
-        {
+        {            
             using (var msi = new MemoryStream(bytes))
             using (var mso = new MemoryStream())
             {

@@ -2,10 +2,11 @@
   <CalculationCounter>0</CalculationCounter>
   <PriceSetting>
     <CashDiscount>5.0000</CashDiscount>
-    <CustomerDiscount>3.0000</CustomerDiscount>
-    <SalesBonus>4.0000</SalesBonus>
+    <CustomerDiscount>4.0000</CustomerDiscount>
+    <SalesBonus>3.0000</SalesBonus>
     <VatTaxes>7.0000</VatTaxes>
   </PriceSetting>
+  <ProffixConnection>user id=sa;password=1234;data source=WATCHARAPONG-20;initial catalog=PX000100</ProffixConnection>
   <ReportPathSetting>
     <PrintPreview>false</PrintPreview>
     <ReportPath i:nil="true" />

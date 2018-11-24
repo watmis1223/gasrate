@@ -67,6 +67,8 @@
             this.layoutControlItem12 = new DevExpress.XtraLayout.LayoutControlItem();
             this.layoutControlItem11 = new DevExpress.XtraLayout.LayoutControlItem();
             this.emptySpaceItem3 = new DevExpress.XtraLayout.EmptySpaceItem();
+            this.txtProffixConnection = new DevExpress.XtraEditors.TextEdit();
+            this.layoutControlItem17 = new DevExpress.XtraLayout.LayoutControlItem();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             this.layoutControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chkPrintPreview.Properties)).BeginInit();
@@ -106,10 +108,13 @@
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem12)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem11)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.txtProffixConnection.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem17)).BeginInit();
             this.SuspendLayout();
             // 
             // layoutControl1
             // 
+            this.layoutControl1.Controls.Add(this.txtProffixConnection);
             this.layoutControl1.Controls.Add(this.chkPrintPreview);
             this.layoutControl1.Controls.Add(this.btnSave);
             this.layoutControl1.Controls.Add(this.txtVatTax);
@@ -318,7 +323,8 @@
             this.layoutControlItem15,
             this.emptySpaceItem2,
             this.layoutControlItem16,
-            this.layoutControlGroup3});
+            this.layoutControlGroup3,
+            this.layoutControlItem17});
             this.layoutControlGroup1.Name = "Root";
             this.layoutControlGroup1.Size = new System.Drawing.Size(1532, 1142);
             this.layoutControlGroup1.TextVisible = false;
@@ -326,10 +332,10 @@
             // emptySpaceItem1
             // 
             this.emptySpaceItem1.AllowHotTrack = false;
-            this.emptySpaceItem1.Location = new System.Drawing.Point(0, 544);
+            this.emptySpaceItem1.Location = new System.Drawing.Point(0, 588);
             this.emptySpaceItem1.MinSize = new System.Drawing.Size(104, 24);
             this.emptySpaceItem1.Name = "emptySpaceItem1";
-            this.emptySpaceItem1.Size = new System.Drawing.Size(1512, 530);
+            this.emptySpaceItem1.Size = new System.Drawing.Size(1512, 486);
             this.emptySpaceItem1.SizeConstraintsType = DevExpress.XtraLayout.SizeConstraintsType.Custom;
             this.emptySpaceItem1.TextSize = new System.Drawing.Size(0, 0);
             // 
@@ -569,6 +575,23 @@
             this.emptySpaceItem3.Size = new System.Drawing.Size(400, 264);
             this.emptySpaceItem3.TextSize = new System.Drawing.Size(0, 0);
             // 
+            // txtProffixConnection
+            // 
+            this.txtProffixConnection.Location = new System.Drawing.Point(182, 556);
+            this.txtProffixConnection.Name = "txtProffixConnection";
+            this.txtProffixConnection.Size = new System.Drawing.Size(1338, 40);
+            this.txtProffixConnection.StyleController = this.layoutControl1;
+            this.txtProffixConnection.TabIndex = 20;
+            // 
+            // layoutControlItem17
+            // 
+            this.layoutControlItem17.Control = this.txtProffixConnection;
+            this.layoutControlItem17.Location = new System.Drawing.Point(0, 544);
+            this.layoutControlItem17.Name = "layoutControlItem17";
+            this.layoutControlItem17.Size = new System.Drawing.Size(1512, 44);
+            this.layoutControlItem17.Text = "DB Verbindung";
+            this.layoutControlItem17.TextSize = new System.Drawing.Size(167, 25);
+            // 
             // SettingCtrl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
@@ -617,6 +640,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem12)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem11)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.txtProffixConnection.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem17)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -662,5 +687,7 @@
         private DevExpress.XtraEditors.CheckEdit chkPrintPreview;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem16;
         private DevExpress.XtraLayout.EmptySpaceItem emptySpaceItem3;
+        private DevExpress.XtraEditors.TextEdit txtProffixConnection;
+        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem17;
     }
 }

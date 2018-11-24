@@ -54,6 +54,8 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                 txtText10.EditValue = _Setting.TextSetting.Text10;
 
                 chkPrintPreview.CheckState = _Setting.ReportPathSetting.PrintPreview ? CheckState.Checked : CheckState.Unchecked;
+
+                txtProffixConnection.EditValue = _Setting.ProffixConnection;
             }
             catch { }
         }
@@ -76,7 +78,9 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             _Setting.TextSetting.Text9 = txtText9.Text;
             _Setting.TextSetting.Text10 = txtText10.Text;
 
-            _Setting.ReportPathSetting.PrintPreview = chkPrintPreview.CheckState == CheckState.Checked;            
+            _Setting.ReportPathSetting.PrintPreview = chkPrintPreview.CheckState == CheckState.Checked;
+
+            _Setting.ProffixConnection = txtProffixConnection.Text;
         }
 
         private void btnSave_Click(object sender, EventArgs e)

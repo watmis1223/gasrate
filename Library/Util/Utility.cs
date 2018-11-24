@@ -23,7 +23,7 @@ namespace CalculationOilPrice.Library.Util
             return sJson;
         }
 
-        public static T JsonToObject<T>(string json, Type type)
+        public static T JsonToObject<T>(string json)
         {
             string sJson = string.Empty;
             JavaScriptSerializer javaConvert = new JavaScriptSerializer()
@@ -32,7 +32,7 @@ namespace CalculationOilPrice.Library.Util
             };
             try
             {
-                return (T)Convert.ChangeType(javaConvert.Deserialize<T>(json), type);
+                return javaConvert.Deserialize<T>(json);
             }
             catch //(Exception ex)
             {

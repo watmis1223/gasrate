@@ -10,6 +10,7 @@ namespace CalculationOilPrice.Library.Global
     {
         OilModule,
         PriceModuleCalculation,
-        PriceModuleSetting
+        PriceModuleSetting,
+        PriceModuleCalculationByProffix
     }
 }

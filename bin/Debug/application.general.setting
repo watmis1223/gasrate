@@ -7,8 +7,8 @@
     <EcoOilUSPrice>89</EcoOilUSPrice>
     <ExtraLightOilUSPrice>85</ExtraLightOilUSPrice>
     <FixCostForUnloadPlace>25</FixCostForUnloadPlace>
-    <FixEcoOilCHFPrice>91</FixEcoOilCHFPrice>
-    <FixExtraLightOilCHFPrice>114</FixExtraLightOilCHFPrice>
+    <FixEcoOilCHFPrice>91.00</FixEcoOilCHFPrice>
+    <FixExtraLightOilCHFPrice>114.00</FixExtraLightOilCHFPrice>
     <IsFixCHFPrices>true</IsFixCHFPrices>
   </OilPriceSetting>
   <ReportPathSetting>
