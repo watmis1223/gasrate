@@ -10,13 +10,14 @@ using CalculationOilPrice.Library.Entity;
 using CalculationOilPrice.Library.Storage;
 using CalculationOilPrice.Library.UI;
 using CalculationOilPrice.Library.UI.PriceCalculation;
+using CalculationOilPrice.Library.Global;
 
 namespace CalculationOilPrice
 {
-    public partial class MainForm : DevExpress.XtraEditors.XtraForm
+    public partial class MainForm : DevExpress.XtraBars.Ribbon.RibbonForm
     {
-        OilCtrlMain ctrl1 = new OilCtrlMain();
-        PriceCtrlMain ctrl2 = new PriceCtrlMain();
+        OilCtrlMain _OilModule = new OilCtrlMain();
+        PriceCtrlMain _PriceModule = new PriceCtrlMain();
 
         public MainForm()
         {
@@ -25,22 +26,50 @@ namespace CalculationOilPrice
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            ctrl1.Dock = DockStyle.Fill;
-            ctrl2.Dock = DockStyle.Fill;
+            _OilModule.Dock = DockStyle.Fill;
+            _PriceModule.Dock = DockStyle.Fill;
 
-            navBarItem3_LinkClicked(null, null);
+            brBtnOil_ItemClick(this, null);
         }
 
-        private void navBarItem3_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
+        public void ShowModule(ApplicationModules module, params string[] arguments)
         {
-            panelControl2.Controls.Clear();            
-            panelControl2.Controls.Add(ctrl1);
+            pnlMain.Controls.Clear();
+
+            switch (module)
+            {
+                case ApplicationModules.OilModule:
+                    pnlMain.Controls.Add(_OilModule);
+                    break;
+                case ApplicationModules.PriceModuleCalculation:
+                    _PriceModule.SetArguments(arguments);
+                    _PriceModule.ModuleCalculationMode();
+                    pnlMain.Controls.Add(_PriceModule);
+                    break;
+                case ApplicationModules.PriceModuleSetting:
+                    _PriceModule.SetArguments(arguments);
+                    _PriceModule.ModuleSettingMode();
+                    pnlMain.Controls.Add(_PriceModule);
+                    break;
+                    //default:
+                    //    break;
+
+            }
         }
 
-        private void navBarItem4_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
+        private void brBtnOil_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
-            panelControl2.Controls.Clear();
-            panelControl2.Controls.Add(ctrl2);
+            ShowModule(ApplicationModules.OilModule);
+        }
+
+        private void brBtnPriceCalculation_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            ShowModule(ApplicationModules.PriceModuleCalculation);
+        }
+
+        private void brBtnPriceSetting_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            ShowModule(ApplicationModules.PriceModuleSetting);
         }
     }
 }

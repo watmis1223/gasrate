@@ -114,6 +114,7 @@
     </Reference>
     <Reference Include="DevExpress.XtraRichEdit.v18.1, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.XtraTreeList.v18.1, Version=18.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="MigraDoc.DocumentObjectModel, Version=1.31.3066.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>packages\MigraDoc.DocumentObjectModel.dll</HintPath>
@@ -215,6 +216,7 @@
     <Compile Include="Library\Entity\Setting\PriceCalculation\PriceSetting.cs" />
     <Compile Include="Library\Entity\Setting\PriceCalculation\ReportPathSetting.cs" />
     <Compile Include="Library\Entity\Setting\ReportPathSetting.cs" />
+    <Compile Include="Library\Global\GlobalEnums.cs" />
     <Compile Include="Library\Global\GlobalFunction.cs" />
     <Compile Include="Library\Customer.cs" />
     <Compile Include="Library\Global\OilOrderDetailConstant.cs" />
@@ -447,7 +449,24 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Resources\database_32x32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\database_16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\tag_32x32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\tag_16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\database_32x321.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\database_16x161.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

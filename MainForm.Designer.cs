@@ -28,161 +28,136 @@
         /// </summary>
         private void InitializeComponent()
         {            
-            this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
-            this.panelControl2 = new DevExpress.XtraEditors.PanelControl();
-            this.navBarControl1 = new DevExpress.XtraNavBar.NavBarControl();
-            this.navBarGroup2 = new DevExpress.XtraNavBar.NavBarGroup();
-            this.navBarItem3 = new DevExpress.XtraNavBar.NavBarItem();
-            this.navBarItem4 = new DevExpress.XtraNavBar.NavBarItem();
-            this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
-            this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
-            this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
-            this.splitterItem1 = new DevExpress.XtraLayout.SplitterItem();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
-            this.layoutControl1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.panelControl2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.navBarControl1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.splitterItem1)).BeginInit();
+            this.components = new System.ComponentModel.Container();
+            this.ribbonControl1 = new DevExpress.XtraBars.Ribbon.RibbonControl();
+            this.brBrnPrice = new DevExpress.XtraBars.BarButtonItem();
+            this.popupMenu1 = new DevExpress.XtraBars.PopupMenu(this.components);
+            this.brBtnPriceCalculation = new DevExpress.XtraBars.BarButtonItem();
+            this.brBtnPriceSetting = new DevExpress.XtraBars.BarButtonItem();
+            this.brBtnOil = new DevExpress.XtraBars.BarButtonItem();
+            this.ribbonPage1 = new DevExpress.XtraBars.Ribbon.RibbonPage();
+            this.ribbonPageGroup1 = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
+            this.pnlMain = new DevExpress.XtraEditors.PanelControl();
+            ((System.ComponentModel.ISupportInitialize)(this.ribbonControl1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.popupMenu1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pnlMain)).BeginInit();
             this.SuspendLayout();
             // 
-            // layoutControl1
+            // ribbonControl1
             // 
-            this.layoutControl1.Controls.Add(this.panelControl2);
-            this.layoutControl1.Controls.Add(this.navBarControl1);
-            this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.layoutControl1.Location = new System.Drawing.Point(0, 0);
-            this.layoutControl1.Name = "layoutControl1";
-            this.layoutControl1.OptionsCustomizationForm.DesignTimeCustomizationFormPositionAndSize = new System.Drawing.Rectangle(1580, 190, 1300, 800);
-            this.layoutControl1.Root = this.layoutControlGroup1;
-            this.layoutControl1.Size = new System.Drawing.Size(1748, 1317);
-            this.layoutControl1.TabIndex = 0;
-            this.layoutControl1.Text = "layoutControl1";
+            this.ribbonControl1.ExpandCollapseItem.Id = 0;
+            this.ribbonControl1.Items.AddRange(new DevExpress.XtraBars.BarItem[] {
+            this.ribbonControl1.ExpandCollapseItem,
+            this.brBrnPrice,
+            this.brBtnOil,
+            this.brBtnPriceCalculation,
+            this.brBtnPriceSetting});
+            this.ribbonControl1.Location = new System.Drawing.Point(0, 0);
+            this.ribbonControl1.MaxItemId = 10;
+            this.ribbonControl1.Name = "ribbonControl1";
+            this.ribbonControl1.Pages.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPage[] {
+            this.ribbonPage1});
+            this.ribbonControl1.Size = new System.Drawing.Size(1748, 281);
+            this.ribbonControl1.ToolbarLocation = DevExpress.XtraBars.Ribbon.RibbonQuickAccessToolbarLocation.Hidden;
             // 
-            // panelControl2
+            // brBrnPrice
             // 
-            this.panelControl2.Location = new System.Drawing.Point(435, 12);
-            this.panelControl2.Name = "panelControl2";
-            this.panelControl2.Size = new System.Drawing.Size(1301, 1293);
-            this.panelControl2.TabIndex = 1;
+            this.brBrnPrice.ActAsDropDown = true;
+            this.brBrnPrice.ButtonStyle = DevExpress.XtraBars.BarButtonStyle.DropDown;
+            this.brBrnPrice.Caption = "Price";
+            this.brBrnPrice.DropDownControl = this.popupMenu1;
+            this.brBrnPrice.Id = 4;
+            this.brBrnPrice.ImageOptions.Image = global::CalculationOilPrice.Properties.Resources.tag_16x16;
+            this.brBrnPrice.ImageOptions.LargeImage = global::CalculationOilPrice.Properties.Resources.tag_32x32;
+            this.brBrnPrice.Name = "brBrnPrice";
+            this.brBrnPrice.RibbonStyle = DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large;
             // 
-            // navBarControl1
+            // popupMenu1
             // 
-            this.navBarControl1.ActiveGroup = this.navBarGroup2;
-            this.navBarControl1.Groups.AddRange(new DevExpress.XtraNavBar.NavBarGroup[] {
-            this.navBarGroup2});
-            this.navBarControl1.Items.AddRange(new DevExpress.XtraNavBar.NavBarItem[] {
-            this.navBarItem3,
-            this.navBarItem4});
-            this.navBarControl1.LinkSelectionMode = DevExpress.XtraNavBar.LinkSelectionModeType.OneInGroup;
-            this.navBarControl1.Location = new System.Drawing.Point(12, 12);
-            this.navBarControl1.Name = "navBarControl1";
-            this.navBarControl1.NavigationPaneGroupClientHeight = 160;
-            this.navBarControl1.NavigationPaneMaxVisibleGroups = 1;
-            this.navBarControl1.OptionsNavPane.ExpandedWidth = 409;
-            this.navBarControl1.PaintStyleKind = DevExpress.XtraNavBar.NavBarViewKind.NavigationPane;
-            this.navBarControl1.Size = new System.Drawing.Size(409, 1293);
-            this.navBarControl1.TabIndex = 4;
-            this.navBarControl1.Text = "navBarControl1";
+            this.popupMenu1.ItemLinks.Add(this.brBtnPriceCalculation);
+            this.popupMenu1.ItemLinks.Add(this.brBtnPriceSetting);
+            this.popupMenu1.Name = "popupMenu1";
+            this.popupMenu1.Ribbon = this.ribbonControl1;
             // 
-            // navBarGroup2
+            // brBtnPriceCalculation
             // 
-            this.navBarGroup2.Caption = "Kalkulation";
-            this.navBarGroup2.Expanded = true;
-            this.navBarGroup2.GroupCaptionUseImage = DevExpress.XtraNavBar.NavBarImage.Large;
-            this.navBarGroup2.GroupStyle = DevExpress.XtraNavBar.NavBarGroupStyle.LargeIconsText;
-            this.navBarGroup2.ItemLinks.AddRange(new DevExpress.XtraNavBar.NavBarItemLink[] {
-            new DevExpress.XtraNavBar.NavBarItemLink(this.navBarItem3),
-            new DevExpress.XtraNavBar.NavBarItemLink(this.navBarItem4)});
-            this.navBarGroup2.Name = "navBarGroup2";
-            this.navBarGroup2.SelectedLinkIndex = 0;
+            this.brBtnPriceCalculation.Caption = "Kalkulation";
+            this.brBtnPriceCalculation.Id = 8;
+            this.brBtnPriceCalculation.Name = "brBtnPriceCalculation";
+            this.brBtnPriceCalculation.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.brBtnPriceCalculation_ItemClick);
             // 
-            // navBarItem3
+            // brBtnPriceSetting
             // 
-            this.navBarItem3.Caption = "Oil";
-            this.navBarItem3.Name = "navBarItem3";
-            this.navBarItem3.LinkClicked += new DevExpress.XtraNavBar.NavBarLinkEventHandler(this.navBarItem3_LinkClicked);
+            this.brBtnPriceSetting.Caption = "Settings";
+            this.brBtnPriceSetting.Id = 9;
+            this.brBtnPriceSetting.Name = "brBtnPriceSetting";
+            this.brBtnPriceSetting.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.brBtnPriceSetting_ItemClick);
             // 
-            // navBarItem4
+            // brBtnOil
             // 
-            this.navBarItem4.Caption = "Product";
-            this.navBarItem4.Name = "navBarItem4";
-            this.navBarItem4.LinkClicked += new DevExpress.XtraNavBar.NavBarLinkEventHandler(this.navBarItem4_LinkClicked);
+            this.brBtnOil.Caption = "Oil";
+            this.brBtnOil.Id = 7;
+            this.brBtnOil.ImageOptions.Image = global::CalculationOilPrice.Properties.Resources.database_16x161;
+            this.brBtnOil.ImageOptions.LargeImage = global::CalculationOilPrice.Properties.Resources.database_32x321;
+            this.brBtnOil.Name = "brBtnOil";
+            this.brBtnOil.RibbonStyle = DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large;
+            this.brBtnOil.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.brBtnOil_ItemClick);
             // 
-            // layoutControlGroup1
+            // ribbonPage1
             // 
-            this.layoutControlGroup1.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
-            this.layoutControlGroup1.GroupBordersVisible = false;
-            this.layoutControlGroup1.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
-            this.layoutControlItem1,
-            this.layoutControlItem2,
-            this.splitterItem1});
-            this.layoutControlGroup1.Name = "Root";
-            this.layoutControlGroup1.Size = new System.Drawing.Size(1748, 1317);
-            this.layoutControlGroup1.TextVisible = false;
+            this.ribbonPage1.Groups.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPageGroup[] {
+            this.ribbonPageGroup1});
+            this.ribbonPage1.Name = "ribbonPage1";
+            this.ribbonPage1.Text = "Modules";
             // 
-            // layoutControlItem1
+            // ribbonPageGroup1
             // 
-            this.layoutControlItem1.Control = this.navBarControl1;
-            this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
-            this.layoutControlItem1.Name = "layoutControlItem1";
-            this.layoutControlItem1.Size = new System.Drawing.Size(413, 1297);
-            this.layoutControlItem1.TextSize = new System.Drawing.Size(0, 0);
-            this.layoutControlItem1.TextVisible = false;
+            this.ribbonPageGroup1.ItemLinks.Add(this.brBtnOil);
+            this.ribbonPageGroup1.ItemLinks.Add(this.brBrnPrice);
+            this.ribbonPageGroup1.Name = "ribbonPageGroup1";
             // 
-            // layoutControlItem2
+            // pnlMain
             // 
-            this.layoutControlItem2.Control = this.panelControl2;
-            this.layoutControlItem2.Location = new System.Drawing.Point(423, 0);
-            this.layoutControlItem2.Name = "layoutControlItem2";
-            this.layoutControlItem2.Size = new System.Drawing.Size(1305, 1297);
-            this.layoutControlItem2.TextSize = new System.Drawing.Size(0, 0);
-            this.layoutControlItem2.TextVisible = false;
-            // 
-            // splitterItem1
-            // 
-            this.splitterItem1.AllowHotTrack = true;
-            this.splitterItem1.Location = new System.Drawing.Point(413, 0);
-            this.splitterItem1.Name = "splitterItem1";
-            this.splitterItem1.Size = new System.Drawing.Size(10, 1297);
+            this.pnlMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.pnlMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlMain.Location = new System.Drawing.Point(0, 281);
+            this.pnlMain.Name = "pnlMain";
+            this.pnlMain.Size = new System.Drawing.Size(1748, 1036);
+            this.pnlMain.TabIndex = 1;
             // 
             // MainForm
             // 
+            this.AllowFormGlass = DevExpress.Utils.DefaultBoolean.False;
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1748, 1317);
-            this.Controls.Add(this.layoutControl1);
+            this.Controls.Add(this.pnlMain);
+            this.Controls.Add(this.ribbonControl1);
+            this.FormBorderEffect = DevExpress.XtraEditors.FormBorderEffect.None;
             this.Margin = new System.Windows.Forms.Padding(6);
             this.Name = "MainForm";
+            this.Ribbon = this.ribbonControl1;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Calculation Oil Price";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.MainForm_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
-            this.layoutControl1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.panelControl2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.navBarControl1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.splitterItem1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ribbonControl1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.popupMenu1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pnlMain)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }                
 
         #endregion
-                
-        private DevExpress.XtraLayout.LayoutControl layoutControl1;
-        private DevExpress.XtraEditors.PanelControl panelControl2;
-        private DevExpress.XtraNavBar.NavBarControl navBarControl1;
-        private DevExpress.XtraNavBar.NavBarGroup navBarGroup2;
-        private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
-        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
-        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem2;
-        private DevExpress.XtraLayout.SplitterItem splitterItem1;
-        private DevExpress.XtraNavBar.NavBarItem navBarItem3;
-        private DevExpress.XtraNavBar.NavBarItem navBarItem4;
+        private DevExpress.XtraBars.Ribbon.RibbonControl ribbonControl1;
+        private DevExpress.XtraBars.Ribbon.RibbonPage ribbonPage1;
+        private DevExpress.XtraBars.Ribbon.RibbonPageGroup ribbonPageGroup1;
+        private DevExpress.XtraBars.BarButtonItem brBrnPrice;
+        private DevExpress.XtraBars.PopupMenu popupMenu1;
+        private DevExpress.XtraBars.BarButtonItem brBtnOil;        
+        private DevExpress.XtraBars.BarButtonItem brBtnPriceCalculation;
+        private DevExpress.XtraBars.BarButtonItem brBtnPriceSetting;
+        private DevExpress.XtraEditors.PanelControl pnlMain;
     }
 }

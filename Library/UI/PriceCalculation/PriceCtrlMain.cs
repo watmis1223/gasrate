@@ -21,6 +21,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
         public event SettingSaveChangedCallback SettingSaveChanged;
 
         PriceCalculationSetting _PriceCalculationSetting;
+        string[] _Arguments;
 
         public PriceCtrlMain()
         {
@@ -29,10 +30,41 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
 
         private void PriceCtrlMain_Load(object sender, EventArgs e)
         {
+            mainTabControl.SelectedTabPage = generalTabPage;
+
             ReloadPriceCalculationSetting(true);
 
             //set text line to general control
             generalCtrl1.SetTextLine(_PriceCalculationSetting.TextSetting);
+        }
+
+        public void SetArguments(string[] arguments)
+        {
+            _Arguments = arguments;
+        }
+
+        public void ModuleSettingMode()
+        {
+            settingTabPage.PageVisible = true;
+            generalTabPage.PageVisible = false;
+            calculationTabPage.PageVisible = false;
+            mainTabControl.SelectedTabPage = settingTabPage;
+        }
+
+        public void ModuleCalculationMode()
+        {
+            settingTabPage.PageVisible = false;
+            generalTabPage.PageVisible = true;
+            calculationTabPage.PageVisible = true;
+            mainTabControl.SelectedTabPage = generalTabPage;
+        }
+
+        void AddCalculationTreeItem()
+        {
+            if (_Arguments != null && _Arguments.Length > 0)
+            {
+
+            }
         }
 
         void ReloadPriceCalculationSetting(bool refresh)
@@ -51,6 +83,6 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
 
             //reload calculation control           
             calculationBasicCtrl1.NewCalculation(generalCtrl1.GetModel(), _PriceCalculationSetting.PriceSetting);
-        }      
+        }
     }
 }
