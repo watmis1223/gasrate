@@ -424,6 +424,11 @@ namespace CalculationOilPrice.Library.Entity.PriceCalculation.Extensions
 
         public static void SetMarginCalculationNote(this CalculationModel model)
         {
+            if (!model.GeneralSetting.Options.Contains("M"))
+            {
+                return;
+            }
+
             //add margin items for each note
             foreach (CalculationNoteModel item in model.CalculationNotes)
             {
@@ -616,7 +621,7 @@ namespace CalculationOilPrice.Library.Entity.PriceCalculation.Extensions
             }
         }
 
-        public static void SetCalculationView(this CalculationModel model)
+        public static void SetCalculationViewData(this CalculationModel model)
         {
             //add view items
             model.CalculationViewItems = new List<CalculationItemModel>();
@@ -628,14 +633,14 @@ namespace CalculationOilPrice.Library.Entity.PriceCalculation.Extensions
             catch { }
         }
 
-        public static void SetCalculationMarginView(this CalculationModel model)
+        public static void SetCalculationMarginViewData(this CalculationModel model, int calculationNoteIndex)
         {
             //add view items
             model.CalculationMarginViewItems = new List<CalculationItemModel>();
 
             try
             {
-                model.CalculationMarginViewItems.AddRange(model.CalculationNotes[0].CalculationMarginItems);
+                model.CalculationMarginViewItems.AddRange(model.CalculationNotes[calculationNoteIndex].CalculationMarginItems);
             }
             catch { }
         }

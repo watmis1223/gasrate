@@ -11,6 +11,11 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
     {
         void BindMarginCalculationView()
         {
+            if (_Model.CalculationMarginViewItems == null)
+            {
+                return;
+            }
+
             //show margin gridcontrol if needed
             if (_Model.GeneralSetting.Options != null && _Model.GeneralSetting.Options.Contains("M"))
             {

@@ -10,6 +10,11 @@ namespace CalculationOilPrice.Library.Business.PriceCalculation
     {
         public void UpdateBaseAmountAll(CalculationModel model)
         {
+            if (model.CalculationMarginViewItems == null)
+            {
+                return;
+            }
+
             //if margin not enabled
             if (!model.GeneralSetting.Options.Contains("M"))
             {

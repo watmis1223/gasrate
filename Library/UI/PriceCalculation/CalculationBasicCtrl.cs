@@ -115,11 +115,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
 
         public void LoadCalculation(CalculationModel model)
         {
-            _Model = model;
-
-            //if needed
-            _Model.SetCalculationView();
-            _Model.SetCalculationMarginView();
+            _Model = model;            
 
             //setup everythings
             SetUpCalculation();
@@ -139,11 +135,8 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             //setup new calculation
             _Model.SetBasicCalculationNote();
             _Model.SetScaleCalculationNote(priceSetting, _Model.CalculationNotes.First().CalculationItems.Last().ItemOrder);
-
-            //if needed
-            _Model.SetCalculationView();
-            _Model.SetCalculationMarginView();
-
+            _Model.SetMarginCalculationNote();
+           
             //setup everythings
             SetUpCalculation();
         }
@@ -151,6 +144,12 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
         void SetUpCalculation()
         {
             //setup everythings here
+
+            //if needed
+            //setup list of data that binding to gridview
+            _Model.SetCalculationViewData();
+            //_Model.SetCalculationMarginViewData();
+
 
             //set calculation method first
             //basic calculation or reverse calculation
@@ -207,6 +206,9 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                     //margin grid layout
                     this.layoutControlItem4.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Always;
 
+                    //load margin data into data list of gridview
+                    _Model.SetCalculationMarginViewData(cboPriceScales.ItemIndex);
+
                     //bind margin calculation gridview if needed
                     BindMarginCalculationView();
 
@@ -236,8 +238,14 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                 //margin grid layout
                 this.layoutControlItem4.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Always;
 
+                //load margin data into data list of gridview
+                _Model.SetCalculationMarginViewData(cboMargin.ItemIndex);
+
                 //bind margin calculation gridview if needed
                 BindMarginCalculationView();
+
+                //calculate margin
+                _MarginCalculation.UpdateBaseAmountAll(_Model);
 
                 gridView2.RefreshData();
             }
