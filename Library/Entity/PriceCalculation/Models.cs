@@ -36,15 +36,53 @@ namespace CalculationOilPrice.Library.Entity.PriceCalculation.Models
         public string Name { get; set; }
     }
 
-    public class ProffixResult
+    public class ProffixPREPreisStaffelModel
+    {
+        public int LaufNr { get; set; } //unique no.
+        public string ANummer { get; set; }
+        public int ArtikelTyp { get; set; }
+        public int AssortiertPRE { get; set; }
+
+        public int KNummer { get; set; }
+        public int KundenTyp { get; set; }
+
+        public decimal MengeVon { get; set; }
+        public string PreisTypPRE { get; set; }
+        public int Prozent { get; set; }
+
+
+        public string StaffelCode { get; set; }
+        public int Verkauf { get; set; }
+        public string WaehrungPRO { get; set; }
+        public decimal Wert { get; set; }
+
+        public int ImportNr { get; set; }
+
+
+        public DateTime ErstelltAm { get; set; }
+        public string ErstelltVon { get; set; }
+        public DateTime GeaendertAm { get; set; }
+        public string GeaendertVon { get; set; }
+
+
+        public int Geaendert { get; set; }
+        public string Exportiert { get; set; }
+
+    }
+
+    public class ProffixModel
     {
         public bool IsNew { get; set; }
         public bool IsLoad { get; set; }
-        public string ArtikelNrLAG { get; set; }
-        //public int DokumentNrLAG { get; set; }
+
+        //keep LAG_Dokumente
+        public string LAGDokumenteArtikelNrLAG { get; set; }
+        public int LAGDokumenteLaufNr { get; set; } // primary no.
+
+        //keep CalPrice
         public string CalculationID { get; set; }
 
-        public ProffixResult(string[] arguments)
+        public ProffixModel(string[] arguments)
         {
             //if call from proffix
             if (arguments != null)
@@ -60,13 +98,13 @@ namespace CalculationOilPrice.Library.Entity.PriceCalculation.Models
                         {
                             //new  
                             IsNew = true;
-                            ArtikelNrLAG = sSubParam[1];
+                            LAGDokumenteArtikelNrLAG = sSubParam[1];
                         }
                         else if (sSubParam.Length > 2)
                         {
                             //load
                             IsLoad = true;
-                            ArtikelNrLAG = sSubParam[1];
+                            LAGDokumenteArtikelNrLAG = sSubParam[1];
                             try
                             {
                                 CalculationID = sSubParam[2];
@@ -225,7 +263,7 @@ namespace CalculationOilPrice.Library.Entity.PriceCalculation.Models
         public List<string> TextLines { get; set; }
 
         [ScriptIgnore]
-        public ProffixResult ProffixResult { get; set; }
+        public ProffixModel ProffixModel { get; set; }
     }
     #endregion
 
@@ -378,7 +416,7 @@ namespace CalculationOilPrice.Library.Entity.PriceCalculation.Models
         public List<CalculationItemModel> CalculationMarginViewItems { get; set; }
 
         //keep Proffix
-        public string ArtikelNrLAG { get; set; }
+        public ProffixModel ProffixModel { get; set; }
 
         [ScriptIgnore]
         public string ProffixConnection { get; set; }

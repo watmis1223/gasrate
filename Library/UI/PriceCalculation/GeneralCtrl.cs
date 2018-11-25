@@ -24,17 +24,21 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
         public event NewButtonClickCallback NewButtonClick;
 
         GeneralSettingModel _Model;
+        ProffixModel _ProffixModel;
 
         public GeneralSettingModel GetModel()
         {
             return _Model;
         }
 
-        public void SetProffixParam(ProffixResult result, string connectionString)
+        public void SetProffixParam(ProffixModel model, string connectionString)
         {
+            //if proffix model needed
+            _ProffixModel = model;
+
             //load proffix product
             ProffixLAGArtikelModel oLAGArtikel =
-                StorageOperator.GetProffixLAGArtikelModel(result.ArtikelNrLAG, connectionString);
+                StorageOperator.GetProffixLAGArtikelModel(model.LAGDokumenteArtikelNrLAG, connectionString);
             if (oLAGArtikel != null)
             {
                 string[] oLines = new string[6];
@@ -49,7 +53,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
 
             //load proffix supplier
             List<ProffixLAGLieferantenModel> oLAGLieferantenList =
-                StorageOperator.GetProffixLAGLieferantenModelList(result.ArtikelNrLAG, connectionString);
+                StorageOperator.GetProffixLAGLieferantenModelList(model.LAGDokumenteArtikelNrLAG, connectionString);
             if (oLAGLieferantenList != null)
             {
                 ddSupplier.Properties.Items.Clear();
@@ -61,20 +65,24 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             }
 
             //load proffix document
-            ProffixLAGDokumente oProffixLAGDokumente = StorageOperator.GetProffixLAGDokumente(result.ArtikelNrLAG, result.CalculationID, connectionString);
+            ProffixLAGDokumente oProffixLAGDokumente = StorageOperator.GetProffixLAGDokumente(model.LAGDokumenteArtikelNrLAG, model.CalculationID, connectionString);
             if (oProffixLAGDokumente != null)
             {
                 txtRemark.Text = oProffixLAGDokumente.Bemerkungen;
             }
 
-            if (result.IsNew)
+            if (model.IsNew)
             {
+                //new from proffix
                 dtCreate.EditValue = DateTime.Now;
                 btnNew.Enabled = true;
+                btnReset.Enabled = false;
             }
             else
             {
+                //load from proffix
                 btnNew.Enabled = false;
+                btnReset.Enabled = true;
             }
         }
 
@@ -178,7 +186,8 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                 },
                 Options = getSelectedOption(),
                 TextLines = getSelectedTextLine(),
-                ProductDesc = getProductDesc()
+                ProductDesc = getProductDesc(),
+                ProffixModel = _ProffixModel
             };
 
             try
@@ -246,21 +255,22 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
 
         }
 
-        private void btnSave_Click(object sender, EventArgs e)
-        {
-        }
-
         private void btnNew_Click(object sender, EventArgs e)
         {
             if (NewButtonClick != null)
             {
+                //disable some controls
                 UINewCalculationMode();
 
                 //set model
                 SetSettingModel();
 
+                //invoke event
                 NewButtonClick();
             }
+
+            btnNew.Enabled = false;
+            btnReset.Enabled = true;
         }
 
         private void rdoCostTypeList_EditValueChanged(object sender, EventArgs e)
@@ -319,6 +329,17 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             {
                 txtConvertCurrency.ReadOnly = false;
                 txtExchangeRate.ReadOnly = false;
+            }
+        }
+
+        private void btnReset_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("Do you want to reset calculation?", "Reset calculation", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                _Model = null;
+
+                btnNew.Enabled = true;
+                btnReset.Enabled = false;
             }
         }
     }

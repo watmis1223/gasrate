@@ -165,7 +165,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                 ProffixConnection = moduleSetting.ProffixConnection,
                 CalculationNotes = new List<CalculationNoteModel>(),
                 CalculationViewItems = new List<CalculationItemModel>(),
-                ArtikelNrLAG = generalSettingModel.ProductDesc.Line1
+                ProffixModel = generalSettingModel.ProffixModel
             };
 
             //setup new calculation

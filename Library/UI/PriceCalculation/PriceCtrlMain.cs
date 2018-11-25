@@ -54,12 +54,13 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
         {
             settingTabPage.PageVisible = false;
             generalTabPage.PageVisible = true;
-            calculationTabPage.PageVisible = true;
+            calculationTabPage.PageVisible = false;
             mainTabControl.SelectedTabPage = generalTabPage;
         }
 
         void AddCalculationListItem(CalculationModel model)
         {
+            //add to tree list
             if (model == null)
             {
                 return;
@@ -79,22 +80,17 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
         {
             settingTabPage.PageVisible = false;
             generalTabPage.PageVisible = true;
-            calculationTabPage.PageVisible = true;
+            calculationTabPage.PageVisible = false;
             mainTabControl.SelectedTabPage = generalTabPage;
 
             //if call from proffix, arguments should not null
-            ProffixResult oResult = new ProffixResult(arguments);
-            generalCtrl1.SetProffixParam(oResult, _PriceCalculationSetting.ProffixConnection);
+            ProffixModel oProffix = new ProffixModel(arguments);
+            generalCtrl1.SetProffixParam(oProffix, _PriceCalculationSetting.ProffixConnection);
 
-            if (oResult.IsLoad)
+            if (oProffix.IsLoad)
             {
-                //load calculation item from db by id
-
+                calculationTabPage.PageVisible = true;
             }
-            //else
-            //{
-            //    //AddCalculationListItem(null);
-            //}
         }
 
         void ReloadPriceCalculationSetting(bool refresh)

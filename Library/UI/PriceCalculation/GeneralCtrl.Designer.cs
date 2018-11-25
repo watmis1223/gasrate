@@ -68,7 +68,6 @@
             this.txtRemark = new DevExpress.XtraEditors.MemoEdit();
             this.chkOptionList = new DevExpress.XtraEditors.CheckedListBoxControl();
             this.rdoCostTypeList = new DevExpress.XtraEditors.RadioGroup();
-            this.btnSave = new DevExpress.XtraEditors.SimpleButton();
             this.txtShopUnit = new DevExpress.XtraEditors.TextEdit();
             this.txtSaleUnit = new DevExpress.XtraEditors.TextEdit();
             this.rdoUnitList = new DevExpress.XtraEditors.RadioGroup();
@@ -77,7 +76,6 @@
             this.txtUnitNumber = new DevExpress.XtraEditors.ButtonEdit();
             this.txtConvertCurrency = new DevExpress.XtraEditors.ButtonEdit();
             this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
-            this.layoutControlItem15 = new DevExpress.XtraLayout.LayoutControlItem();
             this.emptySpaceItem2 = new DevExpress.XtraLayout.EmptySpaceItem();
             this.layoutControlGroup2 = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem11 = new DevExpress.XtraLayout.LayoutControlItem();
@@ -113,6 +111,8 @@
             this.layoutControlItem6 = new DevExpress.XtraLayout.LayoutControlItem();
             this.emptySpaceItem4 = new DevExpress.XtraLayout.EmptySpaceItem();
             this.emptySpaceItem8 = new DevExpress.XtraLayout.EmptySpaceItem();
+            this.btnReset = new DevExpress.XtraEditors.SimpleButton();
+            this.layoutControlItem15 = new DevExpress.XtraLayout.LayoutControlItem();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             this.layoutControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.txtProductDesc.Properties)).BeginInit();
@@ -137,7 +137,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.txtUnitNumber.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtConvertCurrency.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem15)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem11)).BeginInit();
@@ -173,10 +172,12 @@
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem6)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem8)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem15)).BeginInit();
             this.SuspendLayout();
             // 
             // layoutControl1
             // 
+            this.layoutControl1.Controls.Add(this.btnReset);
             this.layoutControl1.Controls.Add(this.txtProductDesc);
             this.layoutControl1.Controls.Add(this.btnNew);
             this.layoutControl1.Controls.Add(this.txtMaxProfit);
@@ -191,7 +192,6 @@
             this.layoutControl1.Controls.Add(this.txtRemark);
             this.layoutControl1.Controls.Add(this.chkOptionList);
             this.layoutControl1.Controls.Add(this.rdoCostTypeList);
-            this.layoutControl1.Controls.Add(this.btnSave);
             this.layoutControl1.Controls.Add(this.txtShopUnit);
             this.layoutControl1.Controls.Add(this.txtSaleUnit);
             this.layoutControl1.Controls.Add(this.rdoUnitList);
@@ -358,11 +358,11 @@
             this.ddSupplier.EditValue = "-";
             this.ddSupplier.Location = new System.Drawing.Point(172, 425);
             this.ddSupplier.Name = "ddSupplier";
+            this.ddSupplier.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.ddSupplier.Size = new System.Drawing.Size(651, 40);
             this.ddSupplier.StyleController = this.layoutControl1;
             this.ddSupplier.TabIndex = 24;
-            this.ddSupplier.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             // 
             // txtRemark
             // 
@@ -401,18 +401,6 @@
             this.rdoCostTypeList.StyleController = this.layoutControl1;
             this.rdoCostTypeList.TabIndex = 20;
             this.rdoCostTypeList.EditValueChanged += new System.EventHandler(this.rdoCostTypeList_EditValueChanged);
-            // 
-            // btnSave
-            // 
-            this.btnSave.Location = new System.Drawing.Point(1251, 1086);
-            this.btnSave.Margin = new System.Windows.Forms.Padding(6);
-            this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(269, 44);
-            this.btnSave.StyleController = this.layoutControl1;
-            this.btnSave.TabIndex = 18;
-            this.btnSave.TabStop = false;
-            this.btnSave.Text = "Speichern";
-            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
             // txtShopUnit
             // 
@@ -530,7 +518,6 @@
             this.layoutControlGroup1.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
             this.layoutControlGroup1.GroupBordersVisible = false;
             this.layoutControlGroup1.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
-            this.layoutControlItem15,
             this.emptySpaceItem2,
             this.layoutControlGroup2,
             this.layoutControlGroup5,
@@ -540,29 +527,19 @@
             this.layoutControlGroup9,
             this.layoutControlGroup3,
             this.emptySpaceItem4,
-            this.emptySpaceItem8});
+            this.emptySpaceItem8,
+            this.layoutControlItem15});
             this.layoutControlGroup1.Name = "Root";
             this.layoutControlGroup1.Size = new System.Drawing.Size(1532, 1142);
             this.layoutControlGroup1.TextVisible = false;
             // 
-            // layoutControlItem15
-            // 
-            this.layoutControlItem15.Control = this.btnSave;
-            this.layoutControlItem15.Location = new System.Drawing.Point(1239, 1074);
-            this.layoutControlItem15.Name = "layoutControlItem15";
-            this.layoutControlItem15.Size = new System.Drawing.Size(273, 48);
-            this.layoutControlItem15.SizeConstraintsType = DevExpress.XtraLayout.SizeConstraintsType.SupportHorzAlignment;
-            this.layoutControlItem15.TextSize = new System.Drawing.Size(0, 0);
-            this.layoutControlItem15.TextVisible = false;
-            this.layoutControlItem15.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Never;
-            // 
             // emptySpaceItem2
             // 
             this.emptySpaceItem2.AllowHotTrack = false;
-            this.emptySpaceItem2.Location = new System.Drawing.Point(152, 1074);
+            this.emptySpaceItem2.Location = new System.Drawing.Point(306, 1074);
             this.emptySpaceItem2.MinSize = new System.Drawing.Size(104, 24);
             this.emptySpaceItem2.Name = "emptySpaceItem2";
-            this.emptySpaceItem2.Size = new System.Drawing.Size(1087, 48);
+            this.emptySpaceItem2.Size = new System.Drawing.Size(1206, 48);
             this.emptySpaceItem2.SizeConstraintsType = DevExpress.XtraLayout.SizeConstraintsType.Custom;
             this.emptySpaceItem2.TextSize = new System.Drawing.Size(0, 0);
             // 
@@ -923,6 +900,25 @@
             this.emptySpaceItem8.Size = new System.Drawing.Size(684, 12);
             this.emptySpaceItem8.TextSize = new System.Drawing.Size(0, 0);
             // 
+            // btnReset
+            // 
+            this.btnReset.Location = new System.Drawing.Point(164, 1086);
+            this.btnReset.Name = "btnReset";
+            this.btnReset.Size = new System.Drawing.Size(150, 44);
+            this.btnReset.StyleController = this.layoutControl1;
+            this.btnReset.TabIndex = 36;
+            this.btnReset.Text = "Reset";
+            this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
+            // 
+            // layoutControlItem15
+            // 
+            this.layoutControlItem15.Control = this.btnReset;
+            this.layoutControlItem15.Location = new System.Drawing.Point(152, 1074);
+            this.layoutControlItem15.Name = "layoutControlItem15";
+            this.layoutControlItem15.Size = new System.Drawing.Size(154, 48);
+            this.layoutControlItem15.TextSize = new System.Drawing.Size(0, 0);
+            this.layoutControlItem15.TextVisible = false;
+            // 
             // GeneralCtrl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
@@ -956,7 +952,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.txtUnitNumber.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtConvertCurrency.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem15)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem11)).EndInit();
@@ -992,6 +987,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem6)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem4)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem8)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem15)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -1000,8 +996,6 @@
 
         private DevExpress.XtraLayout.LayoutControl layoutControl1;
         private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
-        private DevExpress.XtraEditors.SimpleButton btnSave;
-        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem15;
         private DevExpress.XtraLayout.EmptySpaceItem emptySpaceItem2;
         private DevExpress.XtraEditors.RadioGroup rdoCostTypeList;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem11;
@@ -1058,5 +1052,7 @@
         private DevExpress.XtraLayout.EmptySpaceItem emptySpaceItem8;
         private DevExpress.XtraEditors.MemoEdit txtProductDesc;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem22;
+        private DevExpress.XtraEditors.SimpleButton btnReset;
+        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem15;
     }
 }

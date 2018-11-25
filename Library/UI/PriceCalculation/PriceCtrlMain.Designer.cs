@@ -73,6 +73,7 @@
             // 
             // splitContainerControl1
             // 
+            this.splitContainerControl1.Collapsed = true;
             this.splitContainerControl1.CollapsePanel = DevExpress.XtraEditors.SplitCollapsePanel.Panel1;
             this.splitContainerControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainerControl1.Location = new System.Drawing.Point(0, 0);
@@ -91,7 +92,7 @@
             this.lstCalculation.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lstCalculation.Location = new System.Drawing.Point(0, 0);
             this.lstCalculation.Name = "lstCalculation";
-            this.lstCalculation.Size = new System.Drawing.Size(378, 1087);
+            this.lstCalculation.Size = new System.Drawing.Size(0, 0);
             this.lstCalculation.TabIndex = 0;
             // 
             // generalCtrl1
@@ -100,7 +101,7 @@
             this.generalCtrl1.Location = new System.Drawing.Point(0, 0);
             this.generalCtrl1.Margin = new System.Windows.Forms.Padding(6);
             this.generalCtrl1.Name = "generalCtrl1";
-            this.generalCtrl1.Size = new System.Drawing.Size(1132, 1087);
+            this.generalCtrl1.Size = new System.Drawing.Size(1510, 1087);
             this.generalCtrl1.TabIndex = 0;
             this.generalCtrl1.NewButtonClick += new CalculationOilPrice.Library.UI.PriceCalculation.GeneralCtrl.NewButtonClickCallback(this.generalCtrl1_NewButtonClick);
             // 
