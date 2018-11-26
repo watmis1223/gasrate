@@ -34,10 +34,16 @@ namespace CalculationOilPrice.Library.Business.PriceCalculation
         {
             //set editable currency field
             CalculationItemModel oCalRow = model.CalculationViewItems[rowID];
-            if (oCalRow != null && oCalRow.Currency != null)
+            //if (oCalRow != null && oCalRow.Currency != null)
+            //{
+            //    //return editable currency field
+            //    return oCalRow.Currency.CurrencyBaseAmountField;
+            //}
+
+            if (oCalRow != null && oCalRow.EditedField != null)
             {
                 //return editable currency field
-                return oCalRow.Currency.CurrencyBaseAmountField;
+                return oCalRow.EditedField == "F" ? "F" : "";
             }
 
             return "";
@@ -48,11 +54,11 @@ namespace CalculationOilPrice.Library.Business.PriceCalculation
             CalculationItemModel oCalRow = model.CalculationViewItems[rowID];
             if (oCalRow != null && oCalRow.Convert != null)
             {
-                // if not edit cell, set F (fix) as default when click convert button               
-                if (String.IsNullOrWhiteSpace(oCalRow.Convert.ConvertAmountField))
-                {
-                    oCalRow.Convert.ConvertAmountField = "F";
-                }
+                //// if not edit cell, set F (fix) as default when click convert button               
+                //if (String.IsNullOrWhiteSpace(oCalRow.Convert.ConvertAmountField))
+                //{
+                //    oCalRow.Convert.ConvertAmountField = "F";
+                //}
 
                 oCalRow.Convert.Unit = unit;
             }
@@ -71,16 +77,16 @@ namespace CalculationOilPrice.Library.Business.PriceCalculation
 
         public void UpdateCalculationRowCurrencyField(CalculationModel model, int rowID, string field)
         {
-            //set editable currency field
-            if (model.GeneralSetting.Currency.Mode == "E")
-            {
-                CalculationItemModel oCalRow = model.CalculationViewItems[rowID];
-                if (oCalRow != null)
-                {
-                    //CHF or custom one
-                    oCalRow.Currency.CurrencyBaseAmountField = field;
-                }
-            }
+            ////set editable currency field
+            //if (model.GeneralSetting.Currency.Mode == "E")
+            //{
+            //    CalculationItemModel oCalRow = model.CalculationViewItems[rowID];
+            //    if (oCalRow != null)
+            //    {
+            //        //CHF or custom one
+            //        oCalRow.Currency.CurrencyBaseAmountField = field;
+            //    }
+            //}
         }
 
         public void UpdateGroupAmountAll(CalculationModel model, bool updateGroupOnly)
@@ -140,6 +146,19 @@ namespace CalculationOilPrice.Library.Business.PriceCalculation
                                 }
                                 else
                                 {
+                                    ////if currency
+                                    //if (model.GeneralSetting.Currency.Mode == "E" && item.Currency != null)
+                                    //{
+                                    //    //allow change currency if edited amount fix only
+                                    //    //able to change currency amount percent only
+                                    //    UpdateCalculationRowAmount(model, item.ItemOrder, item.AmountPercent, true, isSpecial, false);
+                                    //}
+                                    //else
+                                    //{
+                                    //    UpdateCalculationRowAmount(model, item.ItemOrder, item.AmountFix, false, isSpecial, false);
+                                    //}
+
+
                                     UpdateCalculationRowAmount(model, item.ItemOrder, item.AmountFix, false, isSpecial, false);
                                 }
 
@@ -196,7 +215,7 @@ namespace CalculationOilPrice.Library.Business.PriceCalculation
 
         public void UpdateCalculationRowAmount(CalculationModel model, int rowID, decimal value, bool isPercent, bool specialCalculation, bool isCellEdit)
         {
-            CalculationItemModel oCalRow = model.CalculationViewItems[rowID];            
+            CalculationItemModel oCalRow = model.CalculationViewItems[rowID];
 
             //if edited value on grid's cell
             if (isCellEdit)
@@ -207,12 +226,12 @@ namespace CalculationOilPrice.Library.Business.PriceCalculation
                     oCalRow.EditedField = isPercent ? "P" : "F";
                 }
 
-                //if convert needed
-                if (oCalRow.Convert != null)
-                {
-                    //if edited P then convert F
-                    oCalRow.Convert.ConvertAmountField = isPercent ? "F" : "P";
-                }
+                ////if convert needed
+                //if (oCalRow.Convert != null)
+                //{
+                //    //if edited P then convert F
+                //    oCalRow.Convert.ConvertAmountField = isPercent ? "F" : "P";
+                //}
             }
 
             UpdateCalculationRowAmount(model, oCalRow, value, isPercent, specialCalculation);
@@ -250,7 +269,7 @@ namespace CalculationOilPrice.Library.Business.PriceCalculation
 
                     //if currency needed
                     //if master amount
-                    if (calRow.Currency != null && calRow.Currency.Currency != "CHF" && calRow.Currency.CurrencyBaseAmountField == "F")
+                    if (calRow.Currency != null && calRow.Currency.Currency != "CHF" && calRow.EditedField == "F")
                     {
                         if (model.GeneralSetting.Currency.Rate > 0)
                         {
@@ -336,36 +355,36 @@ namespace CalculationOilPrice.Library.Business.PriceCalculation
             calRow.AmountFix = iBaseAmount * (calRow.AmountPercent / 100);
             calRow.Total = calRow.AmountFix;
 
-            //if currency needed
-            //calRow.Currency.CurrencyBaseAmountField == "F"
-            if (calRow.Currency != null && calRow.Currency.CurrencyBaseAmountField == "F")
-            {
-                //calRow.Currency.OriginalAmount = calRow.AmountPercent;
-                if (model.GeneralSetting.Currency.Rate > 0)
-                {
-                    if (calRow.Currency.Currency != "CHF")
-                    {
-                        //calRow.AmountPercent = calRow.AmountPercent * model.GeneralSetting.Currency.Rate;
-                        calRow.AmountPercent = ((iOriginalFixAmount / iBaseAmount) * 100) * model.GeneralSetting.Currency.Rate;
-                        calRow.AmountFix = iOriginalFixAmount;
-                        calRow.Total = iBaseAmount * (calRow.AmountPercent / 100);
-                    }
-                    else
-                    {
-                        calRow.AmountPercent = (iOriginalFixAmount / iBaseAmount) * 100;
-                        calRow.AmountFix = iOriginalFixAmount;
-                        calRow.Total = calRow.AmountFix;
-                    }
-                }
-            }
+            ////if currency needed
+            ////calRow.Currency.CurrencyBaseAmountField == "F"
+            //if (calRow.Currency != null && calRow.EditedField == "F")
+            //{
+            //    //calRow.Currency.OriginalAmount = calRow.AmountPercent;
+            //    if (model.GeneralSetting.Currency.Rate > 0)
+            //    {
+            //        if (calRow.Currency.Currency != "CHF")
+            //        {
+            //            //calRow.AmountPercent = calRow.AmountPercent * model.GeneralSetting.Currency.Rate;
+            //            calRow.AmountPercent = ((iOriginalFixAmount / iBaseAmount) * 100) * model.GeneralSetting.Currency.Rate;
+            //            calRow.AmountFix = iOriginalFixAmount;
+            //            calRow.Total = iBaseAmount * (calRow.AmountPercent / 100);
+            //        }
+            //        else
+            //        {
+            //            calRow.AmountPercent = (iOriginalFixAmount / iBaseAmount) * 100;
+            //            calRow.AmountFix = iOriginalFixAmount;
+            //            calRow.Total = calRow.AmountFix;
+            //        }
+            //    }
+            //}
 
 
             //if convert needed
             //!String.IsNullOrWhiteSpace(calRow.Convert.ConvertAmountField)
-            //if edit P convert to F            
-            if (calRow.Convert != null && !String.IsNullOrWhiteSpace(calRow.Convert.ConvertAmountField))
+            //if edit P convert F            
+            if (calRow.Convert != null)
             {
-                if (calRow.Convert.ConvertAmountField == "F")
+                if (calRow.EditedField == "P")
                 {
                     if (calRow.Convert.Unit == "VE" && model.GeneralSetting.Convert.UnitNumber > 0)
                     {
@@ -373,40 +392,51 @@ namespace CalculationOilPrice.Library.Business.PriceCalculation
                         calRow.Total = calRow.AmountFix;
                     }
                 }
-                else if (calRow.Convert.ConvertAmountField == "P")
-                {
-                    //if currency with unit
-                    if (calRow.Currency != null && calRow.Currency.CurrencyBaseAmountField == "F")
-                    {
-                        if (calRow.Convert.Unit == "VE" && model.GeneralSetting.Convert.UnitNumber > 0)
-                        {
-                            calRow.Convert.OriginalAmount = calRow.AmountPercent;
 
-                            calRow.AmountPercent = calRow.AmountPercent / model.GeneralSetting.Convert.UnitNumber;
-                            calRow.Total = iBaseAmount * (calRow.AmountPercent / 100);
-                        }
-                    }
-                    else
-                    {
-                        //only unit
-                        //calling from summary-all functionals
-                        if (calRow.Convert.Unit == "EE")
-                        {
-                            //calRow.Convert.OriginalAmount = calRow.AmountPercent;
-                            calRow.AmountPercent = calRow.Convert.OriginalAmount;
-                            calRow.AmountFix = iBaseAmount * (calRow.AmountPercent / 100);
-                            calRow.Total = calRow.AmountFix;
-                        }
-                        else if (calRow.Convert.Unit == "VE" && model.GeneralSetting.Convert.UnitNumber > 0)
-                        {
-                            calRow.AmountPercent = calRow.Convert.OriginalAmount;
-                            calRow.AmountFix = iBaseAmount * (calRow.AmountPercent / 100);
+                //if (calRow.EditedField == "F")
+                //{
+                //    if (calRow.Convert.Unit == "VE" && model.GeneralSetting.Convert.UnitNumber > 0)
+                //    {
+                //        calRow.AmountFix = calRow.AmountFix / model.GeneralSetting.Convert.UnitNumber;
+                //        calRow.Total = calRow.AmountFix;
+                //    }
+                //}
+                //else if (String.IsNullOrWhiteSpace(calRow.EditedField) || calRow.EditedField == "P")
+                //{
+                //    //if currency with unit
+                //    if (calRow.Currency != null && calRow.EditedField == "F")
+                //    {
+                //        if (calRow.Convert.Unit == "VE" && model.GeneralSetting.Convert.UnitNumber > 0)
+                //        {
+                //            calRow.Convert.OriginalAmount = calRow.AmountPercent;
 
-                            calRow.AmountPercent = calRow.AmountPercent / model.GeneralSetting.Convert.UnitNumber;
-                            calRow.Total = (iBaseAmount * (calRow.AmountPercent / 100));
-                        }
-                    }
-                }
+                //            calRow.AmountPercent = calRow.AmountPercent / model.GeneralSetting.Convert.UnitNumber;
+                //            calRow.Total = iBaseAmount * (calRow.AmountPercent / 100);
+                //        }
+                //    }
+                //    else
+                //    {
+                //        calRow.Convert.OriginalAmount = calRow.Convert.OriginalAmount > 0 ? calRow.Convert.OriginalAmount : value;
+
+                //        //only unit
+                //        //calling from summary-all functionals
+                //        if (calRow.Convert.Unit == "EE")
+                //        {
+                //            //calRow.Convert.OriginalAmount = calRow.AmountPercent;
+                //            calRow.AmountPercent = calRow.Convert.OriginalAmount;
+                //            calRow.AmountFix = iBaseAmount * (calRow.AmountPercent / 100);
+                //            calRow.Total = calRow.AmountFix;
+                //        }
+                //        else if (calRow.Convert.Unit == "VE" && model.GeneralSetting.Convert.UnitNumber > 0)
+                //        {
+                //            calRow.AmountPercent = calRow.Convert.OriginalAmount;
+                //            calRow.AmountFix = iBaseAmount * (calRow.AmountPercent / 100);
+
+                //            calRow.AmountPercent = calRow.AmountPercent / model.GeneralSetting.Convert.UnitNumber;
+                //            calRow.Total = (iBaseAmount * (calRow.AmountPercent / 100));
+                //        }
+                //    }
+                //}
             }
         }
 
@@ -437,34 +467,46 @@ namespace CalculationOilPrice.Library.Business.PriceCalculation
             calRow.Total = calRow.AmountFix;
 
 
-            //if convert needed
-            //if edit F convert to P
-            if (calRow.Convert != null && !String.IsNullOrWhiteSpace(calRow.Convert.ConvertAmountField))
+            //if currency needed
+            //calRow.Currency.CurrencyBaseAmountField == "F"
+            if (calRow.EditedField == "F")
             {
-                if (calRow.Convert.ConvertAmountField == "P")
+                //calRow.Currency.OriginalAmount = calRow.AmountPercent;
+                if (model.GeneralSetting.Currency.Rate > 0)
                 {
-                    if (calRow.Convert.Unit == "EE")
+                    if (calRow.Currency.Currency != "CHF")
                     {
-                        calRow.Convert.OriginalAmount = calRow.AmountPercent;
-                    }
-                    else if (calRow.Convert.Unit == "VE" && model.GeneralSetting.Convert.UnitNumber > 0)
-                    {
-                        calRow.AmountPercent = calRow.AmountPercent / model.GeneralSetting.Convert.UnitNumber;
-                        calRow.Total = (calRow.AmountPercent / 100) * iBaseAmount;
+                        //calRow.AmountPercent = calRow.AmountPercent * model.GeneralSetting.Currency.Rate;
+                        calRow.AmountPercent = calRow.AmountPercent * model.GeneralSetting.Currency.Rate;
+                        calRow.Total = iBaseAmount * (calRow.AmountPercent / 100);
                     }
                 }
             }
 
-            ////if currency needed
-            //if (calRow.Currency != null && calRow.Currency.Currency != "CHF" && calRow.Currency.CurrencyBaseAmountField == "F")
-            //{
-            //    calRow.Currency.OriginalAmount = calRow.AmountPercent;
-            //    if (model.GeneralSetting.Currency.Rate > 0)
-            //    {
-            //        calRow.AmountPercent = calRow.AmountPercent * model.GeneralSetting.Currency.Rate;
-            //        calRow.Total = (iBaseAmount * (calRow.AmountPercent / 100));
-            //    }
-            //}
+
+            //if convert needed
+            //if edit F convert P
+            if (calRow.Convert != null)
+            {
+                if (calRow.EditedField == "F")
+                {
+                    if (calRow.Convert.Unit == "VE" && model.GeneralSetting.Convert.UnitNumber > 0)
+                    {
+                        calRow.AmountPercent = calRow.AmountPercent / model.GeneralSetting.Convert.UnitNumber;
+                        calRow.Total = (calRow.AmountPercent / 100) * iBaseAmount;
+                    }
+
+                    //if (calRow.Convert.Unit == "EE")
+                    //{
+                    //    calRow.Convert.OriginalAmount = calRow.AmountPercent;
+                    //}
+                    //else if (calRow.Convert.Unit == "VE" && model.GeneralSetting.Convert.UnitNumber > 0)
+                    //{
+                    //    calRow.AmountPercent = calRow.AmountPercent / model.GeneralSetting.Convert.UnitNumber;
+                    //    calRow.Total = (calRow.AmountPercent / 100) * iBaseAmount;
+                    //}
+                }
+            }
         }
         decimal GetCalculationBaseSummaryGroups(CalculationModel model, List<int> calculationGroups)
         {

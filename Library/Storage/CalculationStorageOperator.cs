@@ -35,7 +35,7 @@ namespace CalculationOilPrice.Library.Storage
         public static CalculationModel CalPriceLoadByID(long id)
         {
             CalculationModel model = null;
-            DataTable dt = null;
+            DataTable dt = new DataTable();
 
             using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["DBConnectionString"].ConnectionString))
             {
@@ -47,7 +47,8 @@ namespace CalculationOilPrice.Library.Storage
 
                     try
                     {
-                        dt.Load(cmd.ExecuteReader());
+                        SqlDataReader drd = cmd.ExecuteReader();
+                        dt.Load(drd);
                     }
                     catch { }
 
@@ -55,20 +56,26 @@ namespace CalculationOilPrice.Library.Storage
                 }
             }
 
-            if (dt != null)
+            if (dt != null && dt.Rows.Count > 0)
             {
                 string sEncodeJson = String.Concat(
                         dt.Rows[0]["JsonData1"],
                         dt.Rows[0]["JsonData2"],
                         dt.Rows[0]["JsonData3"],
                         dt.Rows[0]["JsonData4"],
-                        dt.Rows[0]["JsonData5"]);
+                        dt.Rows[0]["JsonData5"],
+                        dt.Rows[0]["JsonData6"],
+                        dt.Rows[0]["JsonData7"],
+                        dt.Rows[0]["JsonData8"],
+                        dt.Rows[0]["JsonData9"],
+                        dt.Rows[0]["JsonData10"]
+                        );
 
                 model = Utility.JsonToObject<CalculationModel>(Zipper.Unzip(Convert.FromBase64String(sEncodeJson)));
             }
 
             return model;
-        }        
+        }
 
         public static void SaveModel(CalculationModel model)
         {
@@ -95,7 +102,7 @@ namespace CalculationOilPrice.Library.Storage
             List<DataColumn> oIgnoreSave = new List<DataColumn>();
             oIgnoreSave.Add(dt.Columns["PriceID"]);
             if (model.ID == 0)
-            {                
+            {
                 //model.ID = CalPriceGetLatestID() + 1;
                 dr["CreatedDate"] = DateTime.Now;
                 oIgnoreSave.Add(dt.Columns["ModifiedDate"]);
@@ -141,7 +148,7 @@ namespace CalculationOilPrice.Library.Storage
 
         public static void SaveProffix(CalculationModel model)
         {
-            if (model.ProffixModel != null)
+            if (model.ProffixModel == null)
             {
                 return;
             }
@@ -154,11 +161,17 @@ namespace CalculationOilPrice.Library.Storage
             //1. save LAG_Dokumente
             SaveLAG_Dokumente(model);
 
-            //2. save scale if needed
-            if(model.GeneralSetting.PriceScale.Scale > 1 && model.GeneralSetting.Options.Contains("A"))
+            //2. save LAG_Artikel
+            if (model.GeneralSetting.PriceScale.Scale == 1 && model.GeneralSetting.Options.Contains("A"))
             {
-                //PRE_PreisStaffel
+                SaveLAG_Artikel(model);
             }
-        }             
+
+            //3. save scale if needed
+            if (model.GeneralSetting.PriceScale.Scale > 1 && model.GeneralSetting.Options.Contains("A"))
+            {
+                SavePRE_PreisStaffel(model);                
+            }
+        }
     }
 }

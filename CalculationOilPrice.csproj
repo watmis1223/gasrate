@@ -226,6 +226,7 @@
     <Compile Include="Library\Rate.cs" />
     <Compile Include="Library\Storage\ApplicationOperator.cs" />
     <Compile Include="Library\Storage\CalculationStorageOperator.cs" />
+    <Compile Include="Library\Storage\ProffixLAGArtikel.cs" />
     <Compile Include="Library\Storage\ProffixStorageOperator.cs" />
     <Compile Include="Library\Storage\ProffixLAGDokumente.cs" />
     <Compile Include="Library\Storage\ProffixPREPreisStaffel.cs" />

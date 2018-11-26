@@ -152,7 +152,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                 {
                     //_Model.MasterAmount = Convert.ToDecimal(e.Value);
                     _Calculation.UpdateCalculationRowAmount(_Model, iRowOrder, Convert.ToDecimal(e.Value), false, isSpecial, true);
-                    _Calculation.UpdateCalculationRowCurrencyField(_Model, iRowOrder, "F");
+                    //_Calculation.UpdateCalculationRowCurrencyField(_Model, iRowOrder, "F");
                 }
                 else
                 {
@@ -165,12 +165,12 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                     if (e.Column.FieldName == TempColumnNames.AmountPercent.ToString())
                     {
                         _Calculation.UpdateCalculationRowAmount(_Model, iRowOrder, Convert.ToDecimal(e.Value), true, isSpecial, true);
-                        _Calculation.UpdateCalculationRowCurrencyField(_Model, iRowOrder, "");
+                        //_Calculation.UpdateCalculationRowCurrencyField(_Model, iRowOrder, "");
                     }
                     else if (e.Column.FieldName == TempColumnNames.AmountFix.ToString())
                     {
                         _Calculation.UpdateCalculationRowAmount(_Model, iRowOrder, Convert.ToDecimal(e.Value), false, isSpecial, true);
-                        _Calculation.UpdateCalculationRowCurrencyField(_Model, iRowOrder, "F");
+                        //_Calculation.UpdateCalculationRowCurrencyField(_Model, iRowOrder, "F");
                     }
                 }
 
@@ -234,6 +234,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             if (e.RowHandle > -1)
             {
                 string sTag = gridView1.GetRowCellValue(e.RowHandle, TempColumnNames.Tag.ToString()).ToString();
+                int iItemOrder = Convert.ToInt32(gridView1.GetRowCellValue(e.RowHandle, TempColumnNames.ItemOrder.ToString()).ToString());
                 switch (sTag)
                 {
                     case "BEK":
@@ -346,6 +347,17 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                             }
                         }
 
+                        break;
+                    default:
+                        if (e.Column.FieldName == TempColumnNames.Currency.ToString())
+                        {
+                            //null editor item
+                            if (_Model.GeneralSetting.Currency.Mode == "E" &&
+                                String.IsNullOrWhiteSpace(_Calculation.GetCalculationRowCurrencyFieldEditable(_Model, iItemOrder)))
+                            {
+                                e.RepositoryItem = this.repositoryItemButtonEdit1;
+                            }
+                        }
                         break;
                 }
             }

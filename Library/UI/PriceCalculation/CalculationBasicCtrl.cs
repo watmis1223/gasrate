@@ -24,6 +24,7 @@ using DevExpress.XtraEditors.ViewInfo;
 using DevExpress.XtraGrid.Views.Grid;
 using CalculationOilPrice.Library.Business.PriceCalculation;
 using CalculationOilPrice.Library.Entity.PriceCalculation.Extensions;
+using DevExpress.LookAndFeel;
 
 namespace CalculationOilPrice.Library.UI.PriceCalculation
 {
@@ -320,8 +321,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                 ButtonEdit ed = (ButtonEdit)gridView1.ActiveEditor;
                 if (sValue == "CHF")
                 {
-                    ed.Properties.Buttons[0].Caption = _Model.GeneralSetting.Currency.Currency;
-                    _Calculation.UpdateCalculationRowCurrency(_Model, gridView1.GetDataSourceRowIndex(gridView1.FocusedRowHandle), _Model.GeneralSetting.Currency.Currency);
+                    _Calculation.UpdateCalculationRowCurrency(_Model, gridView1.GetDataSourceRowIndex(gridView1.FocusedRowHandle), _Model.GeneralSetting.Currency.Currency);                    
                 }
                 else
                 {

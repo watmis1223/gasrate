@@ -115,7 +115,7 @@ namespace CalculationOilPrice.Library.Storage
             oCondition[0] = col;
 
             col = new DataColumn("rtrim(ltrim([DateiName]))", typeof(string));
-            col.DefaultValue = String.Concat("opencal", "%", artikelNrLAG,
+            col.DefaultValue = String.Concat("open", "%", artikelNrLAG,
                 String.IsNullOrWhiteSpace(calculationID) ? "" : String.Concat(" ", calculationID));
             oCondition[1] = col;
 

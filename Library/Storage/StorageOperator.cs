@@ -245,6 +245,55 @@ namespace CalculationOilPrice.Library.Storage
             return iIdentity;
         }
 
+        public static void InsertRowManualIncreaseID(DataRow dr, DataColumn primaryKey, DataColumn[] ignoreSaveColumns, string connectionString = null)
+        {
+
+            StringBuilder query = new StringBuilder();
+            StringBuilder queryValues = new StringBuilder();
+            List<DataColumn> saveColumns = GetSaveColumns(dr.Table, ignoreSaveColumns);
+
+            string conn = !String.IsNullOrWhiteSpace(connectionString) ? connectionString : ConfigurationManager.ConnectionStrings["DBConnectionString"].ConnectionString;
+
+            using (SqlConnection connection = new SqlConnection(conn))
+            {
+                ///building columns
+                query.AppendFormat("insert into [{0}](", dr.Table.TableName);
+                foreach (DataColumn dc in saveColumns)
+                {
+                    query.AppendFormat("[{0}],", dc.ColumnName);
+                }
+                query.Remove(query.Length - 1, 1);
+                query.Append(")");
+
+                ///Building values routine below
+                SqlCommand cmd = new SqlCommand();
+                cmd.Connection = connection;
+                connection.Open();
+
+                queryValues = new StringBuilder(query.ToString());
+                queryValues.Append(" values(");
+                foreach (DataColumn dc in saveColumns)
+                {
+                    if (dc.ColumnName == primaryKey.ColumnName)
+                    {
+                        queryValues.AppendFormat("(select max({0}) + 1 from {1} )  ,", dc.ColumnName, dr.Table.TableName);
+                    }
+                    else
+                    {
+                        queryValues.AppendFormat("{0},", GetValueString(dc, dr));
+                    }
+                }
+                queryValues.Remove(queryValues.Length - 1, 1);
+                queryValues.Append(");");
+
+                cmd.CommandText = queryValues.ToString();
+                cmd.ExecuteNonQuery();
+                connection.Close();
+                cmd.Dispose();
+            }
+
+        }
+
         public static DataTable LoadTable(string tableName, DataColumn[] specifyFields, DataColumn[] conditions, DataColumn[] orderFields, string connectionString = null)
         {
             StringBuilder query = new StringBuilder();

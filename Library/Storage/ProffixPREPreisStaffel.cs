@@ -13,43 +13,125 @@ namespace CalculationOilPrice.Library.Storage
     {
         static void SavePRE_PreisStaffel(CalculationModel model)
         {
-            //save or update
-            string sCalculationID = model.ProffixModel.IsNew ? null : model.ID.ToString();
-            ProffixLAGDokumente oProffixLAGDokumente = GetProffixLAGDokumente(
-                model.ProffixModel.LAGDokumenteArtikelNrLAG, sCalculationID, model.ProffixConnection);
+            //update value 
+            DataTable dt = new DataTable();
+            dt.TableName = "PRE_PreisStaffel";
+            DataColumn[] cols = {
+                new DataColumn("LaufNr", typeof(Int32)), //id
+                new DataColumn("ANummer", typeof(string)), //artikel
+                new DataColumn("ArtikelTyp", typeof(Int16)), //1
+                new DataColumn("AssortiertPRE", typeof(Int32)), //0
 
-            if (oProffixLAGDokumente != null)
+                new DataColumn("KNummer", typeof(Int32)), //0
+                new DataColumn("KundenTyp", typeof(Int16)), //0
+
+                new DataColumn("MengeVon", typeof(float)), //scale
+                new DataColumn("PreisTypPRE", typeof(string)), //ART
+                new DataColumn("Prozent", typeof(Int16)), //0
+
+                new DataColumn("StaffelCode", typeof(string)), //10.0.1.221100200.CHF
+                new DataColumn("Verkauf", typeof(Int16)), //1
+                new DataColumn("WaehrungPRO", typeof(string)), //CHF
+                new DataColumn("Wert", typeof(float)), //amount
+                
+                new DataColumn("ImportNr", typeof(Int32)), //0
+
+                new DataColumn("ErstelltAm", typeof(DateTime)),
+                new DataColumn("ErstelltVon", typeof(string)), //cs
+                new DataColumn("GeaendertAm", typeof(DateTime)),
+                new DataColumn("GeaendertVon", typeof(string)), //cs
+
+                new DataColumn("Geaendert", typeof(Int16)), //1
+                new DataColumn("Exportiert", typeof(Int16)), //0
+            };
+            dt.Columns.AddRange(cols);
+
+           
+            //value columns
+            List<DataColumn> valueCols = new List<DataColumn>();
+
+
+            //PRE_PreisStaffel            
+            List<ProffixPREPreisStaffelModel> oList = GetProffixPREPreisStaffelModelList(model.ProffixModel.LAGDokumenteArtikelNrLAG, model.ProffixConnection);
+
+            //clear existing            
+            if (oList != null && oList.Count > 0)
             {
-                //update value 
-                DataTable oDtLAGDokumente = new DataTable();
-                oDtLAGDokumente.TableName = "LAG_Dokumente";
-                oDtLAGDokumente.Columns.Add(new DataColumn("LaufNr", typeof(string)));
-                oDtLAGDokumente.Columns.Add(new DataColumn("DateiName", typeof(string)));
-                oDtLAGDokumente.Columns.Add(new DataColumn("Bezeichnung", typeof(string)));
-                DataRow oDr = oDtLAGDokumente.NewRow();
-                oDtLAGDokumente.Rows.Add(oDr);
+                //overwrite amount
+                //scale calculation note id start from 1
+                foreach (CalculationNoteModel note in model.CalculationNotes)
+                {
+                    ProffixPREPreisStaffelModel oModel = oList.Where(item => item.MengeVon == note.Quantity).FirstOrDefault();
+                    if (oModel != null)
+                    {
+                        oModel.Wert = note.CalculationItems.Where(item => item.Tag == "VK(liste)").FirstOrDefault().Total;
+                    }
+                }
 
-                oDr["LaufNr"] = oProffixLAGDokumente.LaufNr;
-                oDr["DateiName"] = String.Concat(oProffixLAGDokumente.DateiName, " ", model.ID);
+                //set value columns
+                valueCols.Add(dt.Columns["Wert"]);
 
-                //Kalk. VP 01.12.2017 Aktiv Oldenburg Kunststoff-Te
-                string sBezeichnung = String.Concat(
-                    "Kalk. ",
-                    model.GeneralSetting.CostType == "S" ? "VP " : "EP ",
-                    DateTime.Now.ToString("dd.MM.yyyy", new CultureInfo("en-US")),
-                    model.GeneralSetting.Options.Contains("A") ? " Aktiv" : " ",
-                    model.GeneralSetting.Supplier);
-                oDr["Bezeichnung"] = sBezeichnung.Length > 100 ? sBezeichnung.Substring(0, 100) : sBezeichnung;
+                foreach (ProffixPREPreisStaffelModel item in oList)
+                {
+                    DataRow dr = dt.NewRow();
+                    dr["LaufNr"] = item.LaufNr;
+                    dr["Wert"] = item.Wert;
+                    dt.Rows.Add(dr);
 
-                //update proffix
-                UpdateRow(
-                    oDr,
-                    oDtLAGDokumente.Columns["LaufNr"],
-                    new List<DataColumn>() {
-                                oDtLAGDokumente.Columns["DateiName"],
-                                oDtLAGDokumente.Columns["Bezeichnung"]
-                    },
-                    connectionString: model.ProffixConnection);
+                    UpdateRow(
+                        dr,
+                        dt.Columns["LaufNr"],
+                        valueCols,
+                        connectionString: model.ProffixConnection
+                        );
+                }
+            }
+            else
+            {
+                //set value columns
+                valueCols.AddRange(dt.Columns.Cast<DataColumn>().ToList());
+
+                //insert new
+                DateTime oNow = DateTime.Now;
+                foreach (CalculationNoteModel note in model.CalculationNotes)
+                {
+                    if (note.ID == 0)
+                    {
+                        return;
+                    }
+
+                    DataRow dr = dt.NewRow();
+                    dr["LaufNr"] = 0; //new row
+                    dr["ANummer"] = model.ProffixModel.LAGDokumenteArtikelNrLAG;
+                    dr["ArtikelTyp"] = 1;
+                    dr["AssortiertPRE"] = 0;
+
+                    dr["KNummer"] = 0;
+                    dr["KundenTyp"] = 0;
+
+                    dr["MengeVon"] = note.Quantity;
+                    dr["PreisTypPRE"] = "ART";
+                    dr["Prozent"] = 0;
+
+                    dr["StaffelCode"] = String.Concat("", ".", model.ProffixModel.LAGDokumenteArtikelNrLAG, ".CHF"); ////10.0.1.221100200.CHF
+                    dr["Verkauf"] = 1;
+                    dr["WaehrungPRO"] = "CHF";
+                    dr["Wert"] = note.CalculationItems.Where(item => item.Tag == "VK(liste)").FirstOrDefault().Total;
+
+                    dr["ImportNr"] = 0;
+
+                    dr["ErstelltAm"] = oNow;
+                    dr["ErstelltVon"] = model.GeneralSetting.Employee; //"cs";
+                    dr["GeaendertAm"] = oNow;
+                    dr["GeaendertVon"] = model.GeneralSetting.Employee; //"cs";
+
+                    dr["Geaendert"] = 1;
+                    dr["Exportiert"] = 0;
+
+                    dt.Rows.Add(dr);
+
+                    InsertRowManualIncreaseID(dr, dt.Columns["LaufNr"], null, connectionString: model.ProffixConnection);
+                }
             }
         }
     }

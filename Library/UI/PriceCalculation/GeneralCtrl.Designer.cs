@@ -54,6 +54,7 @@
             DevExpress.Utils.SerializableAppearanceObject serializableAppearanceObject19 = new DevExpress.Utils.SerializableAppearanceObject();
             DevExpress.Utils.SerializableAppearanceObject serializableAppearanceObject20 = new DevExpress.Utils.SerializableAppearanceObject();
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
+            this.btnReset = new DevExpress.XtraEditors.SimpleButton();
             this.txtProductDesc = new DevExpress.XtraEditors.MemoEdit();
             this.btnNew = new DevExpress.XtraEditors.SimpleButton();
             this.txtMaxProfit = new DevExpress.XtraEditors.TextEdit();
@@ -111,7 +112,6 @@
             this.layoutControlItem6 = new DevExpress.XtraLayout.LayoutControlItem();
             this.emptySpaceItem4 = new DevExpress.XtraLayout.EmptySpaceItem();
             this.emptySpaceItem8 = new DevExpress.XtraLayout.EmptySpaceItem();
-            this.btnReset = new DevExpress.XtraEditors.SimpleButton();
             this.layoutControlItem15 = new DevExpress.XtraLayout.LayoutControlItem();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             this.layoutControl1.SuspendLayout();
@@ -208,8 +208,19 @@
             this.layoutControl1.TabIndex = 0;
             this.layoutControl1.Text = "layoutControl1";
             // 
+            // btnReset
+            // 
+            this.btnReset.Location = new System.Drawing.Point(164, 1086);
+            this.btnReset.Name = "btnReset";
+            this.btnReset.Size = new System.Drawing.Size(150, 44);
+            this.btnReset.StyleController = this.layoutControl1;
+            this.btnReset.TabIndex = 36;
+            this.btnReset.Text = "Reset";
+            this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
+            // 
             // txtProductDesc
             // 
+            this.txtProductDesc.Enabled = false;
             this.txtProductDesc.Location = new System.Drawing.Point(853, 61);
             this.txtProductDesc.Name = "txtProductDesc";
             this.txtProductDesc.Size = new System.Drawing.Size(654, 536);
@@ -899,16 +910,6 @@
             this.emptySpaceItem8.Name = "emptySpaceItem8";
             this.emptySpaceItem8.Size = new System.Drawing.Size(684, 12);
             this.emptySpaceItem8.TextSize = new System.Drawing.Size(0, 0);
-            // 
-            // btnReset
-            // 
-            this.btnReset.Location = new System.Drawing.Point(164, 1086);
-            this.btnReset.Name = "btnReset";
-            this.btnReset.Size = new System.Drawing.Size(150, 44);
-            this.btnReset.StyleController = this.layoutControl1;
-            this.btnReset.TabIndex = 36;
-            this.btnReset.Text = "Reset";
-            this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
             // 
             // layoutControlItem15
             // 

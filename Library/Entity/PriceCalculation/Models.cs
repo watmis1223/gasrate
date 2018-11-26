@@ -82,14 +82,14 @@ namespace CalculationOilPrice.Library.Entity.PriceCalculation.Models
         //keep CalPrice
         public string CalculationID { get; set; }
 
-        public ProffixModel(string[] arguments)
+        public void SetModel(string[] arguments)
         {
             //if call from proffix
             if (arguments != null)
             {
                 if (arguments.Length == 2)
                 {
-                    if (arguments[1].TrimStart().TrimEnd().Trim().StartsWith("opencal"))
+                    if (arguments[1].TrimStart().TrimEnd().Trim().StartsWith("open"))
                     {
                         //new or load
                         string[] sSubParam = arguments[1].Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
@@ -350,9 +350,9 @@ namespace CalculationOilPrice.Library.Entity.PriceCalculation.Models
             set { _OriginalAmount = decimal.Round(value, 4); }
         }
 
-        [Description("P=Percent, F=Fix, T=Total, S=Special")]
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public String ConvertAmountField { get; set; }
+        //[Description("P=Percent, F=Fix, T=Total, S=Special")]
+        //[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        //public String ConvertAmountField { get; set; }
 
         public override string ToString()
         {
@@ -381,9 +381,9 @@ namespace CalculationOilPrice.Library.Entity.PriceCalculation.Models
             set { _OriginalAmount = decimal.Round(value, 4); }
         }
 
-        [Description("P=Percent, F=Fix, T=Total, S=Special")]
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public String CurrencyBaseAmountField { get; set; }
+        //[Description("P=Percent, F=Fix, T=Total, S=Special")]
+        //[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        //public String CurrencyBaseAmountField { get; set; }
         public override string ToString()
         {
             return Currency;

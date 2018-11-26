@@ -62,6 +62,7 @@
             this.settingTabPage,
             this.generalTabPage,
             this.calculationTabPage});
+            this.mainTabControl.SelectedPageChanged += MainTabControl_SelectedPageChanged;
             // 
             // generalTabPage
             // 

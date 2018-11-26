@@ -25,6 +25,8 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
 
         List<ComboboxItemModel> _CalculationList = new List<ComboboxItemModel>();
 
+        bool isCalculationTabVisible = false;
+
         public PriceCtrlMain()
         {
             InitializeComponent();
@@ -54,7 +56,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
         {
             settingTabPage.PageVisible = false;
             generalTabPage.PageVisible = true;
-            calculationTabPage.PageVisible = false;
+            calculationTabPage.PageVisible = isCalculationTabVisible;
             mainTabControl.SelectedTabPage = generalTabPage;
         }
 
@@ -84,7 +86,8 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             mainTabControl.SelectedTabPage = generalTabPage;
 
             //if call from proffix, arguments should not null
-            ProffixModel oProffix = new ProffixModel(arguments);
+            ProffixModel oProffix = new ProffixModel();
+            oProffix.SetModel(arguments);
             generalCtrl1.SetProffixParam(oProffix, _PriceCalculationSetting.ProffixConnection);
 
             if (oProffix.IsLoad)
@@ -104,12 +107,18 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
 
         private void generalCtrl1_NewButtonClick()
         {
+            isCalculationTabVisible = true;
             calculationTabPage.PageVisible = true;
             mainTabControl.SelectedTabPage = calculationTabPage;
 
             //reload calculation control           
             calculationBasicCtrl1.NewCalculation(generalCtrl1.GetModel(), _PriceCalculationSetting);
             AddCalculationListItem(calculationBasicCtrl1.GetModel());            
+        }
+
+        private void MainTabControl_SelectedPageChanged(object sender, DevExpress.XtraTab.TabPageChangedEventArgs e)
+        {
+            
         }
     }
 }

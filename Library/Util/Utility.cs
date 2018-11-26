@@ -36,6 +36,7 @@ namespace CalculationOilPrice.Library.Util
             }
             catch //(Exception ex)
             {
+                //int jjj = 0;
                 //Logger.writeLog("JsonToObject<T> (ERROR): " + ex.Message);
             }
 
