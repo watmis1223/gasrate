@@ -31,6 +31,65 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             return _Model;
         }
 
+        public void LoadCalculation(CalculationModel model)
+        {
+            if (model == null)
+            {
+                return;
+            }
+
+            if (model != null)
+            {
+                rdoCostTypeList.EditValue = model.GeneralSetting.CostType;
+                rdoCostTypeList.Enabled = true;
+
+                // M R A
+                chkOptionList.Items["M"].Enabled = false;
+                chkOptionList.Items["M"].CheckState = model.GeneralSetting.Options.Contains("M") ? CheckState.Checked : CheckState.Unchecked;
+                chkOptionList.Items["R"].CheckState = model.GeneralSetting.Options.Contains("R") ? CheckState.Checked : CheckState.Unchecked;
+                chkOptionList.Items["A"].CheckState = model.GeneralSetting.Options.Contains("A") ? CheckState.Checked : CheckState.Unchecked;
+
+                //text line group
+                layoutControlGroup3.Enabled = false;
+
+                //price scale group
+                layoutControlGroup5.Enabled = false;
+                rdoAmountMarkupList.EditValue = model.GeneralSetting.PriceScale.MarkUp;
+                numPriceScale.Value = model.GeneralSetting.PriceScale.Scale;
+                txtMinProfit.Text = model.GeneralSetting.PriceScale.MinProfit.ToString();
+                txtMaxProfit.Text = model.GeneralSetting.PriceScale.MaxProfit.ToString();
+
+                //convert
+                rdoUnitList.EditValue = model.GeneralSetting.Convert.Mode;
+                txtSaleUnit.Text = model.GeneralSetting.Convert.SaleUnit;
+                txtShopUnit.Text = model.GeneralSetting.Convert.ShopUnit;
+                txtUnitNumber.Text = model.GeneralSetting.Convert.UnitNumber.ToString();
+
+                //currency
+                rdoCurrencyList.EditValue = model.GeneralSetting.Currency.Mode;
+                txtConvertCurrency.Text = model.GeneralSetting.Currency.Currency != "CHF" ? model.GeneralSetting.Currency.Currency : txtConvertCurrency.Text;
+                txtExchangeRate.Text = model.GeneralSetting.Currency.Rate.ToString();
+
+                //txtRemark.Text = oCal.GeneralSetting.Remark;
+                txtInfo.Text = model.GeneralSetting.Info;
+                txtEmployee.Text = model.GeneralSetting.Employee;
+                dtCreate.EditValue = model.GeneralSetting.CreateDate;
+
+                try
+                {
+                    for (int i = 0; i < ddSupplier.Properties.Items.Count; i++)
+                    {
+                        if (((ComboboxItemModel)ddSupplier.Properties.Items[i]).Caption == model.GeneralSetting.Supplier)
+                        {
+                            ddSupplier.SelectedIndex = i;
+                            break;
+                        }
+                    }
+                }
+                catch { }
+            }
+        }
+
         public void SetProffixParam(ProffixModel model, string connectionString)
         {
             //if proffix model needed
@@ -65,15 +124,15 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                 }
             }
 
-            if (model.IsNew)
+            //load proffix document
+            ProffixLAGDokumente oProffixLAGDokumente = StorageOperator.GetProffixLAGDokumente(model.LAGDokumenteArtikelNrLAG, model.CalculationID, connectionString);
+            if (oProffixLAGDokumente != null)
             {
-                //load proffix document
-                ProffixLAGDokumente oProffixLAGDokumente = StorageOperator.GetProffixLAGDokumente(model.LAGDokumenteArtikelNrLAG, model.CalculationID, connectionString);
-                if (oProffixLAGDokumente != null)
-                {
-                    txtRemark.Text = oProffixLAGDokumente.Bemerkungen;
-                }
+                txtRemark.Text = oProffixLAGDokumente.Bemerkungen;
+            }
 
+            if (model.IsNew)
+            {                
                 //new from proffix
                 dtCreate.EditValue = DateTime.Now;
                 btnNew.Enabled = true;
@@ -83,61 +142,7 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             {
                 //load from proffix
                 btnNew.Enabled = false;
-                btnReset.Enabled = true;
-
-                //load cal setting from db
-                CalculationModel oCal = StorageOperator.CalPriceLoadByID(Convert.ToInt64(model.CalculationID));
-
-                if (oCal != null)
-                {
-                    rdoCostTypeList.EditValue = oCal.GeneralSetting.CostType;
-                    rdoCostTypeList.Enabled = true;
-
-                    // M R A
-                    chkOptionList.Items["M"].Enabled = false;
-                    chkOptionList.Items["M"].CheckState = oCal.GeneralSetting.Options.Contains("M") ? CheckState.Checked : CheckState.Unchecked;
-                    chkOptionList.Items["R"].CheckState = oCal.GeneralSetting.Options.Contains("R") ? CheckState.Checked : CheckState.Unchecked;
-                    chkOptionList.Items["A"].CheckState = oCal.GeneralSetting.Options.Contains("A") ? CheckState.Checked : CheckState.Unchecked;
-
-                    //text line group
-                    layoutControlGroup3.Enabled = false;
-
-                    //price scale group
-                    layoutControlGroup5.Enabled = false;
-                    rdoAmountMarkupList.EditValue = oCal.GeneralSetting.PriceScale.MarkUp;
-                    numPriceScale.Value = oCal.GeneralSetting.PriceScale.Scale;
-                    txtMinProfit.Text = oCal.GeneralSetting.PriceScale.MinProfit.ToString();
-                    txtMaxProfit.Text = oCal.GeneralSetting.PriceScale.MaxProfit.ToString();
-
-                    //convert
-                    rdoUnitList.EditValue = oCal.GeneralSetting.Convert.Mode;
-                    txtSaleUnit.Text = oCal.GeneralSetting.Convert.SaleUnit;
-                    txtShopUnit.Text = oCal.GeneralSetting.Convert.ShopUnit;
-                    txtUnitNumber.Text = oCal.GeneralSetting.Convert.UnitNumber.ToString();
-
-                    //currency
-                    rdoCurrencyList.EditValue = oCal.GeneralSetting.Currency.Mode;
-                    txtConvertCurrency.Text = oCal.GeneralSetting.Currency.Currency != "CHF" ? oCal.GeneralSetting.Currency.Currency : txtConvertCurrency.Text;
-                    txtExchangeRate.Text = oCal.GeneralSetting.Currency.Rate.ToString();
-
-                    //txtRemark.Text = oCal.GeneralSetting.Remark;
-                    txtInfo.Text = oCal.GeneralSetting.Info;
-                    txtEmployee.Text = oCal.GeneralSetting.Employee;
-                    dtCreate.EditValue = oCal.GeneralSetting.CreateDate;
-
-                    try
-                    {
-                        for (int i = 0; i < ddSupplier.Properties.Items.Count; i++)
-                        {
-                            if (((ComboboxItemModel)ddSupplier.Properties.Items[i]).Caption == oCal.GeneralSetting.Supplier)
-                            {
-                                ddSupplier.SelectedIndex = i;
-                                break;
-                            }
-                        }
-                    }
-                    catch { }
-                }
+                btnReset.Enabled = true;                                
             }
         }
 

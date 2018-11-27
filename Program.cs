@@ -31,8 +31,8 @@ namespace CalculationOilPrice
                 SingleInstanceApplication.Run(oForm, NewInstanceHandler);
             }
             else
-            {
-                oForm = new MainForm();
+            {                
+                oForm = new MainForm(arguments);
                 SingleInstanceApplication.Run(oForm, NewInstanceHandler);
                 oForm.Close();
             }

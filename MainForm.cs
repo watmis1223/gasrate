@@ -18,10 +18,13 @@ namespace CalculationOilPrice
     {
         OilCtrlMain _OilModule = new OilCtrlMain();
         PriceCtrlMain _PriceModule = new PriceCtrlMain();
+        string[] _Args;
 
-        public MainForm()
+        public MainForm(string[] arguments = null)
         {
             InitializeComponent();
+
+            _Args = arguments;
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -29,7 +32,20 @@ namespace CalculationOilPrice
             _OilModule.Dock = DockStyle.Fill;
             _PriceModule.Dock = DockStyle.Fill;
 
-            brBtnOil_ItemClick(this, null);
+            bool isProffixLoad = false;
+            if (_Args != null && _Args.Length > 0)
+            {
+                if (_Args[0].StartsWith("open"))
+                {
+                    isProffixLoad = true;
+                    CallByProffix(new string[] { "", _Args[0] });
+                }
+            }
+
+            if (!isProffixLoad)
+            {
+                brBtnOil_ItemClick(this, null);
+            }            
         }
 
         public void ShowModule(ApplicationModules module, params string[] arguments)

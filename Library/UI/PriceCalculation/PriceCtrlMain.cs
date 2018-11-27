@@ -92,7 +92,14 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
 
             if (oProffix.IsLoad)
             {
+                //load cal setting from db
+                CalculationModel oCal = StorageOperator.CalPriceLoadByID(Convert.ToInt64(oProffix.CalculationID));                
                 calculationTabPage.PageVisible = true;
+
+                generalCtrl1.LoadCalculation(oCal);
+
+                ReloadPriceCalculationSetting(true);
+                calculationBasicCtrl1.LoadCalculation(oCal, _PriceCalculationSetting);
             }
         }
 

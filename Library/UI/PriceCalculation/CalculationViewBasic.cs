@@ -37,6 +37,8 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             gridView1.Columns[TempColumnNames.AmountPercent.ToString()].ColumnEdit = this.repositoryItemTextEdit1;
             gridView1.Columns[TempColumnNames.AmountPercent.ToString()].AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
             gridView1.Columns[TempColumnNames.AmountPercent.ToString()].Caption = "%";
+            //gridView1.Columns[TempColumnNames.AmountPercent.ToString()].Width = 100;
+            //gridView1.Columns[TempColumnNames.AmountPercent.ToString()].OptionsColumn.FixedWidth = true;
 
             gridView1.Columns[TempColumnNames.AmountFix.ToString()].ColumnEdit = this.repositoryItemTextEdit1;
             gridView1.Columns[TempColumnNames.AmountFix.ToString()].AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
@@ -46,10 +48,14 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
                 AddEmptyColumn(gridView1.Columns[TempColumnNames.AmountFix.ToString()]);
                 _AddedEmptyColumn = true;
             }
+            //gridView1.Columns[TempColumnNames.AmountFix.ToString()].Width = 100;
+            //gridView1.Columns[TempColumnNames.AmountFix.ToString()].OptionsColumn.FixedWidth = true;
 
             gridView1.Columns[TempColumnNames.Total.ToString()].AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
             gridView1.Columns[TempColumnNames.Total.ToString()].ColumnEdit = this.repositoryItemTextEdit2;
             gridView1.Columns[TempColumnNames.Total.ToString()].Caption = "CHF";
+            //gridView1.Columns[TempColumnNames.Total.ToString()].Width = 100;
+            //gridView1.Columns[TempColumnNames.Total.ToString()].OptionsColumn.FixedWidth = true;
 
             gridView1.Columns[TempColumnNames.Tag.ToString()].Width = 80;
             gridView1.Columns[TempColumnNames.Tag.ToString()].OptionsColumn.AllowEdit = false;
@@ -85,6 +91,8 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             {
                 gridView1.Columns[TempColumnNames.Convert.ToString()].ColumnEdit = this.myRepositoryItemButtonEdit1;
                 gridView1.Columns[TempColumnNames.Convert.ToString()].Caption = " ";
+                gridView1.Columns[TempColumnNames.Convert.ToString()].Width = 80;
+                gridView1.Columns[TempColumnNames.Convert.ToString()].OptionsColumn.FixedWidth = true;
             }
 
 
@@ -99,6 +107,19 @@ namespace CalculationOilPrice.Library.UI.PriceCalculation
             {
                 gridView1.Columns[TempColumnNames.Currency.ToString()].ColumnEdit = this.myRepositoryItemButtonEdit2;
                 gridView1.Columns[TempColumnNames.Currency.ToString()].Caption = " ";
+                gridView1.Columns[TempColumnNames.Currency.ToString()].Width = 80;
+                gridView1.Columns[TempColumnNames.Currency.ToString()].OptionsColumn.FixedWidth = true;
+            }
+
+            //re width
+            if (_Model.GeneralSetting.Convert.Mode == "E" || _Model.GeneralSetting.Currency.Mode == "E")
+            {
+                if (_Model.ID > 0)
+                {
+                    gridView1.Columns[TempColumnNames.Description.ToString()].Width = 400;
+                    gridView1.Columns[TempColumnNames.Sign.ToString()].Width = 50;
+                    gridView1.Columns[TempColumnNames.Tag.ToString()].Width = 120;
+                }
             }
         }
 
